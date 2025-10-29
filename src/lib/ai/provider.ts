@@ -78,96 +78,104 @@ export async function generateWithFallback(
 }
 
 /**
+ * Gera resposta usando Gemini 2.5 Flash-Lite
+ */
+async function generateWithGemini(request: AIRequest): Promise<AIResponse> {
+  const { prompt, systemPrompt, maxTokens = 1000, temperature = 0.7 } = request;
+
+  const model = geminiClient.getGenerativeModel({
+    model: 'gemini-2.5-flash-lite',
+  });
+
+  const fullPrompt = systemPrompt
+    ? `${systemPrompt}\n\n${prompt}`
+    : prompt;
+
+  const result = await model.generateContent({
+    contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+    generationConfig: {
+      maxOutputTokens: maxTokens,
+      temperature: temperature,
+    },
+  });
+
+  const text = result.response.text();
+
+  if (!text) {
+    throw new Error('Gemini retornou resposta vazia');
+  }
+
+  return { text, provider: 'gemini' };
+}
+
+/**
+ * Gera resposta usando OpenAI GPT-4o-mini
+ */
+async function generateWithOpenAI(request: AIRequest): Promise<AIResponse> {
+  const { prompt, systemPrompt, maxTokens = 1000, temperature = 0.7 } = request;
+
+  const response = await openaiClient.chat.completions.create({
+    model: 'gpt-4o-mini',
+    max_tokens: maxTokens,
+    temperature,
+    messages: [
+      ...(systemPrompt
+        ? [{ role: 'system' as const, content: systemPrompt }]
+        : []),
+      { role: 'user' as const, content: prompt },
+    ],
+  });
+
+  return {
+    text: response.choices[0]?.message?.content || '',
+    provider: 'openai',
+    usage: {
+      promptTokens: response.usage?.prompt_tokens || 0,
+      completionTokens: response.usage?.completion_tokens || 0,
+    },
+  };
+}
+
+/**
+ * Gera resposta usando Claude 3.5 Sonnet
+ */
+async function generateWithClaude(request: AIRequest): Promise<AIResponse> {
+  const { prompt, systemPrompt, maxTokens = 1000, temperature = 0.7 } = request;
+
+  const response = await claudeClient.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: maxTokens,
+    temperature,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  return {
+    text: response.content[0].type === 'text'
+      ? response.content[0].text
+      : '',
+    provider: 'claude',
+    usage: {
+      promptTokens: response.usage.input_tokens,
+      completionTokens: response.usage.output_tokens,
+    },
+  };
+}
+
+/**
  * Gera resposta usando um provider específico
  */
 async function generateWithProvider(
   provider: AIProvider,
   request: AIRequest
 ): Promise<AIResponse> {
-  const { prompt, systemPrompt, maxTokens = 1000, temperature = 0.7 } = request;
-
   switch (provider) {
-    case 'gemini': {
-      // Gemini 2.5 Flash-Lite - Otimizado para velocidade e custo
-      // Thinking mode desabilitado por padrão (ao contrário do Flash e Pro)
-      // Perfeito para respostas rápidas e diretas
-      const model = geminiClient.getGenerativeModel({
-        model: 'gemini-2.5-flash-lite',
-      });
-
-      const fullPrompt = systemPrompt
-        ? `${systemPrompt}\n\n${prompt}`
-        : prompt;
-
-      const result = await model.generateContent({
-        contents: [{ parts: [{ text: fullPrompt }] }],
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          temperature: temperature,
-        },
-      });
-
-      const response = result.response;
-      const text = response.text();
-
-      if (!text) {
-        throw new Error('Gemini retornou resposta vazia');
-      }
-
-      return {
-        text,
-        provider: 'gemini',
-      };
-    }
-
-    case 'openai': {
-      // GPT-4o-mini - Melhor custo-benefício da OpenAI
-      // Mais barato que GPT-4o, com ótima qualidade
-      const response = await openaiClient.chat.completions.create({
-        model: 'gpt-4o-mini',
-        max_tokens: maxTokens,
-        temperature,
-        messages: [
-          ...(systemPrompt
-            ? [{ role: 'system' as const, content: systemPrompt }]
-            : []),
-          { role: 'user' as const, content: prompt },
-        ],
-      });
-
-      return {
-        text: response.choices[0]?.message?.content || '',
-        provider: 'openai',
-        usage: {
-          promptTokens: response.usage?.prompt_tokens || 0,
-          completionTokens: response.usage?.completion_tokens || 0,
-        },
-      };
-    }
-
-    case 'claude': {
-      // Claude 3.5 Sonnet - Excelente qualidade
-      // Fallback final, requer créditos API
-      const response = await claudeClient.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: maxTokens,
-        temperature,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: prompt }],
-      });
-
-      return {
-        text: response.content[0].type === 'text'
-          ? response.content[0].text
-          : '',
-        provider: 'claude',
-        usage: {
-          promptTokens: response.usage.input_tokens,
-          completionTokens: response.usage.output_tokens,
-        },
-      };
-    }
-
+    case 'gemini':
+      return generateWithGemini(request);
+    case 'openai':
+      return generateWithOpenAI(request);
+    case 'claude':
+      return generateWithClaude(request);
     default:
       throw new Error(`Provider não suportado: ${provider}`);
   }

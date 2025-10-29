@@ -22,7 +22,10 @@
       "Bash(powershell:*)",
       "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\npm.cmd\" install -g @anthropic-ai/claude-code)",
       "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\claude.cmd\" --version)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

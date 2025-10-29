@@ -25,7 +25,9 @@
       "Bash(curl:*)",
       "Bash(npm run lint:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx stylelint:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

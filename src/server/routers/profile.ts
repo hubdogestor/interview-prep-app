@@ -1,7 +1,10 @@
 import { router, publicProcedure } from "../trpc";
+import type { Prisma } from "@prisma/client";
 import type { ProfileSummary, ProfileMetric, ProfileLink } from "@/types/profile";
 import { placeholderProfileSummary } from "@/types/profile";
-import type { Prisma, Profile } from "@prisma/client";
+
+type ProfileRecord = Awaited<ReturnType<Prisma["profile"]["findFirst"]>>;
+type MetricsSnapshot = Awaited<ReturnType<typeof getProfileMetrics>>;
 
 async function getProfileMetrics(prisma: Prisma.TransactionClient) {
   const [icebreakers, competencias, experiencias, speeches, questions] = await Promise.all([
@@ -21,24 +24,25 @@ async function getProfileMetrics(prisma: Prisma.TransactionClient) {
   };
 }
 
-function transformProfileData(
-  profile: Profile,
-  metricsData: Awaited<ReturnType<typeof getProfileMetrics>>
-): ProfileSummary {
+function buildProfileSummary(profile: ProfileRecord, metrics: MetricsSnapshot): ProfileSummary {
+  if (!profile) {
+    return placeholderProfileSummary;
+  }
+
   const resumo = (profile.resumo as { pt?: string | null; en?: string | null } | null) ?? null;
 
-  const metrics: ProfileMetric[] = [
+  const metricItems: ProfileMetric[] = [
     {
       key: "experience",
       label: "Experiência",
       value: `${profile.anosExperiencia}+ anos`,
       hint: "Tempo total de mercado cadastrado",
     },
-    { key: "icebreakers", label: "Icebreakers", value: metricsData.icebreakers.toString() },
-    { key: "competencias", label: "Competências", value: metricsData.competencias.toString() },
-    { key: "experiencias", label: "Experiências", value: metricsData.experiencias.toString() },
-    { key: "speeches", label: "Speeches", value: metricsData.speeches.toString() },
-    { key: "questions", label: "Perguntas", value: metricsData.questions.toString() },
+    { key: "icebreakers", label: "Icebreakers", value: metrics.icebreakers.toString() },
+    { key: "competencias", label: "Competências", value: metrics.competencias.toString() },
+    { key: "experiencias", label: "Experiências", value: metrics.experiencias.toString() },
+    { key: "speeches", label: "Speeches", value: metrics.speeches.toString() },
+    { key: "questions", label: "Perguntas", value: metrics.questions.toString() },
   ];
 
   const links: ProfileLink[] = [];
@@ -58,7 +62,7 @@ function transformProfileData(
     summaryEn: resumo?.en ?? null,
     updatedAt: profile.updatedAt?.toISOString() ?? null,
     links,
-    metrics,
+    metrics: metricItems,
   };
 }
 
@@ -74,7 +78,7 @@ export const profileRouter = router({
       }
 
       const metrics = await getProfileMetrics(ctx.prisma);
-      return transformProfileData(profile, metrics);
+      return buildProfileSummary(profile, metrics);
     } catch (error) {
       console.error("profile.summary", error);
       return placeholderProfileSummary;

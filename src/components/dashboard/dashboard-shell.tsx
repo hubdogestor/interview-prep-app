@@ -20,7 +20,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -145,7 +144,6 @@ function TimerWidget({ className }: TimerWidgetProps) {
         </span>
       </div>
       <div className="flex flex-col gap-2 text-xs text-text-secondary">
-        <span>Proxima sessao</span>
         <div className="flex gap-2">
           <Button size="sm" onClick={countdown.toggle}>
             {countdown.running ? "Pausar" : "Iniciar"}
@@ -226,104 +224,6 @@ function DashboardSidebar({ className, onNavigate }: DashboardSidebarProps) {
   );
 }
 
-type DashboardHeaderProps = {
-  onToggleSidebar: () => void;
-};
-
-function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <Card className="flex flex-col gap-4">
-        <CardHeader className="space-y-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <span className="text-xs font-medium uppercase tracking-[0.18em] text-text-muted">Snapshot</span>
-              <CardTitle className="mt-1 text-text-primary">Plano de estudo para a semana</CardTitle>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggleSidebar}
-              className="flex items-center gap-2 rounded-full border border-border-subtle/60 bg-bg-tertiary/40 text-xs font-medium uppercase tracking-[0.25em] text-text-muted lg:hidden"
-            >
-              <Menu className="h-4 w-4" />
-              Menu
-            </Button>
-          </div>
-          <CardDescription>
-            Resumo das atividades prioritarias e progresso das ultimas sessoes, atualizado em tempo real com os dados
-            mais recentes.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter className="flex flex-wrap items-center gap-3 lg:justify-end">
-          <Input placeholder="Buscar sessões, perguntas ou feedbacks..." className="w-full min-w-[240px] max-w-xs" />
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div>
-                  <TimerWidget className="w-full cursor-pointer transition hover:border-brand-green/60 sm:w-auto" />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Contagem regressiva de foco (25 minutos)</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <LanguageToggle />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="sm" className="rounded-full">
-                Acoes rapidas
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Atalhos</DropdownMenuLabel>
-              <DropdownMenuItem>Iniciar modo pratica</DropdownMenuItem>
-              <DropdownMenuItem>Carregar ultimo feedback</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Exportar progresso</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DialogTrigger asChild>
-            <Button size="sm">Adicionar tarefa</Button>
-          </DialogTrigger>
-        </CardFooter>
-      </Card>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Criar tarefa rapida</DialogTitle>
-          <DialogDescription>
-            Defina um lembrete basico para incluir no seu plano de estudo. Este stub sera integrado ao banco na Fase 2.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="mt-6 grid gap-4">
-          <label className="grid gap-2 text-sm">
-            <span className="text-text-secondary">Titulo</span>
-            <input
-              type="text"
-              placeholder="Ex: Revisar perguntas de comportamento"
-              className="rounded-xl border border-border-subtle bg-bg-tertiary/60 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-green/40"
-            />
-          </label>
-          <label className="grid gap-2 text-sm">
-            <span className="text-text-secondary">Descricao</span>
-            <textarea
-              rows={3}
-              placeholder="Adicione detalhes ou links importantes."
-              className="rounded-xl border border-border-subtle bg-bg-tertiary/60 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-green/40"
-            />
-          </label>
-        </div>
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setDialogOpen(false)}>
-            Cancelar
-          </Button>
-          <Button onClick={() => setDialogOpen(false)}>Salvar stub</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
 function StatOverview() {
   return (
     <section className="panel-grid">
@@ -497,6 +397,130 @@ function AnalyticsGrid() {
   );
 }
 
+type DashboardHeaderProps = {
+  onToggleSidebar: () => void;
+};
+
+function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <>
+      <header className="fixed inset-x-0 top-0 z-40 px-3 pt-4 sm:px-6 lg:px-10">
+        <div className="w-full rounded-3xl border border-border-subtle/40 bg-bg-secondary/95 px-4 py-4 shadow-lg shadow-black/20 backdrop-blur sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center gap-3 sm:flex-nowrap">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full border border-border-subtle/60 lg:hidden"
+                onClick={onToggleSidebar}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <Image
+                src="/favicon-32x32.png"
+                alt="Interview Prep logo"
+                width={36}
+                height={36}
+                className="hidden rounded-lg ring-2 ring-brand-green/40 sm:block"
+              />
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand-green">Interview Prep</span>
+                  <Badge
+                    variant="outline"
+                    className="hidden px-2 py-0 text-[10px] uppercase tracking-[0.3em] text-text-muted sm:inline"
+                  >
+                    Dashboard
+                  </Badge>
+                </div>
+                <p className="truncate text-sm text-text-secondary">Plano de estudo para entrevistas com IA</p>
+              </div>
+            </div>
+            <div className="hidden w-full flex-1 md:block">
+              <Input
+                placeholder="Buscar sessoes, perguntas ou feedbacks..."
+                className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <TimerWidget className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/60 px-3 transition hover:border-brand-green/60" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Contagem regressiva de foco (25 minutos)</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <LanguageToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" size="sm" className="hidden rounded-full lg:flex">
+                    Acoes rapidas
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Atalhos</DropdownMenuLabel>
+                  <DropdownMenuItem>Iniciar modo pratica</DropdownMenuItem>
+                  <DropdownMenuItem>Carregar ultimo feedback</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Exportar progresso</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="secondary" size="sm" className="hidden md:flex" onClick={() => setDialogOpen(true)}>
+                Nova tarefa
+              </Button>
+            </div>
+          </div>
+          <div className="mt-3 block md:hidden">
+            <Input
+              placeholder="Buscar sessoes, perguntas ou feedbacks..."
+              className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60"
+            />
+          </div>
+        </div>
+      </header>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Criar tarefa rápida</DialogTitle>
+            <DialogDescription>
+              Defina um lembrete básico para incluir no seu plano de estudo. Este stub será integrado ao banco na Fase 2.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 grid gap-4">
+            <label className="grid gap-2 text-sm">
+              <span className="text-text-secondary">Título</span>
+              <input
+                type="text"
+                placeholder="Ex: Revisar perguntas de comportamento"
+                className="rounded-xl border border-border-subtle bg-bg-tertiary/60 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-green/40"
+              />
+            </label>
+            <label className="grid gap-2 text-sm">
+              <span className="text-text-secondary">Descrição</span>
+              <textarea
+                rows={3}
+                placeholder="Adicione detalhes ou links importantes."
+                className="rounded-xl border border-border-subtle bg-bg-tertiary/60 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-green/40"
+              />
+            </label>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={() => setDialogOpen(false)}>Salvar stub</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
 type StatCardProps = (typeof statCards)[number];
 
 function StatCard({ amount, change, gradientId, gradientStops, label, path, trend }: StatCardProps) {
@@ -594,13 +618,11 @@ function DashboardFooter() {
 type DashboardMainProps = {
   profile: ProfileSummary;
   profileLoading: boolean;
-  onToggleSidebar: () => void;
 };
 
-function DashboardMain({ profile, profileLoading, onToggleSidebar }: DashboardMainProps) {
+function DashboardMain({ profile, profileLoading }: DashboardMainProps) {
   return (
     <main className="flex flex-col gap-6">
-      <DashboardHeader onToggleSidebar={onToggleSidebar} />
       <ProfileCard profile={profile} isLoading={profileLoading} />
       <StatOverview />
       <AnalyticsGrid />
@@ -654,16 +676,15 @@ export function DashboardShell() {
   const profile = profileData ?? placeholderProfileSummary;
 
   return (
-    <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-10">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 lg:grid lg:grid-cols-[260px,1fr] lg:gap-10">
-        <aside className="hidden lg:block">
-          <DashboardSidebar />
-        </aside>
-        <DashboardMain
-          profile={profile}
-          profileLoading={profileLoading}
-          onToggleSidebar={() => setSidebarOpen(true)}
-        />
+    <div className="min-h-screen bg-bg-primary text-text-primary">
+      <DashboardHeader onToggleSidebar={() => setSidebarOpen(true)} />
+      <div className="px-3 pb-12 pt-40 sm:px-6 lg:px-10">
+        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-8 lg:grid lg:grid-cols-[260px,1fr] lg:gap-10">
+          <aside className="hidden lg:block">
+            <DashboardSidebar />
+          </aside>
+          <DashboardMain profile={profile} profileLoading={profileLoading} />
+        </div>
       </div>
       <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
         <DashboardSidebar onNavigate={() => setSidebarOpen(false)} className="shadow-none" />

@@ -31,19 +31,22 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   const [notifications, setNotifications] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const countdown = useCountdown(TIMER_OPTIONS[selectedTime].seconds);
+  
+  // Usar o timer selecionado como base
+  const currentTimerOption = TIMER_OPTIONS[selectedTime];
+  const countdown = useCountdown(currentTimerOption.seconds);
   
   const progress = useMemo(() => 
-    1 - countdown.seconds / TIMER_OPTIONS[selectedTime].seconds, 
-    [countdown.seconds, selectedTime]
+    1 - countdown.seconds / currentTimerOption.seconds, 
+    [countdown.seconds, currentTimerOption.seconds]
   );
 
   // Notificação quando o timer acaba
   useEffect(() => {
-    if (countdown.seconds === 0 && countdown.running === false && countdown.seconds !== TIMER_OPTIONS[selectedTime].seconds) {
+    if (countdown.seconds === 0 && countdown.running === false && countdown.seconds !== currentTimerOption.seconds) {
       if (notifications && "Notification" in window && Notification.permission === "granted") {
         new Notification("Timer finalizado!", {
-          body: `Sua sessão de ${TIMER_OPTIONS[selectedTime].label} terminou.`,
+          body: `Sua sessão de ${currentTimerOption.label} terminou.`,
           icon: "/favicon-32x32.png",
           tag: "timer-finished"
         });
@@ -68,7 +71,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
         });
       }
     }
-  }, [countdown.seconds, countdown.running, countdown.seconds, selectedTime, notifications, soundEnabled]);
+  }, [countdown.seconds, countdown.running, currentTimerOption, notifications, soundEnabled]);
 
   const requestNotificationPermission = () => {
     if ("Notification" in window && Notification.permission === "default") {
@@ -81,9 +84,12 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   };
 
   const handleTimerSelect = (index: number) => {
+    if (index === selectedTime) return;
+    
     setSelectedTime(index);
     setShowOptions(false);
-    countdown.reset();
+    // Não precisa chamar countdown.reset() aqui, pois o useCountdown será reiniciado automaticamente
+    // quando selectedTime mudar, devido ao currentTimerOption.seconds na dependência
   };
 
   const getTimerStatus = () => {
@@ -93,7 +99,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   };
 
   const status = getTimerStatus();
-  const currentTimer = TIMER_OPTIONS[selectedTime];
+  const currentTimer = currentTimerOption;
 
   return (
     <div className={cn("relative", className)}>

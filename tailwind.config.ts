@@ -33,6 +33,11 @@ const config: Config = {
         warning: '#F6C445',
         error: '#EF4444',
         info: '#9AC1F0',
+
+        // Borders
+        'border-subtle': '#2A2B3D',
+        'border-default': '#3F4056',
+        'border-strong': '#52556E',
       },
       fontFamily: {
         grotesk: ['var(--font-grotesk)', 'sans-serif'],

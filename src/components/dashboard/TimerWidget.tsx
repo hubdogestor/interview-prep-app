@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
 import { useCountdown } from "./hooks";
 
 const TIMER_OPTIONS = [
-  { label: "Pitch", seconds: 5 * 60, color: "bg-brand-green" },
-  { label: "STAR case", seconds: 8 * 60, color: "bg-brand-blue" },
-  { label: "Pomodoro", seconds: 15 * 60, color: "bg-brand-purple" },
-  { label: "Full speech", seconds: 20 * 60, color: "bg-brand-orange" },
-  { label: "Rest 30", seconds: 30 * 60, color: "bg-brand-yellow" },
-  { label: "Rest 60", seconds: 60 * 60, color: "bg-gray-500" },
+  { label: "Pitch", seconds: 5 * 60, color: "bg-emerald-400" },
+  { label: "STAR case", seconds: 8 * 60, color: "bg-blue-400" },
+  { label: "Pomodoro", seconds: 15 * 60, color: "bg-red-500" },
+  { label: "Full speech", seconds: 20 * 60, color: "bg-orange-400" },
+  { label: "Rest 30", seconds: 30 * 60, color: "bg-yellow-400" },
+  { label: "Rest 60", seconds: 60 * 60, color: "bg-gray-400" },
 ] as const;
 
 function formatSeconds(totalSeconds: number): string {
@@ -91,7 +91,13 @@ export function TimerWidget({ className }: TimerWidgetProps) {
     
     setSelectedTime(index);
     setShowOptions(false);
-    // O timer será reiniciado automaticamente devido ao useCountdown dependente de currentTimerOption.seconds
+    
+    // Forçar o reset do countdown quando mudar de opção
+    // Isso garante que o contador volte para o tempo correto da opção selecionada
+    setTimeout(() => {
+      // Recriar o useCountdown chamando reset
+      countdown.reset();
+    }, 100);
   };
 
   const getTimerStatus = () => {
@@ -103,13 +109,26 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   const status = getTimerStatus();
   const currentTimer = currentTimerOption;
 
+  // Extrair cor neon da opção atual para usar na badge
+  const getNeonColor = (colorClass: string) => {
+    switch (colorClass) {
+      case "bg-emerald-400": return "border-emerald-400 shadow-emerald-400/50";
+      case "bg-blue-400": return "border-blue-400 shadow-blue-400/50";
+      case "bg-red-500": return "border-red-400 shadow-red-400/50";
+      case "bg-orange-400": return "border-orange-400 shadow-orange-400/50";
+      case "bg-yellow-400": return "border-yellow-400 shadow-yellow-400/50";
+      case "bg-gray-400": return "border-gray-400 shadow-gray-400/50";
+      default: return "border-brand-green shadow-brand-green/50";
+    }
+  };
+
   return (
     <div className={cn("relative", className)}>
       <div 
         className={cn(
           "flex items-center gap-3 rounded-2xl border border-border-subtle bg-bg-tertiary/60 p-3 transition-all duration-300",
-          status === "running" && "border-brand-green/60 bg-brand-green/5",
-          status === "finished" && "border-brand-yellow/60 bg-brand-yellow/5",
+          status === "running" && "border-emerald-400/60 bg-emerald-400/5",
+          status === "finished" && "border-yellow-400/60 bg-yellow-400/5",
           showOptions && "rounded-b-none"
         )}
       >
@@ -140,7 +159,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                   size="sm"
                   className={cn(
                     "w-full justify-start text-xs h-8",
-                    index === selectedTime && "bg-brand-green/10 text-brand-green border border-brand-green/20"
+                    index === selectedTime && "bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
                   )}
                   onClick={() => handleTimerSelect(index)}
                 >
@@ -183,9 +202,9 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             <path
               className={cn(
                 "transition-colors duration-300",
-                status === "running" && "text-brand-green",
-                status === "paused" && "text-brand-blue", 
-                status === "finished" && "text-brand-yellow"
+                status === "running" && "text-emerald-400",
+                status === "paused" && "text-blue-400", 
+                status === "finished" && "text-yellow-400"
               )}
               strokeWidth="3"
               fill="none"
@@ -208,37 +227,41 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           {/* Running indicator */}
           {status === "running" && (
             <div className="absolute -top-1 -right-1 h-3 w-3">
-              <div className="h-full w-full animate-pulse rounded-full bg-brand-green" />
-              <div className="absolute inset-0 h-full w-full rounded-full bg-brand-green/60 animate-ping" />
+              <div className="h-full w-full animate-pulse rounded-full bg-emerald-400" />
+              <div className="absolute inset-0 h-full w-full rounded-full bg-emerald-400/60 animate-ping" />
             </div>
           )}
         </div>
 
         {/* Timer Info */}
         <div className="flex flex-col gap-2 text-xs text-text-secondary">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center">
             <Badge 
               variant="outline" 
               className={cn(
-                "text-[10px] px-1.5 py-0",
-                currentTimer.color.replace("bg-", "border-").replace("-500", "-400")
+                "text-[10px] px-2 py-1 text-center border-2 shadow-lg",
+                currentTimer.color.replace("bg-", "border-").replace("-400", "").replace("-500", ""),
+                "shadow-current/30",
+                getNeonColor(currentTimer.color)
               )}
             >
               {currentTimer.label}
             </Badge>
-            {status === "running" && (
-              <div className="flex items-center gap-1">
-                <div className="h-1 w-1 rounded-full bg-brand-green animate-pulse" />
-                <span className="text-[10px] text-brand-green">ativo</span>
-              </div>
-            )}
-            {status === "finished" && (
-              <div className="flex items-center gap-1">
-                <div className="h-1 w-1 rounded-full bg-brand-yellow animate-pulse" />
-                <span className="text-[10px] text-brand-yellow">pronto!</span>
-              </div>
-            )}
           </div>
+          
+          {status === "running" && (
+            <div className="flex items-center justify-center gap-1">
+              <div className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] text-emerald-400">ativo</span>
+            </div>
+          )}
+          
+          {status === "finished" && (
+            <div className="flex items-center justify-center gap-1">
+              <div className="h-1 w-1 rounded-full bg-yellow-400 animate-pulse" />
+              <span className="text-[10px] text-yellow-400">pronto!</span>
+            </div>
+          )}
           
           <div className="flex gap-1">
             <Button 
@@ -247,7 +270,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               className={cn(
                 "h-6 px-2 text-[10px]",
                 status === "running" 
-                  ? "bg-brand-green/20 text-brand-green hover:bg-brand-green/30" 
+                  ? "bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30" 
                   : "hover:bg-border-subtle"
               )}
             >
@@ -277,7 +300,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             size="sm"
             className={cn(
               "h-5 w-5 p-0 text-[10px]",
-              notifications ? "text-brand-blue" : "text-text-muted"
+              notifications ? "text-blue-400" : "text-text-muted"
             )}
             onClick={requestNotificationPermission}
             title="Notificações"
@@ -289,7 +312,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             size="sm"
             className={cn(
               "h-5 w-5 p-0 text-[10px]",
-              soundEnabled ? "text-brand-green" : "text-text-muted"
+              soundEnabled ? "text-emerald-400" : "text-text-muted"
             )}
             onClick={() => setSoundEnabled(!soundEnabled)}
             title="Som"

@@ -151,15 +151,14 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             variant="ghost"
             size="sm"
             className={cn(
-              "h-8 w-8 rounded-full border border-border-subtle/60 p-0 text-xs font-semibold",
-              currentTimer.color,
+              "h-8 w-8 rounded-full border border-border-subtle/60 p-0 text-lg font-semibold bg-transparent hover:bg-transparent",
               "hover:scale-110 transition-transform duration-200"
             )}
             onClick={() => setShowOptions(!showOptions)}
             title="Opções de tempo"
             aria-label="Opções de tempo"
           >
-            {currentTimer.icon}
+            <span className="text-xl leading-none">{currentTimer.icon}</span>
           </Button>
 
           {/* Timer Options Dropdown */}
@@ -171,15 +170,15 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                   variant={index === selectedTime ? "secondary" : "ghost"}
                   size="sm"
                   className={cn(
-                    "w-full justify-start text-xs h-8",
+                    "w-full justify-start text-xs h-8 bg-transparent hover:bg-transparent",
                     index === selectedTime && "bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
                   )}
                   onClick={() => handleTimerSelect(index)}
                 >
                   <div className="flex items-center gap-3 w-full">
-                    {/* Ícone maior e mais legível */}
-                    <div className="flex h-6 w-6 items-center justify-center text-sm">
-                      {option.icon}
+                    {/* Ícone maior sem fundo */}
+                    <div className="flex h-7 w-7 items-center justify-center text-lg bg-transparent">
+                      <span className="text-lg leading-none">{option.icon}</span>
                     </div>
                     
                     {/* Label da opção */}
@@ -253,10 +252,10 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               size="sm" 
               onClick={countdown.toggle}
               className={cn(
-                "h-5 px-1.5 text-[8px] text-center",
+                "h-5 px-1.5 text-[8px] text-center bg-transparent hover:bg-transparent",
                 status === "running" 
-                  ? "bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30" 
-                  : "hover:bg-border-subtle"
+                  ? "text-emerald-400 hover:text-emerald-400/80" 
+                  : "hover:bg-transparent"
               )}
             >
               {status === "running" ? "Pausar" : "Iniciar"}
@@ -269,7 +268,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 countdown.reset();
                 setSelectedTime(0); // Garantir que volte para Pitch como padrão
               }}
-              className="h-5 px-1.5 text-[8px] text-center hover:bg-border-subtle"
+              className="h-5 px-1.5 text-[8px] text-center bg-transparent hover:bg-transparent"
             >
               Reset
             </Button>
@@ -277,14 +276,14 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           
           {/* Status "ativo" abaixo dos botões, na esquerda */}
           {status === "running" && (
-            <div className="flex items-center gap-1 justify-center">
+            <div className="flex items-center justify-center gap-1">
               <div className="h-1 w-1 rounded-full bg-emerald-400" />
               <span className="text-[8px] text-emerald-400">ativo</span>
             </div>
           )}
           
           {status === "finished" && (
-            <div className="flex items-center gap-1 justify-center">
+            <div className="flex items-center justify-center gap-1">
               <div className="h-1 w-1 rounded-full bg-yellow-400" />
               <span className="text-[8px] text-yellow-400">pronto!</span>
             </div>
@@ -299,7 +298,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             variant="ghost"
             size="sm"
             className={cn(
-              "h-5 w-5 p-0 text-[10px]",
+              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent",
               notifications ? "text-blue-400" : "text-text-muted"
             )}
             onClick={requestNotificationPermission}
@@ -311,7 +310,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             variant="ghost"
             size="sm"
             className={cn(
-              "h-5 w-5 p-0 text-[10px]",
+              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent",
               soundEnabled ? "text-emerald-400" : "text-text-muted"
             )}
             onClick={() => setSoundEnabled(!soundEnabled)}

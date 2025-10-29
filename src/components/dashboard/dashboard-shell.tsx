@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, useMemo, type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,7 +38,7 @@ import { ProfileCard } from "./profile-card";
 import { LanguageToggle } from "./LanguageToggle";
 import { TimerWidget } from "./TimerWidget";
 import { StatCard } from "./StatCard";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, Search } from "lucide-react";
 import {
   analytics,
   primaryNav,
@@ -49,12 +49,8 @@ import {
   transactions,
 } from "./data";
 
-type DashboardSidebarProps = {
-  className?: string;
-  onNavigate?: () => void;
-};
-
-function DashboardSidebar({ className, onNavigate }: DashboardSidebarProps) {
+// Memoized components for better performance
+const DashboardSidebar = React.memo<DashboardSidebarProps>(({ className, onNavigate }) => {
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     onNavigate?.();
@@ -82,10 +78,21 @@ function DashboardSidebar({ className, onNavigate }: DashboardSidebarProps) {
             key={item.key}
             href={`/${item.key}`}
             onClick={handleNavClick}
-            className={`sidebar-link ${item.active ? "sidebar-link-active" : ""}`}
+            className={cn(
+              "sidebar-link group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-200 hover:bg-brand-green/10",
+              item.active && "bg-brand-green/20 text-brand-green shadow-sm"
+            )}
           >
-            <span className={`h-2 w-2 rounded-full ${item.active ? "bg-brand-green" : "bg-border-default"}`} />
-            <span>{item.label}</span>
+            <span className={cn(
+              "h-2 w-2 rounded-full transition-colors duration-200",
+              item.active ? "bg-brand-green" : "bg-border-default group-hover:bg-brand-green/60"
+            )} />
+            <span className="font-medium">{item.label}</span>
+            {item.badge && (
+              <Badge variant="outline" className="ml-auto text-[10px]">
+                {item.badge}
+              </Badge>
+            )}
           </a>
         ))}
       </nav>
@@ -104,7 +111,7 @@ function DashboardSidebar({ className, onNavigate }: DashboardSidebarProps) {
               key={item.key}
               variant="ghost"
               size="sm"
-              className="w-full justify-start"
+              className="w-full justify-start hover:bg-brand-green/10"
               onClick={onNavigate}
             >
               {item.label}
@@ -114,9 +121,67 @@ function DashboardSidebar({ className, onNavigate }: DashboardSidebarProps) {
       </div>
     </Card>
   );
+});
+
+DashboardSidebar.displayName = "DashboardSidebar";
+
+type DashboardSidebarProps = {
+  className?: string;
+  onNavigate?: () => void;
+};
+
+// Loading skeleton components
+function StatOverviewSkeleton() {
+  return (
+    <section className="panel-grid">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Card key={i} className="animate-pulse">
+          <CardHeader>
+            <div className="h-4 w-20 bg-border-subtle/30 rounded" />
+            <div className="h-6 w-16 bg-border-subtle/20 rounded" />
+          </CardHeader>
+          <CardContent>
+            <div className="h-20 w-full bg-border-subtle/10 rounded" />
+          </CardContent>
+        </Card>
+      ))}
+    </section>
+  );
 }
 
-function StatOverview() {
+function AnalyticsGridSkeleton() {
+  return (
+    <section className="analytics-grid">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Card key={i} className="animate-pulse">
+          <CardHeader>
+            <div className="h-4 w-32 bg-border-subtle/30 rounded" />
+            <div className="h-5 w-24 bg-border-subtle/20 rounded" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {Array.from({ length: 3 }).map((_, j) => (
+              <div key={j} className="space-y-2">
+                <div className="h-3 w-full bg-border-subtle/10 rounded" />
+                <div className="h-2 bg-border-subtle/5 rounded" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ))}
+    </section>
+  );
+}
+
+const StatOverview = React.memo(() => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <StatOverviewSkeleton />;
+
   return (
     <section className="panel-grid">
       {statCards.map((card) => (
@@ -124,11 +189,13 @@ function StatOverview() {
       ))}
     </section>
   );
-}
+});
 
-function WeeklyChecklist() {
+StatOverview.displayName = "StatOverview";
+
+const WeeklyChecklist = React.memo(() => {
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-text-muted">
@@ -170,11 +237,13 @@ function WeeklyChecklist() {
       </CardContent>
     </Card>
   );
-}
+});
 
-function TransactionsPanel() {
+WeeklyChecklist.displayName = "WeeklyChecklist";
+
+const TransactionsPanel = React.memo(() => {
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-text-muted">Fluxo financeiro</span>
@@ -188,14 +257,14 @@ function TransactionsPanel() {
         {transactions.map((transaction) => (
           <div
             key={transaction.name}
-            className="flex items-center justify-between rounded-2xl border border-border-subtle/70 bg-bg-tertiary/60 px-4 py-3"
+            className="flex items-center justify-between rounded-2xl border border-border-subtle/70 bg-bg-tertiary/60 px-4 py-3 transition-all duration-200 hover:border-brand-green/60 hover:shadow-sm"
           >
             <div>
               <p className="font-sans text-sm text-text-primary">{transaction.name}</p>
               <p className="text-xs text-text-muted">{transaction.date}</p>
             </div>
             <span
-              className={`font-mono text-sm font-semibold ${
+              className={`font-mono text-sm font-semibold transition-colors duration-200 ${
                 transaction.amount.startsWith("+") ? "trend-positive" : "trend-negative"
               }`}
             >
@@ -206,11 +275,13 @@ function TransactionsPanel() {
       </CardContent>
     </Card>
   );
-}
+});
 
-function CompetencyAnalysis() {
+TransactionsPanel.displayName = "TransactionsPanel";
+
+const CompetencyAnalysis = React.memo(() => {
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-text-muted">
@@ -229,8 +300,11 @@ function CompetencyAnalysis() {
               <p>{item.label}</p>
               <p>{item.value}%</p>
             </div>
-            <div className="mt-2 h-2 rounded-full bg-border-subtle">
-              <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.value}%` }} />
+            <div className="mt-2 h-2 rounded-full bg-border-subtle overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-500 ${item.color}`} 
+                style={{ width: `${item.value}%` }}
+              />
             </div>
           </div>
         ))}
@@ -243,11 +317,13 @@ function CompetencyAnalysis() {
       </CardFooter>
     </Card>
   );
-}
+});
 
-function PerformanceSummary() {
+CompetencyAnalysis.displayName = "CompetencyAnalysis";
+
+const PerformanceSummary = React.memo(() => {
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-text-muted">Desempenho geral</span>
@@ -262,7 +338,9 @@ function PerformanceSummary() {
               <p className="font-sans text-sm text-text-primary">{item.label}</p>
               <p className="text-xs text-text-muted">Feedback recente</p>
             </div>
-            <span className={`font-semibold ${item.tone === "positive" ? "trend-positive" : "trend-warning"}`}>
+            <span className={`font-semibold transition-colors duration-200 ${
+              item.tone === "positive" ? "trend-positive" : "trend-warning"
+            }`}>
               {item.value}%
             </span>
           </div>
@@ -276,9 +354,11 @@ function PerformanceSummary() {
       </CardFooter>
     </Card>
   );
-}
+});
 
-function AnalyticsGrid() {
+PerformanceSummary.displayName = "PerformanceSummary";
+
+const AnalyticsGrid = React.memo(() => {
   return (
     <section className="analytics-grid">
       <PerformanceSummary />
@@ -287,19 +367,35 @@ function AnalyticsGrid() {
       <CompetencyAnalysis />
     </section>
   );
-}
+});
 
-type DashboardHeaderProps = {
-  onToggleSidebar: () => void;
-};
+AnalyticsGrid.displayName = "AnalyticsGrid";
 
-function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
+// Responsive header with better height optimization
+const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-40 px-3 pt-4 sm:px-6 lg:px-10">
-        <div className="w-full rounded-3xl border border-border-subtle/40 bg-bg-secondary/95 px-4 py-4 shadow-lg shadow-black/20 backdrop-blur sm:px-6 lg:px-8">
+      <header className={cn(
+        "fixed inset-x-0 top-0 z-40 transition-all duration-300 px-3 sm:px-6 lg:px-10",
+        isScrolled ? "py-2" : "py-4"
+      )}>
+        <div className={cn(
+          "w-full rounded-3xl border border-border-subtle/40 bg-bg-secondary/95 px-4 shadow-lg shadow-black/20 backdrop-blur transition-all duration-300 sm:px-6 lg:px-8",
+          isScrolled ? "py-3" : "py-4"
+        )}>
           <div className="flex flex-wrap items-center gap-3 sm:flex-nowrap">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <Button
@@ -307,6 +403,7 @@ function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
                 size="icon"
                 className="rounded-full border border-border-subtle/60 lg:hidden"
                 onClick={onToggleSidebar}
+                aria-label="Abrir menu"
               >
                 <Menu className="h-5 w-5" />
               </Button>
@@ -330,13 +427,21 @@ function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
                 <p className="truncate text-sm text-text-secondary">Plano de estudo para entrevistas com IA</p>
               </div>
             </div>
+            
+            {/* Enhanced search */}
             <div className="hidden w-full flex-1 md:block">
-              <Input
-                placeholder="Buscar sessoes, perguntas ou feedbacks..."
-                className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60"
-              />
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                <Input
+                  placeholder="Buscar sessoes, perguntas ou feedbacks..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60 pl-10"
+                />
+              </div>
             </div>
-            <div className="flex items-center gap-3">
+            
+            <div className="flex items-center gap-2 lg:gap-3">
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -351,13 +456,14 @@ function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="sm" className="hidden rounded-full lg:flex">
-                    Acoes rapidas
+                    Ações rapidas
+                    <ChevronDown className="ml-1 h-3 w-3" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Atalhos</DropdownMenuLabel>
-                  <DropdownMenuItem>Iniciar modo pratica</DropdownMenuItem>
-                  <DropdownMenuItem>Carregar ultimo feedback</DropdownMenuItem>
+                  <DropdownMenuItem>Iniciar modo prática</DropdownMenuItem>
+                  <DropdownMenuItem>Carregar último feedback</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Exportar progresso</DropdownMenuItem>
                 </DropdownMenuContent>
@@ -368,13 +474,19 @@ function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
             </div>
           </div>
           <div className="mt-3 block md:hidden">
-            <Input
-              placeholder="Buscar sessoes, perguntas ou feedbacks..."
-              className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60"
-            />
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+              <Input
+                placeholder="Buscar sessoes, perguntas ou feedbacks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60 pl-10"
+              />
+            </div>
           </div>
         </div>
       </header>
+      
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -411,9 +523,11 @@ function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
       </Dialog>
     </>
   );
-}
+});
 
-function DashboardFooter() {
+DashboardHeader.displayName = "DashboardHeader";
+
+const DashboardFooter = React.memo(() => {
   const actions = [
     {
       label: "Completar card de perfil",
@@ -435,7 +549,7 @@ function DashboardFooter() {
 
   return (
     <footer>
-      <Card className="border-border-subtle/60 bg-bg-secondary/90 backdrop-blur">
+      <Card className="border-border-subtle/60 bg-bg-secondary/90 backdrop-blur transition-all duration-300 hover:shadow-lg">
         <CardHeader className="space-y-2">
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-text-muted">Encerramento</span>
           <CardTitle className="text-text-primary">Checklist rápido antes de fechar a sessão</CardTitle>
@@ -448,7 +562,7 @@ function DashboardFooter() {
             {actions.map((action) => (
               <div
                 key={action.label}
-                className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/50 p-4 shadow-sm shadow-black/10"
+                className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/50 p-4 shadow-sm shadow-black/10 transition-all duration-200 hover:shadow-md hover:border-brand-green/40"
               >
                 <p className="font-sans text-sm text-text-primary">{action.label}</p>
                 <p className="mt-1 text-xs text-text-muted">{action.description}</p>
@@ -475,14 +589,16 @@ function DashboardFooter() {
       </Card>
     </footer>
   );
-}
+});
+
+DashboardFooter.displayName = "DashboardFooter";
 
 type DashboardMainProps = {
   profile: ProfileSummary;
   profileLoading: boolean;
 };
 
-function DashboardMain({ profile, profileLoading }: DashboardMainProps) {
+const DashboardMain = React.memo<DashboardMainProps>(({ profile, profileLoading }) => {
   return (
     <main className="flex flex-col gap-6">
       <ProfileCard profile={profile} isLoading={profileLoading} />
@@ -491,7 +607,9 @@ function DashboardMain({ profile, profileLoading }: DashboardMainProps) {
       <DashboardFooter />
     </main>
   );
-}
+});
+
+DashboardMain.displayName = "DashboardMain";
 
 type MobileSidebarProps = {
   open: boolean;
@@ -499,15 +617,17 @@ type MobileSidebarProps = {
   children: ReactNode;
 };
 
-function MobileSidebar({ open, onClose, children }: MobileSidebarProps) {
-  if (!open) {
-    return null;
-  }
+const MobileSidebar = React.memo<MobileSidebarProps>(({ open, onClose, children }) => {
+  if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex lg:hidden">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative ml-auto flex h-full w-72 max-w-[85%] flex-col overflow-y-auto border-l border-border-subtle bg-bg-secondary/95 p-6 shadow-2xl shadow-black/40">
+    <>
+      <div 
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="fixed inset-y-0 right-0 z-50 w-72 max-w-[85%] overflow-y-auto border-l border-border-subtle bg-bg-secondary/95 p-6 shadow-2xl shadow-black/40 lg:hidden">
         <div className="mb-4 flex items-center justify-between">
           <span className="text-sm font-semibold text-text-primary">Navegação</span>
           <Button
@@ -515,15 +635,20 @@ function MobileSidebar({ open, onClose, children }: MobileSidebarProps) {
             size="icon"
             className="rounded-full border border-border-subtle/60"
             onClick={onClose}
+            aria-label="Fechar menu"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
-        {children}
+        <div onClick={onClose}>
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+});
+
+MobileSidebar.displayName = "MobileSidebar";
 
 export function DashboardShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -535,19 +660,28 @@ export function DashboardShell() {
     refetchOnWindowFocus: false,
   });
 
-  const profile = profileData ?? placeholderProfileSummary;
+  const profile = useMemo(
+    () => profileData ?? placeholderProfileSummary,
+    [profileData]
+  );
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary">
       <DashboardHeader onToggleSidebar={() => setSidebarOpen(true)} />
-      <div className="px-3 pb-12 pt-40 sm:px-6 lg:px-10">
-        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-8 lg:grid lg:grid-cols-[260px,1fr] lg:gap-10">
+      
+      {/* Main content with optimized spacing */}
+      <div className={cn(
+        "px-3 pb-12 transition-all duration-300 sm:px-6 lg:px-10",
+        "pt-28 sm:pt-32 lg:pt-36"
+      )}>
+        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6 lg:grid lg:grid-cols-[260px,1fr] lg:gap-8 xl:gap-10">
           <aside className="hidden lg:block">
             <DashboardSidebar />
           </aside>
           <DashboardMain profile={profile} profileLoading={profileLoading} />
         </div>
       </div>
+      
       <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
         <DashboardSidebar onNavigate={() => setSidebarOpen(false)} className="shadow-none" />
       </MobileSidebar>

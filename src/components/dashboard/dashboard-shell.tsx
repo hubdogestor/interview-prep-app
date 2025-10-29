@@ -673,9 +673,10 @@ export function DashboardShell() {
       {/* Main content with optimized spacing */}
       <div className={cn(
         "px-3 pb-12 transition-all duration-300 sm:px-6 lg:px-10",
-        "pt-28 sm:pt-32 lg:pt-36"
+        // Aumentado o espaçamento do header para dar mais respiro visual
+        "pt-32 sm:pt-36 lg:pt-40"
       )}>
-        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6 lg:grid lg:grid-cols-[260px,1fr] lg:gap-8 xl:gap-10">
+        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-8 lg:grid lg:grid-cols-[260px,1fr] lg:gap-10 xl:gap-12">
           <aside className="hidden lg:block">
             <DashboardSidebar />
           </aside>

@@ -239,6 +239,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               variant="outline" 
               className={cn(
                 "text-[8px] px-1.5 py-0.5 text-center border shadow-sm min-w-[70px] bg-transparent",
+                "whitespace-nowrap", // Impede quebra de linha e centraliza melhor
                 getNeonColor(currentTimer.color)
               )}
             >
@@ -252,10 +253,11 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               size="sm" 
               onClick={countdown.toggle}
               className={cn(
-                "h-5 px-1.5 text-[8px] text-center bg-transparent hover:bg-transparent",
+                "h-5 px-1.5 text-[8px] text-center",
+                "bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50",
                 status === "running" 
-                  ? "text-emerald-400 hover:text-emerald-400/80" 
-                  : "hover:bg-transparent"
+                  ? "text-emerald-400 border-emerald-400/50" 
+                  : "hover:border-brand-green/60"
               )}
             >
               {status === "running" ? "Pausar" : "Iniciar"}
@@ -268,7 +270,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 countdown.reset();
                 setSelectedTime(0); // Garantir que volte para Pitch como padrão
               }}
-              className="h-5 px-1.5 text-[8px] text-center bg-transparent hover:bg-transparent"
+              className="h-5 px-1.5 text-[8px] text-center bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50 hover:border-brand-green/60"
             >
               Reset
             </Button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { trpc } from '@/lib/trpc/client';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function TestPage() {
@@ -107,12 +108,12 @@ export default function TestPage() {
 
           {/* Atalho para voltar */}
           <div className="mt-6">
-            
+            <Link
               href="/"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium"
             >
-              &larr; Voltar para Home
-            </a>
+              Voltar para Home
+            </Link>
           </div>
         </div>
       </div>

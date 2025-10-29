@@ -8,8 +8,11 @@ import { useCountdown } from "./hooks";
 
 const TIMER_OPTIONS = [
   { label: "Pitch", seconds: 5 * 60, color: "bg-brand-green" },
-  { label: "Pomodoro", seconds: 25 * 60, color: "bg-brand-blue" },
-  { label: "Foco longo", seconds: 50 * 60, color: "bg-brand-purple" },
+  { label: "STAR case", seconds: 8 * 60, color: "bg-brand-blue" },
+  { label: "Pomodoro", seconds: 15 * 60, color: "bg-brand-purple" },
+  { label: "Full speech", seconds: 20 * 60, color: "bg-brand-orange" },
+  { label: "Rest 30", seconds: 30 * 60, color: "bg-brand-yellow" },
+  { label: "Rest 60", seconds: 60 * 60, color: "bg-brand-gray" },
 ] as const;
 
 function formatSeconds(totalSeconds: number): string {
@@ -130,7 +133,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
 
           {/* Timer Options Dropdown */}
           {showOptions && (
-            <div className="absolute top-full left-0 mt-1 z-50 min-w-[120px] rounded-xl border border-border-subtle/60 bg-bg-secondary/95 p-2 shadow-xl backdrop-blur">
+            <div className="absolute top-full left-0 mt-1 z-50 min-w-[140px] rounded-xl border border-border-subtle/60 bg-bg-secondary/95 p-2 shadow-xl backdrop-blur">
               {TIMER_OPTIONS.map((option, index) => (
                 <Button
                   key={option.seconds}

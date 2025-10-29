@@ -12,7 +12,7 @@ const TIMER_OPTIONS = [
   { label: "Pomodoro", seconds: 15 * 60, color: "bg-brand-purple" },
   { label: "Full speech", seconds: 20 * 60, color: "bg-brand-orange" },
   { label: "Rest 30", seconds: 30 * 60, color: "bg-brand-yellow" },
-  { label: "Rest 60", seconds: 60 * 60, color: "bg-brand-gray" },
+  { label: "Rest 60", seconds: 60 * 60, color: "bg-gray-500" },
 ] as const;
 
 function formatSeconds(totalSeconds: number): string {
@@ -91,8 +91,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
     
     setSelectedTime(index);
     setShowOptions(false);
-    // Não precisa chamar countdown.reset() aqui, pois o useCountdown será reiniciado automaticamente
-    // quando selectedTime mudar, devido ao currentTimerOption.seconds na dependência
+    // O timer será reiniciado automaticamente devido ao useCountdown dependente de currentTimerOption.seconds
   };
 
   const getTimerStatus = () => {
@@ -140,15 +139,23 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                   variant={index === selectedTime ? "secondary" : "ghost"}
                   size="sm"
                   className={cn(
-                    "w-full justify-start text-xs",
-                    index === selectedTime && "bg-brand-green/10 text-brand-green"
+                    "w-full justify-start text-xs h-8",
+                    index === selectedTime && "bg-brand-green/10 text-brand-green border border-brand-green/20"
                   )}
                   onClick={() => handleTimerSelect(index)}
                 >
-                  <div className="flex items-center gap-2">
-                    <div className={cn("h-2 w-2 rounded-full", option.color)} />
-                    {option.label}
-                    <span className="ml-auto text-text-muted">
+                  <div className="flex items-center gap-3 w-full">
+                    {/* Bolinha colorida sempre visível */}
+                    <div className={cn(
+                      "h-3 w-3 rounded-full flex-shrink-0",
+                      option.color
+                    )} />
+                    
+                    {/* Label da opção */}
+                    <span className="flex-1 text-left">{option.label}</span>
+                    
+                    {/* Duração da opção */}
+                    <span className="text-text-muted text-xs ml-auto">
                       {Math.floor(option.seconds / 60)}min
                     </span>
                   </div>

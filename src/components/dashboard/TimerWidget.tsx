@@ -140,7 +140,12 @@ export function TimerWidget({ className }: TimerWidgetProps) {
       <div 
         className={cn(
           "flex items-center gap-3 rounded-2xl border border-border-subtle bg-bg-tertiary/60 p-3 transition-all duration-300",
-          status === "running" && "border-emerald-400/60 bg-emerald-400/5",
+          // Melhor feedback visual quando está rodando
+          status === "running" && [
+            "border-emerald-400/60 bg-emerald-400/5",
+            "shadow-lg shadow-emerald-400/10", 
+            "animate-pulse-subtle"
+          ],
           status === "finished" && "border-yellow-400/60 bg-yellow-400/5",
           showOptions && "rounded-b-none"
         )}
@@ -158,7 +163,10 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             title="Opções de tempo"
             aria-label="Opções de tempo"
           >
-            <span className="text-xl leading-none">{currentTimer.icon}</span>
+            <span className={cn(
+              "text-xl leading-none transition-all duration-300",
+              status === "running" && "animate-bounce-subtle"
+            )}>{currentTimer.icon}</span>
           </Button>
 
           {/* Timer Options Dropdown */}
@@ -219,14 +227,38 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               strokeDasharray={100}
               strokeDashoffset={100 - Math.floor(progress * 100)}
               style={{
-                filter: status === "running" ? `drop-shadow(0 0 6px ${getProgressNeonColor(currentTimer.color)}80)` : undefined,
-                opacity: progress > 0 ? 1 : 0.7
+                filter: status === "running" 
+                  ? `drop-shadow(0 0 8px ${getProgressNeonColor(currentTimer.color)}80)` 
+                  : undefined,
+                opacity: progress > 0 ? 1 : 0.7,
+                transition: "all 0.3s ease-in-out"
               }}
             />
+            
+            {/* Glow effect quando está rodando */}
+            {status === "running" && (
+              <circle
+                cx="18"
+                cy="18"
+                r="16"
+                fill="none"
+                stroke={getProgressNeonColor(currentTimer.color)}
+                strokeWidth="1"
+                opacity={0.3}
+                style={{
+                  filter: `blur(1px)`,
+                  animation: "pulse-glow 2s ease-in-out infinite alternate"
+                }}
+              />
+            )}
           </svg>
           
           {/* Time display */}
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-text-primary">
+          <span className={cn(
+            "absolute inset-0 flex items-center justify-center text-xs font-semibold transition-colors duration-300",
+            status === "running" ? "text-emerald-400" : "text-text-primary",
+            status === "finished" && "text-yellow-400"
+          )}>
             {formatSeconds(countdown.seconds)}
           </span>
         </div>
@@ -253,11 +285,11 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               size="sm" 
               onClick={countdown.toggle}
               className={cn(
-                "h-5 px-1.5 text-[8px] text-center",
+                "h-5 px-1.5 text-[8px] text-center transition-all duration-200",
                 "bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50",
                 status === "running" 
-                  ? "text-emerald-400 border-emerald-400/50" 
-                  : "text-text-primary hover:border-brand-green/60" // Cor clara quando parado
+                  ? "text-emerald-400 border-emerald-400/50 hover:bg-emerald-400/10" 
+                  : "text-text-primary hover:border-brand-green/60"
               )}
             >
               {status === "running" ? "Pausar" : "Iniciar"}
@@ -279,15 +311,21 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           {/* Status "ativo" abaixo dos botões, na esquerda */}
           {status === "running" && (
             <div className="flex items-center justify-center gap-1">
-              <div className="h-1 w-1 rounded-full bg-emerald-400" />
-              <span className="text-[8px] text-emerald-400">ativo</span>
+              <div className={cn(
+                "h-1 w-1 rounded-full animate-pulse",
+                "bg-emerald-400 shadow-sm shadow-emerald-400/50"
+              )} />
+              <span className="text-[8px] text-emerald-400 font-medium">ativo</span>
             </div>
           )}
           
           {status === "finished" && (
             <div className="flex items-center justify-center gap-1">
-              <div className="h-1 w-1 rounded-full bg-yellow-400" />
-              <span className="text-[8px] text-yellow-400">pronto!</span>
+              <div className={cn(
+                "h-1 w-1 rounded-full animate-pulse",
+                "bg-yellow-400 shadow-sm shadow-yellow-400/50"
+              )} />
+              <span className="text-[8px] text-yellow-400 font-medium">pronto!</span>
             </div>
           )}
         </div>
@@ -300,25 +338,31 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             variant="ghost"
             size="sm"
             className={cn(
-              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent",
-              notifications ? "text-blue-400" : "text-text-muted"
+              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent transition-all duration-200",
+              notifications ? "text-blue-400" : "text-text-muted hover:text-blue-400"
             )}
             onClick={requestNotificationPermission}
             title="Notificações"
           >
-            🔔
+            <span className={cn(
+              "transition-transform duration-200",
+              notifications && "scale-110"
+            )}>🔔</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
             className={cn(
-              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent",
-              soundEnabled ? "text-emerald-400" : "text-text-muted"
+              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent transition-all duration-200",
+              soundEnabled ? "text-emerald-400" : "text-text-muted hover:text-emerald-400"
             )}
             onClick={() => setSoundEnabled(!soundEnabled)}
             title="Som"
           >
-            🔊
+            <span className={cn(
+              "transition-transform duration-200",
+              soundEnabled && "scale-110"
+            )}>🔊</span>
           </Button>
         </div>
         

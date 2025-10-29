@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 import { useCountdown } from "./hooks";
 
 const TIMER_OPTIONS = [
-  { label: "Pomodoro", seconds: 25 * 60, color: "bg-brand-green" },
-  { label: "Foco longo", seconds: 50 * 60, color: "bg-brand-blue" },
-  { label: "Pausa", seconds: 15 * 60, color: "bg-brand-yellow" },
+  { label: "Pitch", seconds: 5 * 60, color: "bg-brand-green" },
+  { label: "Pomodoro", seconds: 25 * 60, color: "bg-brand-blue" },
+  { label: "Foco longo", seconds: 50 * 60, color: "bg-brand-purple" },
 ] as const;
 
 function formatSeconds(totalSeconds: number): string {
@@ -246,7 +246,11 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={countdown.reset}
+              onClick={() => {
+                // Reset para o Pitch (5 min) como padrão
+                countdown.reset();
+                setSelectedTime(0); // Garantir que volte para Pitch como padrão
+              }}
               className="h-6 px-2 text-[10px] hover:bg-border-subtle"
             >
               Reset

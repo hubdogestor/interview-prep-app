@@ -35,14 +35,21 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   
-  // Usar o timer selecionado como base
+  // Usar o timer selecionado como base - RESET quando selectedTime muda
   const currentTimerOption = TIMER_OPTIONS[selectedTime];
+  
+  // key força recriar o hook quando selectedTime muda
   const countdown = useCountdown(currentTimerOption.seconds);
   
   const progress = useMemo(() => 
     1 - countdown.seconds / currentTimerOption.seconds, 
     [countdown.seconds, currentTimerOption.seconds]
   );
+
+  // Reset countdown quando a opção selecionada muda
+  useEffect(() => {
+    countdown.reset();
+  }, [selectedTime]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Notificação quando o timer acaba
   useEffect(() => {
@@ -91,13 +98,6 @@ export function TimerWidget({ className }: TimerWidgetProps) {
     
     setSelectedTime(index);
     setShowOptions(false);
-    
-    // Forçar o reset do countdown quando mudar de opção
-    // Isso garante que o contador volte para o tempo correto da opção selecionada
-    setTimeout(() => {
-      // Recriar o useCountdown chamando reset
-      countdown.reset();
-    }, 100);
   };
 
   const getTimerStatus = () => {
@@ -190,7 +190,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             {/* Background circle */}
             <path
               className="text-border-subtle"
-              strokeWidth="3"
+              strokeWidth="5"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -198,7 +198,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               opacity={0.35}
             />
             
-            {/* Progress circle */}
+            {/* Progress circle - borda mais grossa */}
             <path
               className={cn(
                 "transition-colors duration-300",
@@ -206,7 +206,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 status === "paused" && "text-blue-400", 
                 status === "finished" && "text-yellow-400"
               )}
-              strokeWidth="3"
+              strokeWidth="5"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -235,11 +235,12 @@ export function TimerWidget({ className }: TimerWidgetProps) {
 
         {/* Timer Info */}
         <div className="flex flex-col gap-2 text-xs text-text-secondary">
-          <div className="flex items-center justify-center">
+          {/* Título menor e da largura dos botões */}
+          <div className="flex items-center justify-center w-24">
             <Badge 
               variant="outline" 
               className={cn(
-                "text-[10px] px-2 py-1 text-center border-2 shadow-lg",
+                "text-[8px] px-1.5 py-0.5 text-center border-1 shadow-lg min-w-[70px]",
                 currentTimer.color.replace("bg-", "border-").replace("-400", "").replace("-500", ""),
                 "shadow-current/30",
                 getNeonColor(currentTimer.color)
@@ -252,14 +253,14 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           {status === "running" && (
             <div className="flex items-center justify-center gap-1">
               <div className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] text-emerald-400">ativo</span>
+              <span className="text-[8px] text-emerald-400">ativo</span>
             </div>
           )}
           
           {status === "finished" && (
             <div className="flex items-center justify-center gap-1">
               <div className="h-1 w-1 rounded-full bg-yellow-400 animate-pulse" />
-              <span className="text-[10px] text-yellow-400">pronto!</span>
+              <span className="text-[8px] text-yellow-400">pronto!</span>
             </div>
           )}
           
@@ -268,7 +269,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               size="sm" 
               onClick={countdown.toggle}
               className={cn(
-                "h-6 px-2 text-[10px]",
+                "h-5 px-1.5 text-[8px]",
                 status === "running" 
                   ? "bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30" 
                   : "hover:bg-border-subtle"
@@ -284,7 +285,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 countdown.reset();
                 setSelectedTime(0); // Garantir que volte para Pitch como padrão
               }}
-              className="h-6 px-2 text-[10px] hover:bg-border-subtle"
+              className="h-5 px-1.5 text-[8px] hover:bg-border-subtle"
             >
               Reset
             </Button>

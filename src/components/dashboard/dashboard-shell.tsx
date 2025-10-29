@@ -80,7 +80,7 @@ const DashboardSidebar = React.memo<DashboardSidebarProps>(({ className, onNavig
             href={`/${item.key}`}
             onClick={handleNavClick}
             className={cn(
-              "sidebar-link group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-200 hover:bg-brand-green/10",
+              "sidebar-link group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-200 hover:bg-brand-green/10 focus:ring-2 focus:ring-brand-green/40 focus:outline-none",
               item.active && "bg-brand-green/20 text-brand-green shadow-sm"
             )}
           >
@@ -112,7 +112,7 @@ const DashboardSidebar = React.memo<DashboardSidebarProps>(({ className, onNavig
               key={item.key}
               variant="ghost"
               size="sm"
-              className="w-full justify-start hover:bg-brand-green/10"
+              className="w-full justify-start hover:bg-brand-green/10 focus:ring-2 focus:ring-brand-green/40 focus:outline-none"
               onClick={onNavigate}
             >
               {item.label}
@@ -372,11 +372,12 @@ const AnalyticsGrid = React.memo(() => {
 
 AnalyticsGrid.displayName = "AnalyticsGrid";
 
-// Responsive header with better height optimization
+// Header otimizado com altura reduzida
 const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -387,34 +388,52 @@ const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) =
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fechar menu mobile ao redimensionar para desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       <header className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-all duration-300 px-3 sm:px-6 lg:px-10",
-        isScrolled ? "py-2" : "py-4"
+        "fixed inset-x-0 top-0 z-40 transition-all duration-300 px-3 sm:px-4 lg:px-6 xl:px-8",
+        // Altura otimizada e mais compacta
+        isScrolled ? "py-2" : "py-3 sm:py-4"
       )}>
         <div className={cn(
-          "w-full rounded-3xl border border-border-subtle/40 bg-bg-secondary/95 px-4 shadow-lg shadow-black/20 backdrop-blur transition-all duration-300 sm:px-6 lg:px-8",
-          isScrolled ? "py-3" : "py-4"
+          "w-full rounded-2xl sm:rounded-3xl border border-border-subtle/40 bg-bg-secondary/95 px-3 sm:px-4 shadow-lg shadow-black/20 backdrop-blur transition-all duration-300",
+          isScrolled ? "py-2.5" : "py-3 sm:py-4"
         )}>
-          <div className="flex flex-wrap items-center gap-3 sm:flex-nowrap">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:flex-nowrap">
+            {/* Logo e menu button */}
+            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full border border-border-subtle/60 lg:hidden"
-                onClick={onToggleSidebar}
-                aria-label="Abrir menu"
+                className="rounded-full border border-border-subtle/60 lg:hidden focus:ring-2 focus:ring-brand-green/40"
+                onClick={() => setIsMobileMenuOpen(true)}
+                aria-label="Abrir menu de navegação"
+                aria-expanded={isMobileMenuOpen}
+                aria-haspopup="true"
               >
-                <Menu className="h-5 w-5" />
+                <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
+              
               <Image
                 src="/favicon-32x32.png"
                 alt="Interview Prep logo"
-                width={36}
-                height={36}
+                width={32}
+                height={32}
                 className="hidden rounded-lg ring-2 ring-brand-green/40 sm:block"
               />
+              
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium uppercase tracking-[0.18em] text-brand-green">Interview Prep</span>
@@ -425,43 +444,51 @@ const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) =
                     Dashboard
                   </Badge>
                 </div>
-                <p className="truncate text-sm text-text-secondary">Plano de estudo para entrevistas com IA</p>
+                <p className="truncate text-xs sm:text-sm text-text-secondary">Plano de estudo para entrevistas com IA</p>
               </div>
             </div>
             
-            {/* Enhanced search */}
-            <div className="hidden w-full flex-1 md:block">
+            {/* Search - responsivo */}
+            <div className="hidden w-full flex-1 md:block lg:w-auto">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                 <Input
-                  placeholder="Buscar sessoes, perguntas ou feedbacks..."
+                  placeholder="Buscar sessões, perguntas ou feedbacks..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60 pl-10"
+                  className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60 pl-10 text-sm focus:ring-2 focus:ring-brand-green/40"
                 />
               </div>
             </div>
             
+            {/* Actions - responsivo */}
             <div className="flex items-center gap-2 lg:gap-3">
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div>
-                      <TimerWidget className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/60 px-3 transition hover:border-brand-green/60" />
+                    <div className="hidden sm:block">
+                      <TimerWidget className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/60 px-2 transition hover:border-brand-green/60" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>Contagem regressiva de foco (25 minutos)</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+              
               <LanguageToggle />
+              
+              {/* Desktop dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="sm" className="hidden rounded-full lg:flex">
-                    Ações rapidas
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="hidden rounded-full lg:flex focus:ring-2 focus:ring-brand-green/40"
+                  >
+                    Ações rápidas
                     <ChevronDown className="ml-1 h-3 w-3" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuLabel>Atalhos</DropdownMenuLabel>
                   <DropdownMenuItem>Iniciar modo prática</DropdownMenuItem>
                   <DropdownMenuItem>Carregar último feedback</DropdownMenuItem>
@@ -469,27 +496,78 @@ const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) =
                   <DropdownMenuItem>Exportar progresso</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="secondary" size="sm" className="hidden md:flex" onClick={() => setDialogOpen(true)}>
+              
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="hidden sm:flex focus:ring-2 focus:ring-brand-green/40" 
+                onClick={() => setDialogOpen(true)}
+              >
                 Nova tarefa
               </Button>
+
+              {/* Timer para mobile */}
+              <div className="block sm:hidden">
+                <TimerWidget className="border-0 bg-transparent p-0" />
+              </div>
             </div>
           </div>
+          
+          {/* Mobile search */}
           <div className="mt-3 block md:hidden">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <Input
-                placeholder="Buscar sessoes, perguntas ou feedbacks..."
+                placeholder="Buscar sessões, perguntas ou feedbacks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60 pl-10"
+                className="w-full rounded-2xl border-border-subtle/50 bg-bg-tertiary/60 pl-10 text-sm focus:ring-2 focus:ring-brand-green/40"
               />
             </div>
           </div>
         </div>
       </header>
       
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        >
+          <div 
+            className="fixed inset-y-0 left-0 z-50 w-80 max-w-[85%] overflow-y-auto border-r border-border-subtle bg-bg-secondary/95 p-6 shadow-2xl shadow-black/40"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/favicon-32x32.png"
+                  alt="Interview Prep logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg ring-2 ring-brand-green/40"
+                />
+                <span className="text-sm font-semibold text-text-primary">Menu</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full border border-border-subtle/60 focus:ring-2 focus:ring-brand-green/40"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Fechar menu"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <DashboardSidebar onNavigate={() => setIsMobileMenuOpen(false)} />
+          </div>
+        </div>
+      )}
+      
+      {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Criar tarefa rápida</DialogTitle>
             <DialogDescription>
@@ -563,7 +641,7 @@ const DashboardFooter = React.memo(() => {
             {actions.map((action) => (
               <div
                 key={action.label}
-                className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/50 p-4 shadow-sm shadow-black/10 transition-all duration-200 hover:shadow-md hover:border-brand-green/40"
+                className="rounded-2xl border border-border-subtle/60 bg-bg-tertiary/50 p-4 shadow-sm shadow-black/10 transition-all duration-200 hover:shadow-md hover:border-brand-green/40 focus-within:ring-2 focus-within:ring-brand-green/40"
               >
                 <p className="font-sans text-sm text-text-primary">{action.label}</p>
                 <p className="mt-1 text-xs text-text-muted">{action.description}</p>
@@ -577,12 +655,12 @@ const DashboardFooter = React.memo(() => {
             anotando aprendizados rápidos ao final de cada dia.
           </span>
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="focus:ring-2 focus:ring-brand-green/40">
               <Link href="https://github.com/seu-github-username/interview-prep-app/blob/main/todo29-10.md" target="_blank">
                 Abrir TODO
               </Link>
             </Button>
-            <Button variant="secondary" size="sm" asChild>
+            <Button variant="secondary" size="sm" asChild className="focus:ring-2 focus:ring-brand-green/40">
               <a href="mailto:leonardo@example.com">Enviar atualização</a>
             </Button>
           </div>
@@ -601,7 +679,7 @@ type DashboardMainProps = {
 
 const DashboardMain = React.memo<DashboardMainProps>(({ profile, profileLoading }) => {
   return (
-    <main className="flex flex-col gap-6">
+    <main className="flex flex-col gap-6 lg:gap-8">
       <ProfileCard profile={profile} isLoading={profileLoading} />
       <StatOverview />
       <AnalyticsGrid />
@@ -634,7 +712,7 @@ const MobileSidebar = React.memo<MobileSidebarProps>(({ open, onClose, children 
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full border border-border-subtle/60"
+            className="rounded-full border border-border-subtle/60 focus:ring-2 focus:ring-brand-green/40"
             onClick={onClose}
             aria-label="Fechar menu"
           >
@@ -670,13 +748,13 @@ export function DashboardShell() {
     <div className="min-h-screen bg-bg-primary text-text-primary">
       <DashboardHeader onToggleSidebar={() => setSidebarOpen(true)} />
       
-      {/* Main content with optimized spacing */}
+      {/* Main content com espaçamento otimizado */}
       <div className={cn(
-        "px-3 pb-12 transition-all duration-300 sm:px-6 lg:px-10",
-        // Aumentado o espaçamento do header para dar mais respiro visual
-        "pt-32 sm:pt-36 lg:pt-40"
+        "px-3 pb-12 transition-all duration-300 sm:px-4 lg:px-6 xl:px-8",
+        // Espaçamento mais compacto mas ainda com respiro
+        "pt-24 sm:pt-28 lg:pt-32 xl:pt-36"
       )}>
-        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-8 lg:grid lg:grid-cols-[260px,1fr] lg:gap-10 xl:gap-12">
+        <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6 lg:grid lg:grid-cols-[260px,1fr] lg:gap-8 xl:gap-10">
           <aside className="hidden lg:block">
             <DashboardSidebar />
           </aside>

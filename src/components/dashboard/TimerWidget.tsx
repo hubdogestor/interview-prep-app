@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useCountdown } from "./hooks";
+import "./timer-animations.css";
 
 const TIMER_OPTIONS = [
   { label: "Pitch", seconds: 5 * 60, color: "bg-emerald-400", icon: "🎯" },

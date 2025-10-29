@@ -233,13 +233,13 @@ export function TimerWidget({ className }: TimerWidgetProps) {
 
         {/* Timer Info */}
         <div className="flex flex-col gap-2 text-xs text-text-secondary">
-          {/* Título centralizado, sem negrito, fundo mais discreto */}
-          <div className="flex items-center justify-center w-24">
+          {/* Título centralizado corretamente */}
+          <div className="flex items-center justify-center w-full">
             <Badge 
               variant="outline" 
               className={cn(
-                "text-[8px] px-1.5 py-0.5 text-center border shadow-sm min-w-[70px] bg-transparent",
-                "whitespace-nowrap", // Impede quebra de linha e centraliza melhor
+                "text-[8px] px-2 py-0.5 text-center border shadow-sm bg-transparent",
+                "whitespace-nowrap min-w-max", // Garante centralização adequada
                 getNeonColor(currentTimer.color)
               )}
             >
@@ -247,7 +247,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             </Badge>
           </div>
           
-          {/* Botões centralizados */}
+          {/* Botões centralizados com cor do texto corrigida */}
           <div className="flex gap-1 justify-center">
             <Button 
               size="sm" 
@@ -257,7 +257,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 "bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50",
                 status === "running" 
                   ? "text-emerald-400 border-emerald-400/50" 
-                  : "hover:border-brand-green/60"
+                  : "text-text-primary hover:border-brand-green/60" // Cor clara quando parado
               )}
             >
               {status === "running" ? "Pausar" : "Iniciar"}

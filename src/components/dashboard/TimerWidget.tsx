@@ -247,13 +247,13 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             </Badge>
           </div>
           
-          {/* Botões */}
-          <div className="flex gap-1">
+          {/* Botões centralizados */}
+          <div className="flex gap-1 justify-center">
             <Button 
               size="sm" 
               onClick={countdown.toggle}
               className={cn(
-                "h-5 px-1.5 text-[8px]",
+                "h-5 px-1.5 text-[8px] text-center",
                 status === "running" 
                   ? "bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30" 
                   : "hover:bg-border-subtle"
@@ -269,7 +269,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 countdown.reset();
                 setSelectedTime(0); // Garantir que volte para Pitch como padrão
               }}
-              className="h-5 px-1.5 text-[8px] hover:bg-border-subtle"
+              className="h-5 px-1.5 text-[8px] text-center hover:bg-border-subtle"
             >
               Reset
             </Button>
@@ -277,14 +277,14 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           
           {/* Status "ativo" abaixo dos botões, na esquerda */}
           {status === "running" && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 justify-center">
               <div className="h-1 w-1 rounded-full bg-emerald-400" />
               <span className="text-[8px] text-emerald-400">ativo</span>
             </div>
           )}
           
           {status === "finished" && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 justify-center">
               <div className="h-1 w-1 rounded-full bg-yellow-400" />
               <span className="text-[8px] text-yellow-400">pronto!</span>
             </div>

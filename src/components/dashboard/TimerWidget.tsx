@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
 import { useCountdown } from "./hooks";
 
 const TIMER_OPTIONS = [
-  { label: "Pitch", seconds: 5 * 60, color: "bg-emerald-400" },
-  { label: "STAR case", seconds: 8 * 60, color: "bg-blue-400" },
-  { label: "Pomodoro", seconds: 15 * 60, color: "bg-red-500" },
-  { label: "Full speech", seconds: 20 * 60, color: "bg-orange-400" },
-  { label: "Rest 30", seconds: 30 * 60, color: "bg-yellow-400" },
-  { label: "Rest 60", seconds: 60 * 60, color: "bg-gray-400" },
+  { label: "Pitch", seconds: 5 * 60, color: "bg-emerald-400", icon: "🎯" },
+  { label: "STAR case", seconds: 8 * 60, color: "bg-blue-400", icon: "⭐" },
+  { label: "Pomodoro", seconds: 15 * 60, color: "bg-red-500", icon: "🍅" },
+  { label: "Full speech", seconds: 20 * 60, color: "bg-orange-400", icon: "🎤" },
+  { label: "Rest 30", seconds: 30 * 60, color: "bg-yellow-400", icon: "☕" },
+  { label: "Rest 60", seconds: 60 * 60, color: "bg-gray-400", icon: "🛌" },
 ] as const;
 
 function formatSeconds(totalSeconds: number): string {
@@ -109,16 +109,29 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   const status = getTimerStatus();
   const currentTimer = currentTimerOption;
 
+  // Extrair cor neon da opção atual para usar no progresso
+  const getProgressNeonColor = (colorClass: string) => {
+    switch (colorClass) {
+      case "bg-emerald-400": return "#10b981";
+      case "bg-blue-400": return "#3b82f6";
+      case "bg-red-500": return "#ef4444";
+      case "bg-orange-400": return "#fb923c";
+      case "bg-yellow-400": return "#facc15";
+      case "bg-gray-400": return "#9ca3af";
+      default: return "#10b981";
+    }
+  };
+
   // Extrair cor neon da opção atual para usar na badge
   const getNeonColor = (colorClass: string) => {
     switch (colorClass) {
-      case "bg-emerald-400": return "border-emerald-400 shadow-emerald-400/50";
-      case "bg-blue-400": return "border-blue-400 shadow-blue-400/50";
-      case "bg-red-500": return "border-red-400 shadow-red-400/50";
-      case "bg-orange-400": return "border-orange-400 shadow-orange-400/50";
-      case "bg-yellow-400": return "border-yellow-400 shadow-yellow-400/50";
-      case "bg-gray-400": return "border-gray-400 shadow-gray-400/50";
-      default: return "border-brand-green shadow-brand-green/50";
+      case "bg-emerald-400": return "border-emerald-400/30 shadow-emerald-400/20";
+      case "bg-blue-400": return "border-blue-400/30 shadow-blue-400/20";
+      case "bg-red-500": return "border-red-400/30 shadow-red-400/20";
+      case "bg-orange-400": return "border-orange-400/30 shadow-orange-400/20";
+      case "bg-yellow-400": return "border-yellow-400/30 shadow-yellow-400/20";
+      case "bg-gray-400": return "border-gray-400/30 shadow-gray-400/20";
+      default: return "border-brand-green/30 shadow-brand-green/20";
     }
   };
 
@@ -146,12 +159,12 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             title="Opções de tempo"
             aria-label="Opções de tempo"
           >
-            {currentTimer.label.charAt(0)}
+            {currentTimer.icon}
           </Button>
 
           {/* Timer Options Dropdown */}
           {showOptions && (
-            <div className="absolute top-full left-0 mt-1 z-50 min-w-[140px] rounded-xl border border-border-subtle/60 bg-bg-secondary/95 p-2 shadow-xl backdrop-blur">
+            <div className="absolute top-full left-0 mt-1 z-50 min-w-[160px] rounded-xl border border-border-subtle/60 bg-bg-secondary/95 p-2 shadow-xl backdrop-blur">
               {TIMER_OPTIONS.map((option, index) => (
                 <Button
                   key={option.seconds}
@@ -164,11 +177,10 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                   onClick={() => handleTimerSelect(index)}
                 >
                   <div className="flex items-center gap-3 w-full">
-                    {/* Bolinha colorida sempre visível */}
-                    <div className={cn(
-                      "h-3 w-3 rounded-full flex-shrink-0",
-                      option.color
-                    )} />
+                    {/* Ícone maior e mais legível */}
+                    <div className="flex h-6 w-6 items-center justify-center text-sm">
+                      {option.icon}
+                    </div>
                     
                     {/* Label da opção */}
                     <span className="flex-1 text-left">{option.label}</span>
@@ -198,23 +210,18 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               opacity={0.35}
             />
             
-            {/* Progress circle - borda mais grossa */}
+            {/* Progress circle - cor neon dinâmica baseada na opção selecionada */}
             <path
-              className={cn(
-                "transition-colors duration-300",
-                status === "running" && "text-emerald-400",
-                status === "paused" && "text-blue-400", 
-                status === "finished" && "text-yellow-400"
-              )}
+              stroke={getProgressNeonColor(currentTimer.color)}
               strokeWidth="5"
               fill="none"
-              stroke="currentColor"
               strokeLinecap="round"
               d="M18 2a16 16 0 1 1 0 32 16 16 0 0 1 0-32z"
               strokeDasharray={100}
               strokeDashoffset={100 - Math.floor(progress * 100)}
               style={{
-                filter: status === "running" ? "drop-shadow(0 0 4px currentColor)" : undefined
+                filter: status === "running" ? `drop-shadow(0 0 6px ${getProgressNeonColor(currentTimer.color)}80)` : undefined,
+                opacity: progress > 0 ? 1 : 0.7
               }}
             />
           </svg>
@@ -223,26 +230,16 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-text-primary">
             {formatSeconds(countdown.seconds)}
           </span>
-
-          {/* Running indicator */}
-          {status === "running" && (
-            <div className="absolute -top-1 -right-1 h-3 w-3">
-              <div className="h-full w-full animate-pulse rounded-full bg-emerald-400" />
-              <div className="absolute inset-0 h-full w-full rounded-full bg-emerald-400/60 animate-ping" />
-            </div>
-          )}
         </div>
 
         {/* Timer Info */}
         <div className="flex flex-col gap-2 text-xs text-text-secondary">
-          {/* Título menor e da largura dos botões */}
+          {/* Título centralizado, sem negrito, fundo mais discreto */}
           <div className="flex items-center justify-center w-24">
             <Badge 
               variant="outline" 
               className={cn(
-                "text-[8px] px-1.5 py-0.5 text-center border-1 shadow-lg min-w-[70px]",
-                currentTimer.color.replace("bg-", "border-").replace("-400", "").replace("-500", ""),
-                "shadow-current/30",
+                "text-[8px] px-1.5 py-0.5 text-center border shadow-sm min-w-[70px] bg-transparent",
                 getNeonColor(currentTimer.color)
               )}
             >
@@ -250,20 +247,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             </Badge>
           </div>
           
-          {status === "running" && (
-            <div className="flex items-center justify-center gap-1">
-              <div className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[8px] text-emerald-400">ativo</span>
-            </div>
-          )}
-          
-          {status === "finished" && (
-            <div className="flex items-center justify-center gap-1">
-              <div className="h-1 w-1 rounded-full bg-yellow-400 animate-pulse" />
-              <span className="text-[8px] text-yellow-400">pronto!</span>
-            </div>
-          )}
-          
+          {/* Botões */}
           <div className="flex gap-1">
             <Button 
               size="sm" 
@@ -290,6 +274,21 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               Reset
             </Button>
           </div>
+          
+          {/* Status "ativo" abaixo dos botões, na esquerda */}
+          {status === "running" && (
+            <div className="flex items-center gap-1">
+              <div className="h-1 w-1 rounded-full bg-emerald-400" />
+              <span className="text-[8px] text-emerald-400">ativo</span>
+            </div>
+          )}
+          
+          {status === "finished" && (
+            <div className="flex items-center gap-1">
+              <div className="h-1 w-1 rounded-full bg-yellow-400" />
+              <span className="text-[8px] text-yellow-400">pronto!</span>
+            </div>
+          )}
         </div>
       </div>
 

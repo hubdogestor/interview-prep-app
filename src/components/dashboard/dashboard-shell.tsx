@@ -64,7 +64,7 @@ function useCountdown(initialSeconds: number = TIMER_DEFAULT_SECONDS): Countdown
       return;
     }
 
-    const id = window.setInterval(() => {
+    const intervalId = window.setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
           setRunning(false);
@@ -74,7 +74,7 @@ function useCountdown(initialSeconds: number = TIMER_DEFAULT_SECONDS): Countdown
       });
     }, 1000);
 
-    return () => window.clearInterval(id);
+    return () => window.clearInterval(intervalId);
   }, [running]);
 
   const toggle = () => setRunning((prev) => !prev);

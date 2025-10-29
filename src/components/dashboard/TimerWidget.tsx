@@ -49,6 +49,16 @@ export function TimerWidget({ className }: TimerWidgetProps) {
     [countdown.seconds, currentTimerOption.seconds]
   );
 
+  // Determinar o status do timer
+  const getTimerStatus = () => {
+    if (countdown.seconds === 0) return "finished";
+    if (countdown.running) return "running";
+    return "paused";
+  };
+
+  const status = getTimerStatus();
+  const currentTimer = currentTimerOption;
+
   // Reset countdown quando a opção selecionada muda
   useEffect(() => {
     countdown.reset();
@@ -136,14 +146,15 @@ export function TimerWidget({ className }: TimerWidgetProps) {
     setShowOptions(false);
   };
 
-  const getTimerStatus = () => {
-    if (countdown.seconds === 0) return "finished";
-    if (countdown.running) return "running";
-    return "paused";
+  // Acessibilidade - suporte para keyboard
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setShowOptions(false);
+    } else if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault();
+      countdown.toggle();
+    }
   };
-
-  const status = getTimerStatus();
-  const currentTimer = currentTimerOption;
 
   // Extrair cor neon da opção atual para usar no progresso
   const getProgressNeonColor = (colorClass: string) => {
@@ -168,16 +179,6 @@ export function TimerWidget({ className }: TimerWidgetProps) {
       case "bg-yellow-400": return "border-yellow-400/30 shadow-yellow-400/20";
       case "bg-gray-400": return "border-gray-400/30 shadow-gray-400/20";
       default: return "border-brand-green/30 shadow-brand-green/20";
-    }
-  };
-
-  // Acessibilidade - suporte para keyboard
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      setShowOptions(false);
-    } else if (event.key === ' ' || event.key === 'Enter') {
-      event.preventDefault();
-      countdown.toggle();
     }
   };
 

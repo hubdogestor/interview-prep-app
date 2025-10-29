@@ -1,12 +1,7 @@
-// src/server/trpc.ts
-import { initTRPC, TRPCError } from '@trpc/server';
+import { initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
-/**
- * Initialization of tRPC backend
- * Should be done only once per backend!
- */
 const t = initTRPC.create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
@@ -21,9 +16,5 @@ const t = initTRPC.create({
   },
 });
 
-/**
- * Export reusable router and procedure helpers
- * that can be used throughout the router
- */
 export const router = t.router;
 export const publicProcedure = t.procedure;

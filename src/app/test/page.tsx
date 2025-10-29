@@ -26,9 +26,11 @@ export default function TestPage() {
     setLoading(true);
     setResult('');
     setProvider('');
+    
     generateMutation.mutate({
-      prompt,
+      prompt: prompt,
       maxTokens: 100,
+      temperature: 0.7,
     });
   };
 

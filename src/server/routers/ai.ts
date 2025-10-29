@@ -1,4 +1,3 @@
-// src/server/routers/ai.ts
 import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
 import { generateWithFallback } from '@/lib/ai/provider';
@@ -14,6 +13,8 @@ export const aiRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      console.log('🔵 [AI Router] Recebeu input:', input);
+      
       try {
         const response = await generateWithFallback({
           prompt: input.prompt,
@@ -22,17 +23,21 @@ export const aiRouter = router({
           temperature: input.temperature,
         });
 
+        console.log('✅ [AI Router] Resposta gerada com sucesso:', {
+          provider: response.provider,
+          textLength: response.text.length,
+        });
+
         return {
           success: true,
           data: response,
         };
       } catch (error) {
-        console.error('❌ Erro ao gerar texto com IA:', error);
+        console.error('❌ [AI Router] Erro ao gerar texto:', error);
         throw new Error('Falha ao gerar texto. Tente novamente.');
       }
     }),
 
-  // Teste rápido para verificar se as APIs estão funcionando
   testProviders: publicProcedure.query(async () => {
     const results = {
       claude: false,
@@ -40,7 +45,6 @@ export const aiRouter = router({
       openai: false,
     };
 
-    // Teste simples com cada provider
     try {
       await generateWithFallback({ 
         prompt: 'Responda apenas: OK',

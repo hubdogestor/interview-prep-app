@@ -78,6 +78,23 @@ export async function generateWithFallback(
 }
 
 /**
+ * Combina system prompt com user prompt
+ */
+function buildPrompt(prompt: string, systemPrompt?: string): string {
+  return systemPrompt ? `${systemPrompt}\n\n${prompt}` : prompt;
+}
+
+/**
+ * Valida resposta do provider
+ */
+function validateResponse(text: string | null | undefined, provider: string): string {
+  if (!text) {
+    throw new Error(`${provider} retornou resposta vazia`);
+  }
+  return text;
+}
+
+/**
  * Gera resposta usando Gemini 2.5 Flash-Lite
  */
 async function generateWithGemini(request: AIRequest): Promise<AIResponse> {
@@ -87,25 +104,15 @@ async function generateWithGemini(request: AIRequest): Promise<AIResponse> {
     model: 'gemini-2.5-flash-lite',
   });
 
-  const fullPrompt = systemPrompt
-    ? `${systemPrompt}\n\n${prompt}`
-    : prompt;
-
   const result = await model.generateContent({
-    contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
-    generationConfig: {
-      maxOutputTokens: maxTokens,
-      temperature: temperature,
-    },
+    contents: [{ role: 'user', parts: [{ text: buildPrompt(prompt, systemPrompt) }] }],
+    generationConfig: { maxOutputTokens: maxTokens, temperature },
   });
 
-  const text = result.response.text();
-
-  if (!text) {
-    throw new Error('Gemini retornou resposta vazia');
-  }
-
-  return { text, provider: 'gemini' };
+  return {
+    text: validateResponse(result.response.text(), 'Gemini'),
+    provider: 'gemini',
+  };
 }
 
 /**
@@ -114,20 +121,20 @@ async function generateWithGemini(request: AIRequest): Promise<AIResponse> {
 async function generateWithOpenAI(request: AIRequest): Promise<AIResponse> {
   const { prompt, systemPrompt, maxTokens = 1000, temperature = 0.7 } = request;
 
+  const messages = [
+    ...(systemPrompt ? [{ role: 'system' as const, content: systemPrompt }] : []),
+    { role: 'user' as const, content: prompt },
+  ];
+
   const response = await openaiClient.chat.completions.create({
     model: 'gpt-4o-mini',
     max_tokens: maxTokens,
     temperature,
-    messages: [
-      ...(systemPrompt
-        ? [{ role: 'system' as const, content: systemPrompt }]
-        : []),
-      { role: 'user' as const, content: prompt },
-    ],
+    messages,
   });
 
   return {
-    text: response.choices[0]?.message?.content || '',
+    text: validateResponse(response.choices[0]?.message?.content, 'OpenAI'),
     provider: 'openai',
     usage: {
       promptTokens: response.usage?.prompt_tokens || 0,
@@ -150,10 +157,10 @@ async function generateWithClaude(request: AIRequest): Promise<AIResponse> {
     messages: [{ role: 'user', content: prompt }],
   });
 
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+
   return {
-    text: response.content[0].type === 'text'
-      ? response.content[0].text
-      : '',
+    text: validateResponse(text, 'Claude'),
     provider: 'claude',
     usage: {
       promptTokens: response.usage.input_tokens,

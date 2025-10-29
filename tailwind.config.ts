@@ -1,15 +1,6 @@
 // tailwind.config.ts
 import type { Config } from "tailwindcss";
 
-const withOpacityValue = (variable: string) => {
-  return ({ opacityValue }: { opacityValue?: string }) => {
-    if (opacityValue !== undefined) {
-      return `rgb(var(${variable}) / ${opacityValue})`;
-    }
-    return `rgb(var(${variable}) / 1)`;
-  };
-};
-
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -19,25 +10,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "bg-primary": withOpacityValue("--bg-primary"),
-        "bg-secondary": withOpacityValue("--bg-secondary"),
-        "bg-tertiary": withOpacityValue("--bg-tertiary"),
-        "text-primary": withOpacityValue("--text-primary"),
-        "text-secondary": withOpacityValue("--text-secondary"),
-        "text-tertiary": withOpacityValue("--text-tertiary"),
-        "text-muted": withOpacityValue("--text-muted"),
-        "brand-blue": withOpacityValue("--color-blue"),
-        "brand-green": withOpacityValue("--color-green"),
-        "brand-lime": withOpacityValue("--color-lime"),
-        "brand-orange": withOpacityValue("--color-orange"),
-        "brand-yellow": withOpacityValue("--color-yellow"),
-        success: withOpacityValue("--semantic-success"),
-        warning: withOpacityValue("--semantic-warning"),
-        error: withOpacityValue("--semantic-error"),
-        info: withOpacityValue("--semantic-info"),
-        "border-subtle": withOpacityValue("--border-subtle"),
-        "border-default": withOpacityValue("--border-default"),
-        "border-strong": withOpacityValue("--border-strong"),
+        "bg-primary": "rgb(var(--bg-primary) / <alpha-value>)",
+        "bg-secondary": "rgb(var(--bg-secondary) / <alpha-value>)",
+        "bg-tertiary": "rgb(var(--bg-tertiary) / <alpha-value>)",
+        "text-primary": "rgb(var(--text-primary) / <alpha-value>)",
+        "text-secondary": "rgb(var(--text-secondary) / <alpha-value>)",
+        "text-tertiary": "rgb(var(--text-tertiary) / <alpha-value>)",
+        "text-muted": "rgb(var(--text-muted) / <alpha-value>)",
+        "brand-blue": "rgb(var(--color-blue) / <alpha-value>)",
+        "brand-green": "rgb(var(--color-green) / <alpha-value>)",
+        "brand-lime": "rgb(var(--color-lime) / <alpha-value>)",
+        "brand-orange": "rgb(var(--color-orange) / <alpha-value>)",
+        "brand-yellow": "rgb(var(--color-yellow) / <alpha-value>)",
+        success: "rgb(var(--semantic-success) / <alpha-value>)",
+        warning: "rgb(var(--semantic-warning) / <alpha-value>)",
+        error: "rgb(var(--semantic-error) / <alpha-value>)",
+        info: "rgb(var(--semantic-info) / <alpha-value>)",
+        "border-subtle": "rgb(var(--border-subtle) / <alpha-value>)",
+        "border-default": "rgb(var(--border-default) / <alpha-value>)",
+        "border-strong": "rgb(var(--border-strong) / <alpha-value>)",
       },
       fontFamily: {
         grotesk: ["var(--font-grotesk)", "sans-serif"],

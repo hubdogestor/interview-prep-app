@@ -567,7 +567,7 @@ function DashboardFooter() {
     },
     {
       label: "Listar animações Framer",
-      description: "Mapeie componentes que receberão transições suaves.",
+      description: "Mapeie componentes que receberam transições suaves.",
     },
   ];
 

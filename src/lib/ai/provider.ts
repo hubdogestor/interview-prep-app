@@ -3,10 +3,10 @@ import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import OpenAI from 'openai';
 
-export type AIProvider = 'claude' | 'gemini' | 'openai';
+export type AIProvider = 'gemini' | 'openai' | 'claude';
 
-// Ordem de prioridade: Claude > Gemini > OpenAI
-const PROVIDER_PRIORITY: AIProvider[] = ['claude', 'gemini', 'openai'];
+// Ordem de prioridade: Gemini > OpenAI > Claude
+const PROVIDER_PRIORITY: AIProvider[] = ['gemini', 'openai', 'claude'];
 
 // Clientes das APIs
 const claudeClient = new Anthropic({
@@ -38,7 +38,13 @@ interface AIResponse {
 }
 
 /**
- * Tenta usar Claude, se falhar usa Gemini, se falhar usa OpenAI
+ * Sistema híbrido com fallback automático
+ * 1. Gemini 2.5 Flash-Lite (Primário - Gratuito, super rápido, sem thinking mode)
+ * 2. OpenAI GPT-4o-mini (Secundário - Melhor custo-benefício)
+ * 3. Claude 3.5 Sonnet (Terciário - Alta qualidade, requer créditos)
+ *
+ * Nota: Flash-Lite é otimizado para velocidade/custo, sem thinking mode.
+ * Flash e Pro usam thinking que consome tokens sem gerar resposta visível.
  */
 export async function generateWithFallback(
   request: AIRequest
@@ -81,53 +87,49 @@ async function generateWithProvider(
   const { prompt, systemPrompt, maxTokens = 1000, temperature = 0.7 } = request;
 
   switch (provider) {
-    case 'claude': {
-      const response = await claudeClient.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: maxTokens,
-        temperature,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: prompt }],
-      });
-
-      return {
-        text: response.content[0].type === 'text' 
-          ? response.content[0].text 
-          : '',
-        provider: 'claude',
-        usage: {
-          promptTokens: response.usage.input_tokens,
-          completionTokens: response.usage.output_tokens,
-        },
-      };
-    }
-
     case 'gemini': {
-      const model = geminiClient.getGenerativeModel({ 
-        model: 'gemini-1.5-pro' 
+      // Gemini 2.5 Flash-Lite - Otimizado para velocidade e custo
+      // Thinking mode desabilitado por padrão (ao contrário do Flash e Pro)
+      // Perfeito para respostas rápidas e diretas
+      const model = geminiClient.getGenerativeModel({
+        model: 'gemini-2.5-flash-lite',
       });
-      
-      const fullPrompt = systemPrompt 
-        ? `${systemPrompt}\n\n${prompt}` 
+
+      const fullPrompt = systemPrompt
+        ? `${systemPrompt}\n\n${prompt}`
         : prompt;
-      
-      const result = await model.generateContent(fullPrompt);
-      const response = await result.response;
+
+      const result = await model.generateContent({
+        contents: [{ parts: [{ text: fullPrompt }] }],
+        generationConfig: {
+          maxOutputTokens: maxTokens,
+          temperature: temperature,
+        },
+      });
+
+      const response = result.response;
+      const text = response.text();
+
+      if (!text) {
+        throw new Error('Gemini retornou resposta vazia');
+      }
 
       return {
-        text: response.text(),
+        text,
         provider: 'gemini',
       };
     }
 
     case 'openai': {
+      // GPT-4o-mini - Melhor custo-benefício da OpenAI
+      // Mais barato que GPT-4o, com ótima qualidade
       const response = await openaiClient.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         max_tokens: maxTokens,
         temperature,
         messages: [
-          ...(systemPrompt 
-            ? [{ role: 'system' as const, content: systemPrompt }] 
+          ...(systemPrompt
+            ? [{ role: 'system' as const, content: systemPrompt }]
             : []),
           { role: 'user' as const, content: prompt },
         ],
@@ -139,6 +141,29 @@ async function generateWithProvider(
         usage: {
           promptTokens: response.usage?.prompt_tokens || 0,
           completionTokens: response.usage?.completion_tokens || 0,
+        },
+      };
+    }
+
+    case 'claude': {
+      // Claude 3.5 Sonnet - Excelente qualidade
+      // Fallback final, requer créditos API
+      const response = await claudeClient.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: maxTokens,
+        temperature,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: prompt }],
+      });
+
+      return {
+        text: response.content[0].type === 'text'
+          ? response.content[0].text
+          : '',
+        provider: 'claude',
+        usage: {
+          promptTokens: response.usage.input_tokens,
+          completionTokens: response.usage.output_tokens,
         },
       };
     }

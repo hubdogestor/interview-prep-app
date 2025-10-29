@@ -1,37 +1,25 @@
-import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import { type NextRequest } from 'next/server';
-
 import { appRouter } from '@/server/routers/_app';
 import { createContext } from '@/server/context';
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
+export const runtime = 'nodejs';
 
-
-const handler = async (req: NextRequest) => {
-  // Log apenas para requests POST (mutations)
-  if (req.method === 'POST') {
-    console.log('🔵 [tRPC Handler] POST request:', {
-      url: req.url,
-      headers: Object.fromEntries(req.headers.entries())
-    });
-  }
-
+async function handler(req: Request) {
   return fetchRequestHandler({
     endpoint: '/api/trpc',
     req,
     router: appRouter,
-    createContext: () => createContext(),
-
+    createContext,
     onError:
       process.env.NODE_ENV === 'development'
         ? ({ path, error }) => {
             console.error(
-              `❌ [tRPC Handler] Erro: ${
-                path ? `{ path: '${path}', error: '${error.message}' }` : error.message
-              }`,
+              `❌ [tRPC] Erro no path '${path}':`,
+              error.message
             );
           }
         : undefined,
   });
-};
+}
 
 export { handler as GET, handler as POST };

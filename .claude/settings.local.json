@@ -21,7 +21,8 @@
       "Bash(powershell -ExecutionPolicy Bypass -File \"C:\\Users\\leon4\\AppData\\Local\\Temp\\update-path.ps1\")",
       "Bash(powershell:*)",
       "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\npm.cmd\" install -g @anthropic-ai/claude-code)",
-      "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\claude.cmd\" --version)"
+      "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\claude.cmd\" --version)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

@@ -102,7 +102,7 @@ export default function TestPage() {
               <div className="bg-green-50 p-4 rounded-lg">
                 <p className="text-sm font-medium text-green-900">IA Híbrida</p>
                 <p className="text-xs text-green-700 mt-1">
-                  Claude → Gemini → OpenAI
+                  Gemini → OpenAI → Claude
                 </p>
               </div>
             </div>

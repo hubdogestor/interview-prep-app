@@ -11,17 +11,85 @@ class SentryExampleFrontendError extends Error {
   }
 }
 
-export default function Page() {
+function useSentryConnectivity() {
   const [hasSentError, setHasSentError] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
-  
+
   useEffect(() => {
     async function checkConnectivity() {
       const result = await Sentry.diagnoseSdkConnectivity();
-      setIsConnected(result !== 'sentry-unreachable');
+      setIsConnected(result !== "sentry-unreachable");
     }
     checkConnectivity();
   }, []);
+
+  return { hasSentError, setHasSentError, isConnected };
+}
+
+function ThrowButton({
+  isConnected,
+  setHasSentError,
+}: {
+  isConnected: boolean;
+  setHasSentError: (v: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        await Sentry.startSpan(
+          {
+            name: "Example Frontend/Backend Span",
+            op: "test",
+          },
+          async () => {
+            const res = await fetch("/api/sentry-example-api");
+            if (!res.ok) {
+              setHasSentError(true);
+            }
+          }
+        );
+        throw new SentryExampleFrontendError(
+          "This error is raised on the frontend of the example page."
+        );
+      }}
+      disabled={!isConnected}
+    >
+      <span>Throw Sample Error</span>
+    </button>
+  );
+}
+
+function ConnectivityAndStatus({
+  hasSentError,
+  isConnected,
+}: {
+  hasSentError: boolean;
+  isConnected: boolean;
+}) {
+  if (hasSentError) {
+    return (
+      <p className="success">
+        Error sent to Sentry.
+      </p>
+    );
+  }
+
+  if (!isConnected) {
+    return (
+      <div className="connectivity-error">
+        <p>
+          It looks like network requests to Sentry are being blocked, which will prevent errors from being captured. Try disabling your ad-blocker to complete the test.
+        </p>
+      </div>
+    );
+  }
+
+  return <div className="success_placeholder" />;
+}
+
+export default function Page() {
+  const { hasSentError, setHasSentError, isConnected } = useSentryConnectivity();
 
   return (
     <div>
@@ -45,38 +113,9 @@ export default function Page() {
            href="https://docs.sentry.io/platforms/javascript/guides/nextjs/">read our docs</a>.
         </p>
 
-        <button
-          type="button"
-          onClick={async () => {
-            await Sentry.startSpan({
-              name: 'Example Frontend/Backend Span',
-              op: 'test'
-            }, async () => {
-              const res = await fetch("/api/sentry-example-api");
-              if (!res.ok) {
-                setHasSentError(true);
-              }
-            });
-            throw new SentryExampleFrontendError("This error is raised on the frontend of the example page.");
-          }}
-          disabled={!isConnected}
-        >
-          <span>
-            Throw Sample Error
-          </span>
-        </button>
+        <ThrowButton isConnected={isConnected} setHasSentError={setHasSentError} />
 
-        {hasSentError ? (
-          <p className="success">
-            Error sent to Sentry.
-          </p>
-        ) : !isConnected ? (
-          <div className="connectivity-error">
-            <p>It looks like network requests to Sentry are being blocked, which will prevent errors from being captured. Try disabling your ad-blocker to complete the test.</p>
-          </div>
-        ) : (
-          <div className="success_placeholder" />
-        )}
+        <ConnectivityAndStatus hasSentError={hasSentError} isConnected={isConnected} />
 
         <div className="flex-spacer" />
       
@@ -148,14 +187,14 @@ export default function Page() {
           }
 
           &:disabled {
-	            cursor: not-allowed;
-	            opacity: 0.6;
-	
-	            & > span {
-	              transform: translateY(0);
-	              border: none
-	            }
-	          }
+              cursor: not-allowed;
+              opacity: 0.6;
+  
+              & > span {
+                transform: translateY(0);
+                border: none
+              }
+            }
         }
 
         .description {

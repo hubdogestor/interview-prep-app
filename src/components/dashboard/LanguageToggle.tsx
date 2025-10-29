@@ -19,8 +19,8 @@ export function LanguageToggle() {
   };
 
   const languages = [
-    { code: "pt" as Language, name: "Português", flag: "🇧🇷" },
-    { code: "en" as Language, name: "English", flag: "🇺🇸" },
+    { code: "pt" as Language, name: "Português", flag: "BR" },
+    { code: "en" as Language, name: "English", flag: "US" },
   ];
 
   const currentLanguage = languages.find((lang) => lang.code === language)!;
@@ -43,9 +43,9 @@ export function LanguageToggle() {
       >
         <div className="flex items-center gap-2">
           {/* Indicador visual do idioma ativo */}
-          <span className="text-sm" role="img" aria-label={currentLanguage.name}>
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue text-xs font-bold text-white">
             {currentLanguage.flag}
-          </span>
+          </div>
           
           {/* Label com animação */}
           <div className="flex items-center gap-1 text-xs">
@@ -87,7 +87,7 @@ export function LanguageToggle() {
         role="tooltip"
       >
         <div className="whitespace-nowrap">
-          Próximo: {nextLanguage.flag} {nextLanguage.name}
+          Próximo: <span className="font-semibold">{nextLanguage.flag}</span> {nextLanguage.name}
         </div>
         {/* Arrow */}
         <div className="absolute top-full left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-border-subtle/50" />

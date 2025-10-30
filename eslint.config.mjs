@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 
 export default [
   {
-    ignores: ["node_modules/**", ".next/**", "public/**", "coverage/**", "dist/**"],
+    ignores: ["node_modules/**", ".next/**", "public/**", "coverage/**", "dist/**", "backup_pre_v0/**"],
   },
   {
     ...js.configs.recommended,

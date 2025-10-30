@@ -24,6 +24,10 @@ Confirme as versoes com `node -v` e `npm -v` antes de iniciar.
 - `npm run start` sobe o build gerado
 - `npm run lint` roda ESLint
 - `npm run lint:fix` aplica correcoes automaticas do ESLint
+- `npm run db:push` sincroniza o schema Prisma com o banco (`prisma db push`)
+- `npm run db:generate` regenera o cliente Prisma
+- `npm run db:seed` popula dados de desenvolvimento (usa `prisma/seed.ts`)
+- `npm run db:studio` abre o Prisma Studio para inspecionar os dados
 - `npm run typecheck` valida os tipos com TypeScript
 - `npm run format` confere arquivos `md` e `json` com Prettier
 
@@ -38,20 +42,20 @@ Antes de commit ou PR execute:
 
 ## Variaveis de ambiente
 
-| Variavel              | Status   | Descricao                                                         |
-| --------------------- | -------- | ----------------------------------------------------------------- |
-| `NEXT_PUBLIC_APP_URL` | opcional | URL base usada para gerar metadata quando nao estamos em Vercel   |
-| `VERCEL_URL`          | opcional | Variavel definida automaticamente na Vercel para URLs temporarias |
-| `DATABASE_URL`        | fase 2   | String de conexao MongoDB (Prisma) a ser reinstalada              |
-| `ANTHROPIC_API_KEY`   | fase 3   | Chave do provider primario de IA (Claude)                         |
-| `GOOGLE_API_KEY`      | fase 3   | Chave do provider Gemini (fallback)                               |
-| `OPENAI_API_KEY`      | fase 3   | Chave do provider OpenAI (fallback)                               |
-| `SENTRY_DSN`          | fase 5   | DSN do Sentry para monitoramento                                  |
-| `SENTRY_AUTH_TOKEN`   | fase 5   | Token do wizard do Sentry (util para setup local)                 |
+| Variavel                         | Status      | Descricao                                                         |
+| -------------------------------- | ----------- | ----------------------------------------------------------------- |
+| `DATABASE_URL`                   | obrigatoria | String de conexao MongoDB usada pelo Prisma                       |
+| `NEXT_PUBLIC_APP_URL`            | opcional    | URL base usada para gerar metadata quando nao estamos em Vercel   |
+| `VERCEL_URL`                     | opcional    | Variavel definida automaticamente na Vercel para URLs temporarias |
+| `ANTHROPIC_API_KEY`              | fase 3      | Chave do provider primario de IA (Claude)                         |
+| `GOOGLE_AI_API_KEY`              | fase 3      | Chave do provider Gemini (fallback)                               |
+| `OPENAI_API_KEY`                 | fase 3      | Chave do provider OpenAI (fallback)                               |
+| `SENTRY_AUTH_TOKEN`              | fase 5      | Token do wizard do Sentry (util para setup local)                 |
+| `NEXT_PUBLIC_SENTRY_DSN`         | fase 5      | DSN do Sentry para monitoramento                                  |
+| `NEXT_PUBLIC_ENABLE_AI_FEATURES` | opcional    | Flag para habilitar funcoes de IA experimental                    |
 
-Crie um arquivo `.env.local` na raiz seguindo o necessario para cada fase. Mantenha segredos fora de commits.
+Use `.env.example` como referencia e crie um `.env.local` na raiz antes de rodar os comandos. Mantenha segredos fora de commits.
 
 ## Documentacao adicional
 
-- `todo-template-v0.md` guarda o plano atualizado por fase para reinstalar toda a infraestrutura.
-- `todo29-10.md` permanece como referencia historica do planejamento antigo.
+- `todo.md` concentra o plano atual dividido em fases (dados, servicos, IA, UX e deploy).

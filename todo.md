@@ -14,13 +14,13 @@
 
 ---
 
-## Fase 1 · Infraestrutura de Dados & Serviços (🚀 próxima)
+## Fase 1 · Infraestrutura de Dados & Serviços (🚧 em andamento)
 
-1. **Base de dados**
-   - Reinstalar Prisma + driver MongoDB (ou outro banco escolhido) e recriar `.env.local`
-   - Recriar schema das coleções principais (Profile, Icebreaker, Competencia, Experiencia, Speech, Question)
-   - Implementar seeds mínimos para desenvolvimento (dados reais ou mock enriquecido)
-   - Configurar scripts `prisma generate`, `prisma db push` e política de migrations
+1. **Base de dados** ✅
+   - [x] Reinstalar Prisma + driver MongoDB (ou stack equivalente) e recriar `.env.local`
+   - [x] Recriar schema das coleções principais (Profile, Icebreaker, Competencia, Experiencia, Speech, Question)
+   - [x] Implementar seeds mínimos para desenvolvimento (dados reais ou mock enriquecido)
+   - [x] Configurar scripts `prisma generate`, `prisma db push` e política de migrations
 2. **Camada de serviços**
    - Reconfigurar cliente Prisma compartilhado (`lib/db` ou similar)
    - Reinstalar tRPC v11 e expor router raiz no App Router (`app/api/trpc/[trpc]/route.ts`)

@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// PROFILE - dados principais do usuario
+// ========================================
+model Profile {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome            String
+  titulo          String
+  foto            String?
+  email           String?
+  telefone        String?
+  linkedin        String?
+  github          String?
+  resumo          Json     // { pt: string, en: string }
+  anosExperiencia Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("profile")
+}
+
+// ========================================
+// ICEBREAKER - apresentacoes curtas
+// ========================================
+model Icebreaker {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipo      String   // elevator_pitch | quick_intro | personal_story
+  titulo    String
+  versoes   Json[]   // [{ nome: string, conteudo: { pt: string, en: string }, duracao: number, tags: string[] }]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("icebreakers")
+}
+
+// ========================================
+// COMPETENCIA - habilidades tecnicas
+// ========================================
+model Competencia {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome        String
+  categoria   String   // technical | soft_skills | leadership
+  nivel       String   // basic | intermediate | advanced | expert
+  descricao   Json     // { pt: string, en: string }
+  ferramentas String[]
+  evidencias  String[]
+  trackRecord Json[]   // [{ projeto: string, resultado: string, ano: number }]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("competencias")
+}
+
+// ========================================
+// EXPERIENCIA - historico profissional
+// ========================================
+model Experiencia {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  empresa        String
+  cargo          String
+  periodo        Json     // { inicio: string, fim: string | null }
+  pitchElevator  Json     // { pt: string, en: string }
+  speechCompleto Json     // { pt: string, en: string }
+  starCases      Json[]   // [{ titulo: string, situation: string, task: string, action: string, result: string, idioma: "pt" | "en" }]
+  tecnologias    String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("experiencias")
+}
+
+// ========================================
+// SPEECH - discursos detalhados
+// ========================================
+model Speech {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipoVaga        String
+  titulo          String
+  versao          String
+  conteudo        Json     // { pt: string, en: string }
+  duracaoEstimada Int
+  foco            String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("speeches")
+}
+
+// ========================================
+// QUESTION - perguntas para entrevistadores
+// ========================================
+model Question {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoria  String   // cultura | produto | time | carreira
+  pergunta   Json     // { pt: string, en: string }
+  contexto   String?
+  prioridade String   // alta | media | baixa
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("questions")
+}

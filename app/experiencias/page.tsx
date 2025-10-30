@@ -1,55 +1,13 @@
-import DashboardPageLayout from "@/components/dashboard/layout"
-import BriefcaseIcon from "@/components/icons/briefcase"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import DashboardPageLayout from "@/components/dashboard/layout";
+import BriefcaseIcon from "@/components/icons/briefcase";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { api } from "@/lib/trpc/server";
 
-const experiencias = [
-  {
-    id: 1,
-    company: "BUSER",
-    role: "Senior Full-Stack Engineer",
-    period: "2023 - Present",
-    current: true,
-    technologies: ["React", "Node.js", "AWS", "PostgreSQL"],
-    starCases: 5,
-    achievements: [
-      "Led migration to microservices architecture",
-      "Reduced API response time by 60%",
-      "Mentored 3 junior developers",
-    ],
-  },
-  {
-    id: 2,
-    company: "NEON",
-    role: "Full-Stack Developer",
-    period: "2021 - 2023",
-    current: false,
-    technologies: ["TypeScript", "React", "GraphQL", "MongoDB"],
-    starCases: 4,
-    achievements: [
-      "Built real-time payment processing system",
-      "Implemented fraud detection algorithms",
-      "Improved test coverage to 85%",
-    ],
-  },
-  {
-    id: 3,
-    company: "STARTUP XYZ",
-    role: "Frontend Developer",
-    period: "2019 - 2021",
-    current: false,
-    technologies: ["React", "Redux", "REST API"],
-    starCases: 3,
-    achievements: [
-      "Developed responsive dashboard from scratch",
-      "Optimized bundle size by 40%",
-      "Implemented CI/CD pipeline",
-    ],
-  },
-]
-
-export default function ExperienciasPage() {
+export default async function ExperienciasPage() {
+  const caller = await api();
+  const experiencias = await caller.experiencias.list();
   return (
     <DashboardPageLayout
       header={{
@@ -72,38 +30,36 @@ export default function ExperienciasPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-2xl font-display">{exp.company}</h3>
-                      {exp.current && <Badge className="uppercase bg-success">Current</Badge>}
+                      <h3 className="text-2xl font-display uppercase">
+                        {exp.empresa}
+                      </h3>
                     </div>
-                    <p className="text-lg text-muted-foreground uppercase mb-1">{exp.role}</p>
-                    <p className="text-sm text-muted-foreground uppercase">{exp.period}</p>
+                    <p className="text-lg text-muted-foreground uppercase mb-1">
+                      {exp.cargo}
+                    </p>
                   </div>
                   <BriefcaseIcon className="size-8 text-primary opacity-50" />
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {exp.technologies.map((tech) => (
-                    <Badge key={tech} variant="secondary">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
+                {exp.tecnologias && exp.tecnologias.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {exp.tecnologias.map((tech) => (
+                      <Badge key={tech} variant="secondary">
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
 
                 <div className="space-y-2 mb-4">
-                  {exp.achievements.map((achievement, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <span className="text-primary mt-1">▸</span>
-                      <span className="text-sm">{achievement}</span>
-                    </div>
-                  ))}
+                  <p className="text-xs text-muted-foreground uppercase">
+                    {exp.starCases.length} STAR CASES
+                  </p>
                 </div>
 
                 <div className="flex gap-2 pt-4 border-t border-border">
                   <Button variant="default" size="sm">
                     VIEW DETAILS
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    {exp.starCases} STAR CASES
                   </Button>
                   <Button variant="ghost" size="sm">
                     EDIT
@@ -112,6 +68,12 @@ export default function ExperienciasPage() {
               </Card>
             </div>
           ))}
+
+          {experiencias.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              <p className="uppercase">Nenhuma experiência cadastrada ainda</p>
+            </div>
+          )}
         </div>
       </div>
 

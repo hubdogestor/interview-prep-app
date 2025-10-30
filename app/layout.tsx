@@ -10,6 +10,7 @@ import Notifications from "@/components/dashboard/notifications";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import Widget from "@/components/dashboard/widget";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { TRPCProvider } from "@/lib/trpc/react";
 import { V0Provider } from "@/lib/v0-context";
 import mockDataJson from "@/mock.json";
 import type { MockData } from "@/types/dashboard";
@@ -65,32 +66,34 @@ export default function RootLayout({
       <body
         className={`${rebelGrotesk.variable} ${robotoMono.variable} antialiased`}
       >
-        <V0Provider isV0={isV0}>
-          <SidebarProvider>
-            {/* Mobile Header - only visible on mobile */}
-            <MobileHeader mockData={mockData} />
+        <TRPCProvider>
+          <V0Provider isV0={isV0}>
+            <SidebarProvider>
+              {/* Mobile Header - only visible on mobile */}
+              <MobileHeader mockData={mockData} />
 
-            {/* Desktop Layout */}
-            <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-gap lg:px-sides">
-              <div className="hidden lg:block col-span-2 top-0 relative">
-                <DashboardSidebar />
-              </div>
-              <div className="col-span-1 lg:col-span-7">{children}</div>
-              <div className="col-span-3 hidden lg:block">
-                <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
-                  <Widget widgetData={mockData.widgetData} />
-                  <Notifications
-                    initialNotifications={mockData.notifications}
-                  />
-                  <Chat />
+              {/* Desktop Layout */}
+              <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-gap lg:px-sides">
+                <div className="hidden lg:block col-span-2 top-0 relative">
+                  <DashboardSidebar />
+                </div>
+                <div className="col-span-1 lg:col-span-7">{children}</div>
+                <div className="col-span-3 hidden lg:block">
+                  <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
+                    <Widget widgetData={mockData.widgetData} />
+                    <Notifications
+                      initialNotifications={mockData.notifications}
+                    />
+                    <Chat />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Mobile Chat - floating CTA with drawer */}
-            <MobileChat />
-          </SidebarProvider>
-        </V0Provider>
+              {/* Mobile Chat - floating CTA with drawer */}
+              <MobileChat />
+            </SidebarProvider>
+          </V0Provider>
+        </TRPCProvider>
       </body>
     </html>
   );

@@ -26,10 +26,10 @@
    - [x] Reinstalar tRPC v11 e expor router raiz no App Router (`app/api/trpc/[trpc]/route.ts`)
    - [x] Criar routers por domínio (`profile`, `dashboard`, `icebreakers`, `competencias`, `experiencias`, `speeches`, `questions`)
    - [x] Implementar modelos de erro/respostas tipadas + middlewares (logger implementado)
-3. **Integração com layout**
-   - Substituir `mock.json` por loaders RSC consumindo as queries tRPC
-   - Definir estado de loading/fallback para cards, gráficos e notificações
-   - Mapear navegação server/client (ex.: sidebar server, formulários client)
+3. **Integração com layout** ✅
+   - [x] Substituir `mock.json` por loaders RSC consumindo as queries tRPC
+   - [x] Definir estado de loading/fallback para cards, gráficos e notificações
+   - [x] Mapear navegação server/client (ex.: sidebar server, formulários client)
 
 ---
 

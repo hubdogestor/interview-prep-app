@@ -3,44 +3,50 @@ import DashboardPageLayout from "@/components/dashboard/layout";
 import RebelsRanking from "@/components/dashboard/rebels-ranking";
 import SecurityStatus from "@/components/dashboard/security-status";
 import DashboardStat from "@/components/dashboard/stat";
-import BoomIcon from "@/components/icons/boom";
 import BracketsIcon from "@/components/icons/brackets";
 import GearIcon from "@/components/icons/gear";
 import ProcessorIcon from "@/components/icons/proccesor";
+import StarIcon from "@/components/icons/star";
+import { api } from "@/lib/trpc/server";
 import mockDataJson from "@/mock.json";
 import type { MockData } from "@/types/dashboard";
 
 const mockData = mockDataJson as MockData;
 
-// Icon mapping
-const iconMap = {
-  gear: GearIcon,
-  proccesor: ProcessorIcon,
-  boom: BoomIcon,
-};
+export default async function DashboardOverview() {
+  const caller = await api();
+  const dashboard = await caller.dashboard.overview();
 
-export default function DashboardOverview() {
   return (
     <DashboardPageLayout
       header={{
         title: "Overview",
-        description: "Last updated 12:05",
+        description: `Last updated ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`,
         icon: BracketsIcon,
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        {mockData.dashboardStats.map((stat, index) => (
-          <DashboardStat
-            key={index}
-            label={stat.label}
-            value={stat.value}
-            description={stat.description}
-            icon={iconMap[stat.icon as keyof typeof iconMap]}
-            tag={stat.tag}
-            intent={stat.intent}
-            direction={stat.direction}
-          />
-        ))}
+        <DashboardStat
+          label="COMPETÊNCIAS"
+          value={String(dashboard.totals.competencias)}
+          description="SKILLS IN YOUR ARSENAL"
+          icon={GearIcon}
+          intent="positive"
+        />
+        <DashboardStat
+          label="EXPERIÊNCIAS"
+          value={String(dashboard.totals.experiencias)}
+          description="PROFESSIONAL EXPERIENCES"
+          icon={ProcessorIcon}
+          intent="positive"
+        />
+        <DashboardStat
+          label="QUESTIONS READY"
+          value={String(dashboard.totals.questions)}
+          description="PREPARED ANSWERS"
+          icon={StarIcon}
+          intent="neutral"
+        />
       </div>
 
       <div className="mb-6">

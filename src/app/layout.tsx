@@ -178,7 +178,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://images.unsplash.com" />
         
         {/* Resource hints for better performance */}
-        <link rel="preload" href="/notification-sound.mp3" as="audio" type="audio/mpeg" />
+        {/* Audio preload removed - file will be lazy loaded when needed */}
         
         {/* Theme detection with enhanced CSS variables */}
         <Script id="theme-detector" strategy="beforeInteractive">
@@ -785,9 +785,7 @@ export default function RootLayout({
           }}
         />
         
-        {/* Critical resource hints */}
-        <link rel="preload" href="/favicon-32x32.png" as="image" type="image/png" />
-        <link rel="preload" href="/favicon-16x16.png" as="image" type="image/png" />
+        {/* Critical resource hints - removed preload for favicon as it's not critical and causes warnings */}
         
         {/* Manifest for PWA support */}
         <link rel="manifest" href="/manifest.json" />

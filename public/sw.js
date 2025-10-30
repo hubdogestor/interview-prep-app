@@ -68,30 +68,35 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
-  
+
   // Skip non-GET requests
   if (request.method !== 'GET') {
     return;
   }
-  
+
+  // Skip chrome-extension and other unsupported schemes
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return;
+  }
+
   // Handle API requests with network-first strategy
   if (API_CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
     event.respondWith(networkFirstStrategy(request));
     return;
   }
-  
+
   // Handle static assets with cache-first strategy
   if (isStaticAsset(request)) {
     event.respondWith(cacheFirstStrategy(request));
     return;
   }
-  
+
   // Handle navigation requests
   if (request.mode === 'navigate') {
     event.respondWith(navigationStrategy(request));
     return;
   }
-  
+
   // Default: network first
   event.respondWith(networkFirstStrategy(request));
 });
@@ -140,15 +145,19 @@ async function cacheFirstStrategy(request) {
   if (cachedResponse) {
     return cachedResponse;
   }
-  
+
   try {
     const networkResponse = await fetch(request);
-    
+
     if (networkResponse.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, networkResponse.clone());
+      // Verifica se o esquema da URL é suportado para caching
+      const url = new URL(request.url);
+      if (url.protocol === 'http:' || url.protocol === 'https:') {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, networkResponse.clone());
+      }
     }
-    
+
     return networkResponse;
   } catch (error) {
     console.error('Service Worker: Cache-first strategy failed', error);

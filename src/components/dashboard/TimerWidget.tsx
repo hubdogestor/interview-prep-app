@@ -130,11 +130,11 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   const [announcements, setAnnouncements] = useState<string>("");
 
   const { vibrate, isSupported: hapticSupported } = useHapticFeedback();
-  
+
   // Spring animations para elementos interativos
   const buttonSpring = useSpring(1, { tension: 400, friction: 25 });
-  const iconSpring = useSpring(0, { tension: 300, friction: 20 });
-  const animateIconSpring = iconSpring.animate;
+  const iconSpringObj = useSpring(0, { tension: 300, friction: 20 });
+  const animateIconSpring = iconSpringObj.animate;
   
   // Usar o timer selecionado como base - RESET quando selectedTime muda
   const currentTimerOption = TIMER_OPTIONS[selectedTime];
@@ -498,13 +498,13 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             onBlur={() => setFocusedElement(null)}
             onKeyDown={(e) => handleKeyDown(e, 'timer')}
           >
-            <span 
+            <span
               className={cn(
                 "text-xl leading-none transition-all duration-500",
                 status === "running" && "animate-bounce-subtle"
               )}
               style={{
-                transform: `scale(${1 + iconSpring.value * 0.1})`,
+                transform: `scale(${1 + iconSpringObj.value * 0.1})`,
                 transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
               }}
             >

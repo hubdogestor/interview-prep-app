@@ -642,168 +642,169 @@ export default function RootLayout({
         <Script
           id="performance-monitoring"
           strategy="afterInteractive"
-        >
-          {`
-            // Performance monitoring
-            if (typeof window !== 'undefined' && 'performance' in window && 'measure' in window.performance) {
-              window.addEventListener('load', () => {
-                // Measure critical rendering path
-                performance.mark('app-start');
-                
-                setTimeout(() => {
-                  performance.mark('app-end');
-                  performance.measure('app-load-time', 'app-start', 'app-end');
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Performance monitoring
+              if (typeof window !== 'undefined' && 'performance' in window && 'measure' in window.performance) {
+                window.addEventListener('load', () => {
+                  // Measure critical rendering path
+                  performance.mark('app-start');
                   
-                  const measures = performance.getEntriesByType('measure');
-                  measures.forEach(measure => {
-                    if (measure.duration > 1000) {
-                      console.warn('Slow operation detected:', measure.name, measure.duration + 'ms');
-                    }
-                  });
-                }, 0);
-              });
-              
-              // Monitor long tasks
-              if ('PerformanceObserver' in window) {
-                const longTaskObserver = new PerformanceObserver((list) => {
-                  for (const entry of list.getEntries()) {
-                    console.warn('Long task detected:', entry.duration + 'ms');
-                  }
+                  setTimeout(() => {
+                    performance.mark('app-end');
+                    performance.measure('app-load-time', 'app-start', 'app-end');
+                    
+                    const measures = performance.getEntriesByType('measure');
+                    measures.forEach(measure => {
+                      if (measure.duration > 1000) {
+                        console.warn('Slow operation detected:', measure.name, measure.duration + 'ms');
+                      }
+                    });
+                  }, 0);
                 });
                 
-                try {
-                  longTaskObserver.observe({ entryTypes: ['longtask'] });
-                } catch (e) {
-                  // Long task API not supported
-                }
-              }
-            }
-            
-            // Progressive enhancement detection
-            const supportsIntersectionObserver = 'IntersectionObserver' in window;
-            const supportsServiceWorker = 'serviceWorker' in navigator;
-            const supportsWebShare = 'share' in navigator;
-            const supportsNotifications = 'Notification' in window;
-            
-            // Store feature support for use by components
-            window.__FEATURE_SUPPORT__ = {
-              intersectionObserver: supportsIntersectionObserver,
-              serviceWorker: supportsServiceWorker,
-              webShare: supportsWebShare,
-              notifications: supportsNotifications,
-              webAudio: 'AudioContext' in window || 'webkitAudioContext' in window,
-              vibration: 'vibrate' in navigator,
-              reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-              highContrast: window.matchMedia('(prefers-contrast: high)').matches
-            };
-            
-            // Service Worker registration with offline support
-            if (supportsServiceWorker && 'serviceWorker' in navigator) {
-              window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                  .then(registration => {
-                    console.log('SW registered: ', registration);
-                    
-                    // Listen for updates
-                    registration.addEventListener('updatefound', () => {
-                      console.log('Service Worker update found');
-                    });
-                  })
-                  .catch(registrationError => {
-                    console.log('SW registration failed: ', registrationError);
+                // Monitor long tasks
+                if ('PerformanceObserver' in window) {
+                  const longTaskObserver = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                      console.warn('Long task detected:', entry.duration + 'ms');
+                    }
                   });
-              });
-            }
-            
-            // Hide loading screen
-            window.addEventListener('load', () => {
-              const loading = document.getElementById('initial-loading');
-              if (loading) {
-                loading.classList.add('hidden');
-                setTimeout(() => {
-                  loading.style.display = 'none';
-                }, 300);
-              }
-            });
-            
-            // Handle visibility changes for performance
-            document.addEventListener('visibilitychange', () => {
-              if (document.hidden) {
-                // Pause animations and heavy operations
-                document.body.classList.add('page-hidden');
-              } else {
-                // Resume operations
-                document.body.classList.remove('page-hidden');
-              }
-            });
-            
-            // Advanced keyboard navigation
-            document.addEventListener('keydown', (event) => {
-              const { key, ctrlKey, metaKey } = event;
-              
-              // Global shortcuts
-              if ((metaKey || ctrlKey) && key === 'k') {
-                event.preventDefault();
-                const searchInput = document.querySelector('input[placeholder*="Buscar"]') || document.querySelector('input[type="search"]');
-                if (searchInput) {
-                  searchInput.focus();
-                }
-              }
-              
-              // Skip links navigation
-              if (key === 'Tab' && !event.shiftKey) {
-                const focusedElement = document.activeElement;
-                if (focusedElement === document.body) {
-                  const skipLink = document.querySelector('.skip-link');
-                  if (skipLink) {
-                    skipLink.focus();
-                    event.preventDefault();
+                  
+                  try {
+                    longTaskObserver.observe({ entryTypes: ['longtask'] });
+                  } catch (e) {
+                    // Long task API not supported
                   }
                 }
               }
-            });
-            
-            // Accessibility enhancements
-            if (window.__FEATURE_SUPPORT__.reducedMotion) {
-              document.body.classList.add('reduce-motion');
-            }
-            
-            if (window.__FEATURE_SUPPORT__.highContrast) {
-              document.body.classList.add('high-contrast');
-            }
-            
-            // Focus management for better accessibility
-            let focusVisible = false;
-            
-            document.addEventListener('keydown', (event) => {
-              if (event.key === 'Tab') {
-                focusVisible = true;
-                document.body.classList.add('keyboard-navigation');
-              }
-            });
-            
-            document.addEventListener('mousedown', () => {
-              focusVisible = false;
-              document.body.classList.remove('keyboard-navigation');
-            });
-            
-            // Announce page changes to screen readers
-            function announceToScreenReader(message) {
-              const announcement = document.createElement('div');
-              announcement.setAttribute('aria-live', 'polite');
-              announcement.setAttribute('aria-atomic', 'true');
-              announcement.className = 'sr-only';
-              announcement.textContent = message;
-              document.body.appendChild(announcement);
               
-              setTimeout(() => {
-                document.body.removeChild(announcement);
-              }, 1000);
-            }
-            
-            // Expose announce function globally
-            window.announceToScreenReader = announceToScreenReader;
-          `}
+              // Progressive enhancement detection
+              const supportsIntersectionObserver = 'IntersectionObserver' in window;
+              const supportsServiceWorker = 'serviceWorker' in navigator;
+              const supportsWebShare = 'share' in navigator;
+              const supportsNotifications = 'Notification' in window;
+              
+              // Store feature support for use by components
+              window.__FEATURE_SUPPORT__ = {
+                intersectionObserver: supportsIntersectionObserver,
+                serviceWorker: supportsServiceWorker,
+                webShare: supportsWebShare,
+                notifications: supportsNotifications,
+                webAudio: 'AudioContext' in window || 'webkitAudioContext' in window,
+                vibration: 'vibrate' in navigator,
+                reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+                highContrast: window.matchMedia('(prefers-contrast: high)').matches
+              };
+              
+              // Service Worker registration with offline support
+              if (supportsServiceWorker && 'serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                      console.log('SW registered: ', registration);
+                      
+                      // Listen for updates
+                      registration.addEventListener('updatefound', () => {
+                        console.log('Service Worker update found');
+                      });
+                    })
+                    .catch(registrationError => {
+                      console.log('SW registration failed: ', registrationError);
+                    });
+                });
+              }
+              
+              // Hide loading screen
+              window.addEventListener('load', () => {
+                const loading = document.getElementById('initial-loading');
+                if (loading) {
+                  loading.classList.add('hidden');
+                  setTimeout(() => {
+                    loading.style.display = 'none';
+                  }, 300);
+                }
+              });
+              
+              // Handle visibility changes for performance
+              document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                  // Pause animations and heavy operations
+                  document.body.classList.add('page-hidden');
+                } else {
+                  // Resume operations
+                  document.body.classList.remove('page-hidden');
+                }
+              });
+              
+              // Advanced keyboard navigation
+              document.addEventListener('keydown', (event) => {
+                const { key, ctrlKey, metaKey } = event;
+                
+                // Global shortcuts
+                if ((metaKey || ctrlKey) && key === 'k') {
+                  event.preventDefault();
+                  const searchInput = document.querySelector('input[placeholder*="Buscar"]') || document.querySelector('input[type="search"]');
+                  if (searchInput) {
+                    searchInput.focus();
+                  }
+                }
+                
+                // Skip links navigation
+                if (key === 'Tab' && !event.shiftKey) {
+                  const focusedElement = document.activeElement;
+                  if (focusedElement === document.body) {
+                    const skipLink = document.querySelector('.skip-link');
+                    if (skipLink) {
+                      skipLink.focus();
+                      event.preventDefault();
+                    }
+                  }
+                }
+              });
+              
+              // Accessibility enhancements
+              if (window.__FEATURE_SUPPORT__.reducedMotion) {
+                document.body.classList.add('reduce-motion');
+              }
+              
+              if (window.__FEATURE_SUPPORT__.highContrast) {
+                document.body.classList.add('high-contrast');
+              }
+              
+              // Focus management for better accessibility
+              let focusVisible = false;
+              
+              document.addEventListener('keydown', (event) => {
+                if (event.key === 'Tab') {
+                  focusVisible = true;
+                  document.body.classList.add('keyboard-navigation');
+                }
+              });
+              
+              document.addEventListener('mousedown', () => {
+                focusVisible = false;
+                document.body.classList.remove('keyboard-navigation');
+              });
+              
+              // Announce page changes to screen readers
+              function announceToScreenReader(message) {
+                const announcement = document.createElement('div');
+                announcement.setAttribute('aria-live', 'polite');
+                announcement.setAttribute('aria-atomic', 'true');
+                announcement.className = 'sr-only';
+                announcement.textContent = message;
+                document.body.appendChild(announcement);
+                
+                setTimeout(() => {
+                  document.body.removeChild(announcement);
+                }, 1000);
+              }
+              
+              // Expose announce function globally
+              window.announceToScreenReader = announceToScreenReader;
+            `
+          }}
         />
         
         {/* Critical resource hints */}

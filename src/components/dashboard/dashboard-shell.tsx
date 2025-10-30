@@ -50,30 +50,6 @@ import {
   transactions,
 } from "./data";
 
-// Hook para performance monitoring
-function usePerformanceMonitoring(componentName: string) {
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'performance' in window) {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach((entry) => {
-          if (entry.entryType === 'measure') {
-            console.log(`${componentName}: ${entry.name} took ${entry.duration}ms`);
-          }
-        });
-      });
-      
-      try {
-        observer.observe({ entryTypes: ['measure'] });
-      } catch (e) {
-        // Performance Observer not supported
-      }
-      
-      return () => observer.disconnect();
-    }
-  }, [componentName]);
-}
-
 // Hook para intersection observer com throttle
 function useThrottledIntersection(options?: IntersectionObserverInit, throttle = 100) {
   const [inView, setInView] = useState(false);
@@ -481,7 +457,6 @@ PerformanceSummary.displayName = "PerformanceSummary";
 // Grid de análise simplificado sem lazy loading para evitar erros
 const AnalyticsGrid = React.memo(() => {
   const { ref: gridRef, inView } = useThrottledIntersection();
-  usePerformanceMonitoring('AnalyticsGrid');
 
   return (
     <div ref={gridRef}>
@@ -972,7 +947,6 @@ export function DashboardShell() {
 
   // Initialize performance optimizations
   usePerformanceOptimizer();
-  usePerformanceMonitoring('DashboardShell');
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary">

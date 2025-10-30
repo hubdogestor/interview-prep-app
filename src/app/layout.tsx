@@ -622,41 +622,6 @@ export default function RootLayout({
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-              // Performance monitoring
-              if (typeof window !== 'undefined' && 'performance' in window && 'measure' in window.performance) {
-                window.addEventListener('load', () => {
-                  // Measure critical rendering path
-                  performance.mark('app-start');
-                  
-                  setTimeout(() => {
-                    performance.mark('app-end');
-                    performance.measure('app-load-time', 'app-start', 'app-end');
-                    
-                    const measures = performance.getEntriesByType('measure');
-                    measures.forEach(measure => {
-                      if (measure.duration > 1000) {
-                        console.warn('Slow operation detected:', measure.name, measure.duration + 'ms');
-                      }
-                    });
-                  }, 0);
-                });
-                
-                // Monitor long tasks
-                if ('PerformanceObserver' in window) {
-                  const longTaskObserver = new PerformanceObserver((list) => {
-                    for (const entry of list.getEntries()) {
-                      console.warn('Long task detected:', entry.duration + 'ms');
-                    }
-                  });
-                  
-                  try {
-                    longTaskObserver.observe({ entryTypes: ['longtask'] });
-                  } catch (e) {
-                    // Long task API not supported
-                  }
-                }
-              }
-              
               // Progressive enhancement detection
               const supportsIntersectionObserver = 'IntersectionObserver' in window;
               const supportsServiceWorker = 'serviceWorker' in navigator;

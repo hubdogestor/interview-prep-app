@@ -181,10 +181,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
       webShare: 'share' in navigator,
     };
 
-    // Log feature support para debugging
-    if (process.env.NODE_ENV === 'development') {
-      console.log('TimerWidget features:', features);
-    }
+    // Log feature support para debugging (removido para limpar console)
   }, [isClient]);
 
   // Reset countdown quando a opção selecionada muda

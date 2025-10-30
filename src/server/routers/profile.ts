@@ -1,9 +1,9 @@
 import { router, publicProcedure } from "../trpc";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, Profile } from "@prisma/client";
 import type { ProfileSummary, ProfileMetric, ProfileLink } from "@/types/profile";
 import { placeholderProfileSummary } from "@/types/profile";
 
-type ProfileRecord = Awaited<ReturnType<Prisma["profile"]["findFirst"]>>;
+type ProfileRecord = Profile | null;
 type MetricsSnapshot = Awaited<ReturnType<typeof getProfileMetrics>>;
 
 async function getProfileMetrics(prisma: Prisma.TransactionClient) {

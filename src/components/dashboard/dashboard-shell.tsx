@@ -78,7 +78,7 @@ function usePerformanceMonitoring(componentName: string) {
 function useThrottledIntersection(options?: IntersectionObserverInit, throttle = 100) {
   const [inView, setInView] = useState(false);
   const [element, setElement] = useState<Element | null>(null);
-  const throttleRef = React.useRef<NodeJS.Timeout>();
+  const throttleRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!element) return;
@@ -500,6 +500,10 @@ const AnalyticsGrid = React.memo(() => {
 });
 
 AnalyticsGrid.displayName = "AnalyticsGrid";
+
+type DashboardHeaderProps = {
+  onToggleSidebar?: () => void;
+};
 
 // Header com otimizações avançadas
 const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) => {

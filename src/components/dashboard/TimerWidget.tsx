@@ -7,57 +7,81 @@ import { cn } from "@/lib/utils";
 import { useCountdown } from "./hooks";
 import "./timer-animations.css";
 
+type SpringHandle = {
+  value: number;
+  animate: (target: number) => void;
+};
+
 // Hook para spring animations personalizado
-function useSpring(value: number, config = { tension: 300, friction: 25 }) {
+function useSpring(
+  value: number,
+  config = { tension: 300, friction: 25 }
+): SpringHandle {
   const [spring, setSpring] = useState(value);
-  const timeoutRef = useRef<NodeJS.Timeout>();
-  const rafRef = useRef<number>();
-  const lastTimeRef = useRef<number>();
+  const rafRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
   const valueRef = useRef(value);
+  const springRef = useRef(value);
 
   useEffect(() => {
     valueRef.current = value;
   }, [value]);
 
-  const startSpring = useCallback((target: number) => {
+  useEffect(() => {
+    springRef.current = spring;
+  }, [spring]);
+
+  const stopAnimation = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  const animateTo = useCallback((target: number) => {
     const animate = (time: number) => {
-      if (!lastTimeRef.current) lastTimeRef.current = time;
+      if (lastTimeRef.current === null) lastTimeRef.current = time;
       const deltaTime = time - lastTimeRef.current;
       lastTimeRef.current = time;
 
-      const force = (target - spring) * (config.tension / 1000);
-      const velocity = (spring - valueRef.current) * 60;
+      const current = springRef.current;
+      const force = (target - current) * (config.tension / 1000);
+      const velocity = (current - valueRef.current) * 60;
       const damping = velocity * (config.friction / 1000);
 
-      const newSpring = spring + (force - damping) * (deltaTime / 16);
+      const next = current + (force - damping) * (deltaTime / 16);
 
-      setSpring(newSpring);
+      springRef.current = next;
+      setSpring(next);
 
-      if (Math.abs(newSpring - target) > 0.1) {
+      if (Math.abs(next - target) > 0.1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
+        springRef.current = target;
         setSpring(target);
-        lastTimeRef.current = undefined;
+        lastTimeRef.current = null;
       }
     };
 
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
-    
-    lastTimeRef.current = undefined;
+    stopAnimation();
+    lastTimeRef.current = null;
     rafRef.current = requestAnimationFrame(animate);
-  }, [spring, config.tension, config.friction]);
+  }, [config.friction, config.tension, stopAnimation]);
 
   useEffect(() => {
-    startSpring(value);
+    animateTo(value);
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      stopAnimation();
     };
-  }, [value, startSpring]);
+  }, [value, animateTo, stopAnimation]);
 
-  return spring;
+  return useMemo(
+    () => ({
+      value: spring,
+      animate: animateTo
+    }),
+    [spring, animateTo]
+  );
 }
 
 // Hook para Haptic Feedback
@@ -110,7 +134,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   // Spring animations para elementos interativos
   const buttonSpring = useSpring(1, { tension: 400, friction: 25 });
   const iconSpring = useSpring(0, { tension: 300, friction: 20 });
-  const progressSpring = useSpring(0, { tension: 200, friction: 30 });
+  const animateIconSpring = iconSpring.animate;
   
   // Usar o timer selecionado como base - RESET quando selectedTime muda
   const currentTimerOption = TIMER_OPTIONS[selectedTime];
@@ -176,21 +200,29 @@ export function TimerWidget({ className }: TimerWidgetProps) {
   // Animações baseadas no status
   useEffect(() => {
     if (!isClient) return;
-    
+
+    let timeoutId: number | undefined;
+
     switch (status) {
       case "running":
-        iconSpring(1); // Ativar bounce no ícone
+        animateIconSpring(1); // Ativar bounce no ícone
         break;
       case "finished":
         // Animação de confete
-        iconSpring(1.2);
-        setTimeout(() => iconSpring(0), 600);
+        animateIconSpring(1.2);
+        timeoutId = window.setTimeout(() => animateIconSpring(0), 600);
         vibrate([200, 100, 200, 100, 200]);
         break;
       default:
-        iconSpring(0); // Voltar ao normal
+        animateIconSpring(0); // Voltar ao normal
     }
-  }, [status, isClient, iconSpring, vibrate]);
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [status, isClient, animateIconSpring, vibrate]);
 
   // Notificação quando o timer acaba - apenas no cliente
   useEffect(() => {
@@ -439,7 +471,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           showOptions && "rounded-b-none"
         )}
         style={{
-          transform: `scale(${buttonSpring})`,
+          transform: `scale(${buttonSpring.value})`,
           transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
         }}
       >
@@ -472,7 +504,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 status === "running" && "animate-bounce-subtle"
               )}
               style={{
-                transform: `scale(${1 + iconSpring * 0.1})`,
+                transform: `scale(${1 + iconSpring.value * 0.1})`,
                 transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
               }}
             >
@@ -504,7 +536,7 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                     "bg-emerald-400/10 text-emerald-300 border border-emerald-400/30",
                     "shadow-md shadow-emerald-400/20"
                   ],
-                  index === focusedElement && "ring-2 ring-brand-green/60 ring-offset-2 ring-offset-bg-secondary"
+                  focusedElement === `option-${index}` && "ring-2 ring-brand-green/60 ring-offset-2 ring-offset-bg-secondary"
                 )}
                 onClick={() => handleTimerSelect(index)}
                 role="menuitem"

@@ -187,28 +187,6 @@ export default function RootLayout({
               const theme = localStorage.getItem('theme') || 
                 (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
               document.documentElement.classList.toggle('dark', theme === 'dark');
-              
-              // Set CSS custom properties based on theme
-              const root = document.documentElement;
-              if (theme === 'dark') {
-                root.style.setProperty('--color-bg-primary', '#0f172a');
-                root.style.setProperty('--color-bg-secondary', '#1e293b');
-                root.style.setProperty('--color-bg-tertiary', '#334155');
-                root.style.setProperty('--color-text-primary', '#f8fafc');
-                root.style.setProperty('--color-text-secondary', '#cbd5e1');
-                root.style.setProperty('--color-brand-green', '#10b981');
-                root.style.setProperty('--color-brand-blue', '#3b82f6');
-                root.style.setProperty('--color-border-subtle', '#475569');
-              } else {
-                root.style.setProperty('--color-bg-primary', '#ffffff');
-                root.style.setProperty('--color-bg-secondary', '#f8fafc');
-                root.style.setProperty('--color-bg-tertiary', '#f1f5f9');
-                root.style.setProperty('--color-text-primary', '#0f172a');
-                root.style.setProperty('--color-text-secondary', '#475569');
-                root.style.setProperty('--color-brand-green', '#059669');
-                root.style.setProperty('--color-brand-blue', '#2563eb');
-                root.style.setProperty('--color-border-subtle', '#e2e8f0');
-              }
             } catch (e) {
               console.warn('Theme initialization failed:', e);
             }

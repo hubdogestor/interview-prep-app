@@ -1,5 +1,12 @@
 // src/components/dashboard/data.ts
-export const primaryNav = [
+type NavItem = {
+  label: string;
+  key: string;
+  active?: boolean;
+  badge?: string;
+};
+
+export const primaryNav: NavItem[] = [
   { label: "Dashboard", key: "dashboard", active: true },
   { label: "Perfil", key: "profile", active: false },
   { label: "Perguntas", key: "questions", active: false },
@@ -9,7 +16,7 @@ export const primaryNav = [
   { label: "Analytics", key: "analytics", active: false },
 ];
 
-export const secondaryNav = [
+export const secondaryNav: NavItem[] = [
   { label: "Configuracoes", key: "settings" },
   { label: "Suporte", key: "support" },
   { label: "Sair", key: "logout" },
@@ -44,7 +51,7 @@ export const statCards = [
     label: "Feedbacks coach",
     amount: "5 novos",
     change: "-2.10%",
-    trend: "negative" as const,
+    trend: "warning" as const,
     path: "M4 40L32 44L60 30L88 46L116 34L144 50L172 36L200 48L228 28L256 38L284 24L312 30",
     gradientId: "feedbackGradient",
     gradientStops: [

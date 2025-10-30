@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -188,7 +188,7 @@ export function LanguageToggle() {
 export function useLanguage() {
   const [currentLanguage, setCurrentLanguage] = useState<Language>("pt");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleLanguageChange = (event: CustomEvent) => {
       setCurrentLanguage(event.detail.newLanguage);
     };

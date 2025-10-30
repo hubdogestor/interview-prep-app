@@ -42,6 +42,18 @@
     border-color: rgb(var(--border-default));
   }
 
+  /* Remover bordas de foco ao clicar com mouse */
+  *:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+  }
+
+  /* Remover todos os focus rings padrão */
+  *:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
   body {
     @apply font-body text-text-tertiary;
     min-height: 100vh;

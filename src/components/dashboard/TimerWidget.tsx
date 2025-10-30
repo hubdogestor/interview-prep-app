@@ -123,10 +123,8 @@ type TimerWidgetProps = {
 export function TimerWidget({ className }: TimerWidgetProps) {
   const [selectedTime, setSelectedTime] = useState(0);
   const [notifications, setNotifications] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const [focusedElement, setFocusedElement] = useState<string | null>(null);
   const [announcements, setAnnouncements] = useState<string>("");
 
   const { vibrate, isSupported: hapticSupported } = useHapticFeedback();
@@ -237,49 +235,11 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           body: `Sua sessão de ${currentTimerOption.label} terminou.`,
           icon: "/favicon-32x32.png",
           tag: "timer-finished",
-          silent: !soundEnabled
+          silent: true
         });
       }
-      
-      if (soundEnabled) {
-        try {
-          const audio = new Audio("/notification-sound.mp3");
-          audio.volume = 0.7;
-          audio.play().catch(() => {
-            // Fallback para som de beep do sistema
-            try {
-              const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-              if (AudioContextClass) {
-                const ctx = new AudioContextClass();
-                const oscillator = ctx.createOscillator();
-                const gainNode = ctx.createGain();
-                const filter = ctx.createBiquadFilter();
-                
-                oscillator.connect(filter);
-                filter.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                
-                oscillator.frequency.setValueAtTime(800, ctx.currentTime);
-                filter.frequency.setValueAtTime(2000, ctx.currentTime);
-                filter.type = 'lowpass';
-                gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-                
-                oscillator.start();
-                setTimeout(() => {
-                  gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-                  setTimeout(() => oscillator.stop(), 600);
-                }, 100);
-              }
-            } catch (error) {
-              console.warn('Web Audio API not available:', error);
-            }
-          });
-        } catch (error) {
-          console.warn('Audio playback failed:', error);
-        }
-      }
     }
-  }, [countdown.seconds, countdown.running, currentTimerOption, notifications, soundEnabled, isClient, hapticSupported, vibrate]);
+  }, [countdown.seconds, countdown.running, currentTimerOption, notifications, isClient, hapticSupported, vibrate]);
 
   const requestNotificationPermission = () => {
     if (!isClient) return;
@@ -452,13 +412,13 @@ export function TimerWidget({ className }: TimerWidgetProps) {
         {announcements}
       </div>
 
-      <div 
+      <div
         className={cn(
-          "flex items-center gap-3 rounded-2xl border border-border-subtle bg-bg-tertiary/60 p-3 transition-all duration-500",
+          "flex items-center gap-3 rounded-2xl border border-border-subtle bg-bg-tertiary/60 p-3 transition-all duration-500 relative",
           // Melhor feedback visual quando está rodando com múltiplas intensidades
           status === "running" && [
             "border-emerald-400/60 bg-emerald-400/5",
-            "shadow-xl shadow-emerald-400/20", 
+            "shadow-xl shadow-emerald-400/20",
             "shadow-2xl shadow-emerald-400/10"
           ],
           status === "finished" && [
@@ -472,6 +432,36 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
         }}
       >
+        {/* Indicador de status no canto superior esquerdo */}
+        {status === "running" && (
+          <div className="absolute top-2 left-2 flex items-center gap-1">
+            <div className={cn(
+              "h-1 w-1 rounded-full animate-pulse shadow-sm",
+              "bg-emerald-300 shadow-emerald-300/50"
+            )} />
+            <span className={cn(
+              "text-[8px] font-medium",
+              getHighContrastColor("text-emerald-400")
+            )}>
+              ativo
+            </span>
+          </div>
+        )}
+
+        {status === "finished" && (
+          <div className="absolute top-2 left-2 flex items-center gap-1">
+            <div className={cn(
+              "h-1 w-1 rounded-full animate-pulse shadow-sm",
+              "bg-yellow-300 shadow-yellow-300/50"
+            )} />
+            <span className={cn(
+              "text-[8px] font-medium",
+              getHighContrastColor("text-yellow-400")
+            )}>
+              pronto!
+            </span>
+          </div>
+        )}
         {/* Timer Options Button com animações avançadas */}
         <div className="relative">
           <Button
@@ -480,19 +470,16 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             className={cn(
               "h-8 w-8 rounded-full border border-border-subtle/60 p-0 text-lg font-semibold bg-transparent hover:bg-transparent",
               "hover:scale-110 active:scale-95 transition-all duration-300",
-              "focus:ring-2 focus:ring-brand-green/40 focus:ring-offset-2 focus:outline-none",
+              "focus:outline-none focus:ring-0",
               "hover:border-brand-green/60 hover:shadow-lg hover:shadow-brand-green/20"
             )}
             onClick={() => {
               setShowOptions(!showOptions);
               vibrate(50);
             }}
-            title="Opções de tempo (pressione ↑ ou ↓ para navegar)"
             aria-label="Opções de tempo"
             aria-expanded={showOptions}
             aria-haspopup="true"
-            onFocus={() => setFocusedElement('options')}
-            onBlur={() => setFocusedElement(null)}
             onKeyDown={(e) => handleKeyDown(e, 'timer')}
           >
             <span
@@ -527,18 +514,16 @@ export function TimerWidget({ className }: TimerWidgetProps) {
                 variant={index === selectedTime ? "secondary" : "ghost"}
                 size="sm"
                 className={cn(
-                  "w-full justify-start text-xs h-8 bg-transparent hover:bg-transparent focus:ring-2 focus:ring-brand-green/40",
+                  "w-full justify-start text-xs h-8 bg-transparent hover:bg-transparent focus:outline-none focus:ring-0",
                   "transition-all duration-200 hover:scale-105 active:scale-95",
                   index === selectedTime && [
                     "bg-emerald-400/10 text-emerald-300 border border-emerald-400/30",
                     "shadow-md shadow-emerald-400/20"
-                  ],
-                  focusedElement === `option-${index}` && "ring-2 ring-brand-green/60 ring-offset-2 ring-offset-bg-secondary"
+                  ]
                 )}
                 onClick={() => handleTimerSelect(index)}
                 role="menuitem"
                 aria-selected={index === selectedTime}
-                onFocus={() => setFocusedElement(`option-${index}`)}
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                     e.preventDefault();
@@ -644,76 +629,44 @@ export function TimerWidget({ className }: TimerWidgetProps) {
           </div>
           
           <div className="flex gap-1 justify-center">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               onClick={() => {
                 countdown.toggle();
                 announceToScreenReader(status === "running" ? "Timer pausado" : "Timer iniciado");
                 vibrate(50);
               }}
               className={cn(
-                "h-5 px-1.5 text-[8px] text-center transition-all duration-300 focus:ring-2 focus:ring-brand-green/40",
+                "h-5 px-1.5 text-[8px] text-center transition-all duration-300 focus:outline-none focus:ring-0",
                 "bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50",
                 "hover:scale-105 active:scale-95 hover:shadow-md",
-                status === "running" 
-                  ? getHighContrastColor("text-emerald-400") + " border-emerald-400/50 hover:bg-emerald-400/10" 
+                status === "running"
+                  ? getHighContrastColor("text-emerald-400") + " border-emerald-400/50 hover:bg-emerald-400/10"
                   : getHighContrastColor("text-text-primary") + " hover:border-brand-green/60"
               )}
               aria-label={status === "running" ? "Pausar timer (barra de espaço)" : "Iniciar timer (barra de espaço)"}
               aria-keyshortcuts="Space Enter"
-              onFocus={() => setFocusedElement('play-pause')}
               onKeyDown={(e) => handleKeyDown(e, 'timer')}
             >
               {status === "running" ? "Pausar" : "Iniciar"}
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 countdown.reset();
                 setSelectedTime(0);
                 announceToScreenReader("Timer resetado para Pitch");
                 vibrate(150);
               }}
-              className="h-5 px-1.5 text-[8px] text-center bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50 hover:border-brand-green/60 focus:ring-2 focus:ring-brand-green/40 transition-all duration-300 hover:scale-105 active:scale-95"
+              className="h-5 px-1.5 text-[8px] text-center bg-bg-tertiary/60 hover:bg-bg-tertiary/80 border border-border-subtle/50 hover:border-brand-green/60 focus:outline-none focus:ring-0 transition-all duration-300 hover:scale-105 active:scale-95"
               aria-label="Resetar timer (R)"
               aria-keyshortcuts="R"
-              onFocus={() => setFocusedElement('reset')}
               onKeyDown={(e) => handleKeyDown(e, 'timer')}
             >
               Reset
             </Button>
           </div>
-          
-          {status === "running" && (
-            <div className="flex items-center justify-center gap-1">
-              <div className={cn(
-                "h-1 w-1 rounded-full animate-pulse shadow-sm",
-                "bg-emerald-300 shadow-emerald-300/50"
-              )} />
-              <span className={cn(
-                "text-[8px] font-medium",
-                getHighContrastColor("text-emerald-400")
-              )}>
-                ativo
-              </span>
-            </div>
-          )}
-          
-          {status === "finished" && (
-            <div className="flex items-center justify-center gap-1">
-              <div className={cn(
-                "h-1 w-1 rounded-full animate-pulse shadow-sm",
-                "bg-yellow-300 shadow-yellow-300/50"
-              )} />
-              <span className={cn(
-                "text-[8px] font-medium",
-                getHighContrastColor("text-yellow-400")
-              )}>
-                pronto!
-              </span>
-            </div>
-          )}
         </div>
       </div>
 
@@ -728,8 +681,8 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             variant="ghost"
             size="sm"
             className={cn(
-              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent transition-all duration-300 focus:ring-2 focus:ring-brand-green/40",
-              "hover:scale-110 active:scale-95",
+              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent transition-all duration-300",
+              "hover:scale-110 active:scale-95 focus:outline-none",
               notifications ? "text-blue-300" : "text-text-muted hover:text-blue-300"
             )}
             onClick={() => {
@@ -738,9 +691,8 @@ export function TimerWidget({ className }: TimerWidgetProps) {
             title={notifications ? "Notificações ativas - clique para desativar" : "Ativar notificações"}
             aria-label={notifications ? "Desativar notificações" : "Ativar notificações"}
             aria-pressed={notifications}
-            onFocus={() => setFocusedElement('notifications')}
           >
-            <span 
+            <span
               className={cn(
                 "transition-transform duration-300",
                 notifications && "scale-110"
@@ -749,35 +701,8 @@ export function TimerWidget({ className }: TimerWidgetProps) {
               {notifications ? "🔔" : "🔕"}
             </span>
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "h-5 w-5 p-0 text-[10px] bg-transparent hover:bg-transparent transition-all duration-300 focus:ring-2 focus:ring-brand-green/40",
-              "hover:scale-110 active:scale-95",
-              soundEnabled ? "text-emerald-300" : "text-text-muted hover:text-emerald-300"
-            )}
-            onClick={() => {
-              setSoundEnabled(!soundEnabled);
-              vibrate(50);
-              announceToScreenReader(soundEnabled ? "Som desativado" : "Som ativado");
-            }}
-            title={soundEnabled ? "Som ativado - clique para desativar" : "Ativar som"}
-            aria-label={soundEnabled ? "Desativar som" : "Ativar som"}
-            aria-pressed={soundEnabled}
-            onFocus={() => setFocusedElement('sound')}
-          >
-            <span 
-              className={cn(
-                "transition-transform duration-300",
-                soundEnabled && "scale-110"
-              )}
-            >
-              {soundEnabled ? "🔊" : "🔇"}
-            </span>
-          </Button>
         </div>
-        
+
         <div className={cn(
           "text-[10px] transition-colors duration-300",
           getHighContrastColor("text-text-muted")

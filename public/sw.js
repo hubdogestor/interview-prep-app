@@ -10,8 +10,7 @@ const PRECACHE_ASSETS = [
   '/manifest.json',
   '/favicon-32x32.png',
   '/favicon-16x16.png',
-  '/apple-touch-icon.png',
-  '/notification-sound.mp3'
+  '/apple-touch-icon.png'
 ];
 
 // API endpoints to cache

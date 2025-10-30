@@ -1,38 +1,57 @@
-# Interview Prep App
+# Interview Prep App - Template v0
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Visao geral
 
-## Getting Started
+Stack reconstruida com o layout importado do v0.app. O objetivo desta fase e preparar a base de tooling e organizacao para reintroduzir as funcionalidades de dados, IA e automacao das iteracoes anteriores.
 
-First, run the development server:
+## Requisitos
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 22.x
+- npm 10.x
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Confirme as versoes com `node -v` e `npm -v` antes de iniciar.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Passos iniciais
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Instale dependencias: `npm install`
+2. Rode em desenvolvimento: `npm run dev`
+3. Abra http://localhost:3000 para ver o novo dashboard
 
-## Learn More
+## Scripts uteis
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` inicia o servidor de desenvolvimento
+- `npm run build` gera build de producao
+- `npm run start` sobe o build gerado
+- `npm run lint` roda ESLint
+- `npm run lint:fix` aplica correcoes automaticas do ESLint
+- `npm run typecheck` valida os tipos com TypeScript
+- `npm run format` confere arquivos `md` e `json` com Prettier
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Qualidade e fluxo local
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Antes de commit ou PR execute:
 
-## Deploy on Vercel
+1. `npm run lint`
+2. `npm run typecheck`
+3. `npm run format`
+4. `npm run build` (para garantir que o template segue compilando)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Variaveis de ambiente
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variavel              | Status   | Descricao                                                         |
+| --------------------- | -------- | ----------------------------------------------------------------- |
+| `NEXT_PUBLIC_APP_URL` | opcional | URL base usada para gerar metadata quando nao estamos em Vercel   |
+| `VERCEL_URL`          | opcional | Variavel definida automaticamente na Vercel para URLs temporarias |
+| `DATABASE_URL`        | fase 2   | String de conexao MongoDB (Prisma) a ser reinstalada              |
+| `ANTHROPIC_API_KEY`   | fase 3   | Chave do provider primario de IA (Claude)                         |
+| `GOOGLE_API_KEY`      | fase 3   | Chave do provider Gemini (fallback)                               |
+| `OPENAI_API_KEY`      | fase 3   | Chave do provider OpenAI (fallback)                               |
+| `SENTRY_DSN`          | fase 5   | DSN do Sentry para monitoramento                                  |
+| `SENTRY_AUTH_TOKEN`   | fase 5   | Token do wizard do Sentry (util para setup local)                 |
+
+Crie um arquivo `.env.local` na raiz seguindo o necessario para cada fase. Mantenha segredos fora de commits.
+
+## Documentacao adicional
+
+- `todo-template-v0.md` guarda o plano atualizado por fase para reinstalar toda a infraestrutura.
+- `todo29-10.md` permanece como referencia historica do planejamento antigo.

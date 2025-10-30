@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "debugId": "109a25d4-cf50-e854-9fa3-abf6ae2d8eff",
-  "sections": [
-    {"offset": {"line": 8, "column": 0}, "map": {"version":3,"sources":["file:///D:/github2/interview-prep-app/src/app/favicon.ico.mjs%20%28structured%20image%20object%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 48, height: 48 }\n"],"names":[],"mappings":";;;;AAAA;;uCACe;IAAE,KAAA,0IAAG;IAAE,OAAO;IAAI,QAAQ;AAAG","debugId":null}}]
-}

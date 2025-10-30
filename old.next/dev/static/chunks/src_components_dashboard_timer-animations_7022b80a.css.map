@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///D:/github2/interview-prep-app/src/components/dashboard/timer-animations.css"],"sourcesContent":["/* Timer Widget Animations */\r\n\r\n@keyframes pulse-glow {\r\n  0% {\r\n    opacity: 0.2;\r\n    transform: scale(1);\r\n  }\r\n  100% {\r\n    opacity: 0.4;\r\n    transform: scale(1.02);\r\n  }\r\n}\r\n\r\n@keyframes bounce-subtle {\r\n  0%, 100% {\r\n    transform: translateY(0);\r\n  }\r\n  50% {\r\n    transform: translateY(-2px);\r\n  }\r\n}\r\n\r\n@keyframes pulse-subtle {\r\n  0%, 100% {\r\n    opacity: 1;\r\n  }\r\n  50% {\r\n    opacity: 0.8;\r\n  }\r\n}\r\n\r\n/* Utility classes */\r\n.animate-bounce-subtle {\r\n  animation: bounce-subtle 2s ease-in-out infinite;\r\n}\r\n\r\n.animate-pulse-subtle {\r\n  animation: pulse-subtle 3s ease-in-out infinite;\r\n}\r\n"],"names":[],"mappings":"AAEA;;;;;;;;;;;;AAWA;;;;;;;;;;AASA;;;;;;;;;;AAUA;;;;AAIA","debugId":null}}]
-}

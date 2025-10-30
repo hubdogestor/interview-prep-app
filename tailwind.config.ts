@@ -10,6 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        background: "rgb(var(--background) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
+        primary: "rgb(var(--primary) / <alpha-value>)",
+        "primary-foreground": "rgb(var(--primary-foreground) / <alpha-value>)",
+        secondary: "rgb(var(--secondary) / <alpha-value>)",
+        "secondary-foreground": "rgb(var(--secondary-foreground) / <alpha-value>)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
+        "accent-foreground": "rgb(var(--accent-foreground) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        "muted-foreground": "rgb(var(--muted-foreground) / <alpha-value>)",
+        destructive: "rgb(var(--destructive) / <alpha-value>)",
+        "destructive-foreground": "rgb(var(--destructive-foreground, var(--foreground)) / <alpha-value>)",
         "bg-primary": "rgb(var(--bg-primary) / <alpha-value>)",
         "bg-secondary": "rgb(var(--bg-secondary) / <alpha-value>)",
         "bg-tertiary": "rgb(var(--bg-tertiary) / <alpha-value>)",
@@ -29,6 +41,13 @@ const config: Config = {
         "border-subtle": "rgb(var(--border-subtle) / <alpha-value>)",
         "border-default": "rgb(var(--border-default) / <alpha-value>)",
         "border-strong": "rgb(var(--border-strong) / <alpha-value>)",
+        sidebar: "rgb(var(--sidebar) / <alpha-value>)",
+        "sidebar-foreground": "rgb(var(--sidebar-foreground) / <alpha-value>)",
+        "sidebar-primary": "rgb(var(--sidebar-primary) / <alpha-value>)",
+        "sidebar-primary-foreground": "rgb(var(--sidebar-primary-foreground) / <alpha-value>)",
+        "sidebar-accent": "rgb(var(--sidebar-accent) / <alpha-value>)",
+        "sidebar-border": "rgb(var(--sidebar-border) / <alpha-value>)",
+        "sidebar-ring": "rgb(var(--sidebar-ring) / <alpha-value>)",
       },
       fontFamily: {
         grotesk: ["var(--font-grotesk)", "sans-serif"],

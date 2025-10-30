@@ -5,6 +5,32 @@
 
 @layer base {
   :root {
+    /* New dashboard tokens */
+    --background: 14 15 26;
+    --foreground: 236 238 247;
+    --primary: 114 250 147;
+    --primary-foreground: 12 15 24;
+    --secondary: 30 32 44;
+    --secondary-foreground: 228 232 240;
+    --accent: 41 45 62;
+    --accent-foreground: 234 236 246;
+    --muted: 44 46 63;
+    --muted-foreground: 168 174 191;
+    --destructive: 228 95 43;
+    --destructive-foreground: 255 245 238;
+    --success: 114 250 147;
+    --warning: 246 196 69;
+    --pop: rgba(114, 250, 147, 0.25);
+    --header-mobile: 3.5rem;
+
+    --sidebar: 24 25 38;
+    --sidebar-foreground: 226 228 240;
+    --sidebar-primary: 114 250 147;
+    --sidebar-primary-foreground: 18 20 30;
+    --sidebar-accent: 44 47 66;
+    --sidebar-border: 38 40 58;
+    --sidebar-ring: rgba(114, 250, 147, 0.35);
+
     /* Background */
     --bg-primary: 14 15 26;
     --bg-secondary: 21 22 37;
@@ -178,6 +204,18 @@
     box-shadow:
       0 12px 40px rgba(114, 250, 147, 0.12),
       inset 0 0 0 1px rgba(154, 193, 240, 0.12);
+  }
+
+  .ring-pop {
+    --tw-ring-color: var(--pop);
+  }
+
+  .top-header-mobile {
+    top: var(--header-mobile, 3.5rem);
+  }
+
+  .h-header-mobile {
+    height: var(--header-mobile, 3.5rem);
   }
 
   .animate-fade-in {

@@ -3,11 +3,15 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = {
-  default: "bg-brand-blue/20 text-brand-blue",
-  success: "bg-brand-green/20 text-brand-green",
-  warning: "bg-brand-yellow/20 text-brand-yellow",
+  default: "bg-primary/15 text-primary",
+  secondary: "bg-muted text-muted-foreground",
+  success: "bg-success/15 text-success",
+  warning: "bg-warning/15 text-warning",
+  destructive: "bg-destructive/15 text-destructive",
   outline: "border border-border-default text-text-primary",
-};
+  "outline-success": "border border-success text-success",
+  "outline-warning": "border border-warning text-warning",
+} as const;
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: keyof typeof badgeVariants;

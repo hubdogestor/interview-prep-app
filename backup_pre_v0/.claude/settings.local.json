@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where:*)",
+      "Bash(powershell -Command \"Test-Path ''C:\\Program Files\\Microsoft VS Code\\bin\\code.cmd''\")",
+      "Bash(powershell -Command \"Test-Path ''$env:LOCALAPPDATA\\Programs\\Microsoft VS Code\\bin\\code.cmd''\")",
+      "Bash(powershell -Command \"$env:PATH -split '';'' | Select-String -Pattern ''VS Code''\")",
+      "Bash(powershell -Command \"Get-Command code -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell -Command:*)",
+      "Bash(volta install:*)",
+      "Bash(claude:*)",
+      "Bash(npm view:*)",
+      "Bash(volta list:*)",
+      "Bash(dir /b \"D:\\github2\\interview-prep-app\")",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(git checkout:*)",
+      "WebSearch",
+      "Bash(curl.exe:*)",
+      "Bash(msiexec /i \"C:\\Users\\leon4\\Downloads\\node-v25.0.0-x64.msi\" /quiet /norestart)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"C:\\Users\\leon4\\AppData\\Local\\Temp\\update-path.ps1\")",
+      "Bash(powershell:*)",
+      "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\npm.cmd\" install -g @anthropic-ai/claude-code)",
+      "Bash(\"C:\\Users\\leon4\\AppData\\Local\\nodejs\\claude.cmd\" --version)",
+      "Bash(curl:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx stylelint:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": [],
+    "ask": []
+
+  "env": {
+    "MINIMAX_API_KEY": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJHcm91cE5hbWUiOiJMZW9uYXJkbyBNLiIsIlVzZXJOYW1lIjoiTGVvbmFyZG8gTS4iLCJBY2NvdW50IjoiIiwiU3ViamVjdElEIjoiMTk4MzU3MTk2OTk2MTg5MDAyOCIsIlBob25lIjoiIiwiR3JvdXBJRCI6IjE5ODM1NzE5MDUyNzMxNDM1MzMiLCJQYWdlTmFtZSI6IiIsIk1haWwiOiJsZW9uNHJkb0BnbWFpbC5jb20iLCJDcmVhdGVUaW1lIjoiMjAyNS0xMC0zMCAwMDo1MzozMSIsIlRva2VuVHlwZSI6MSwiaXNzIjoibWluaW1heCJ9.qTbGYxks0w3iPhnDJR3DNrfAk84XURUO9tUV-zIhcrSQ-nO1pbRa2FLkstQULTuQORQqA9_BYVwUwG4eE8_i4KRr2vBD-dMvts-q0OWeSawTPGX8U12IzSqNJhGKGNUME2xa0Idl9WtNRcsHasHLjjm986Zpy9nH4OAyyCRdwsGeZGYL95RtQv7RPkcvCZYAIoOMQ2lYJSWjcU73XLKAo8nSdY8gmW9UA0E1D4ioMeoXKKIzSTLJEVjTrRSoatBQ5gXraMkBWbaegxX8yqNOUOJwNPtFe8Jb_32hrUzmNh6_09cKEwFXL7woquBsSdOCP-gdju-_LBjQonXbwuPLKw",
+
+  }
+}

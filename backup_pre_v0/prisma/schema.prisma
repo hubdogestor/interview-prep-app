@@ -1,0 +1,132 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// PROFILE - Perfil do usuário
+// ========================================
+model Profile {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome              String
+  titulo            String
+  foto              String?
+  email             String?
+  telefone          String?
+  linkedin          String?
+  github            String?
+  
+  // Resumo profissional bilíngue
+  resumo            Json     // { pt: string, en: string }
+  
+  anosExperiencia   Int
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("profile")
+}
+
+// ========================================
+// ICEBREAKER - Apresentações curtas
+// ========================================
+model Icebreaker {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipo      String   // "elevator_pitch", "quick_intro", "personal_story"
+  titulo    String
+  
+  // Array de versões (cada versão tem PT e EN)
+  versoes   Json[]   // [{ nome: string, conteudo: { pt: string, en: string }, duracao: number, tags: string[] }]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("icebreakers")
+}
+
+// ========================================
+// COMPETENCIA - Habilidades técnicas
+// ========================================
+model Competencia {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome        String
+  categoria   String   // "technical", "soft_skills", "leadership"
+  nivel       String   // "basic", "intermediate", "advanced", "expert"
+  
+  descricao   Json     // { pt: string, en: string }
+  
+  ferramentas String[] // ["Next.js", "TypeScript", etc]
+  evidencias  String[] // URLs ou descrições de projetos
+  trackRecord Json[]   // [{ projeto: string, resultado: string, ano: number }]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("competencias")
+}
+
+// ========================================
+// EXPERIENCIA - Histórico profissional
+// ========================================
+model Experiencia {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  empresa         String
+  cargo           String
+  periodo         Json     // { inicio: string, fim: string | null }
+  
+  pitchElevator   Json     // { pt: string, en: string }
+  speechCompleto  Json     // { pt: string, en: string }
+  
+  // STAR cases aninhados
+  starCases       Json[]   // [{ titulo: string, situation: string, task: string, action: string, result: string, idioma: "pt" | "en" }]
+  
+  tecnologias     String[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("experiencias")
+}
+
+// ========================================
+// SPEECH - Discursos completos
+// ========================================
+model Speech {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipoVaga        String   // "product_manager", "tech_lead", etc
+  titulo          String
+  versao          String   // "v1", "v2", etc
+  
+  conteudo        Json     // { pt: string, en: string }
+  
+  duracaoEstimada Int      // em minutos
+  foco            String[] // ["liderança", "produto", "dados"]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("speeches")
+}
+
+// ========================================
+// QUESTION - Perguntas para fazer
+// ========================================
+model Question {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoria  String   // "cultura", "produto", "time", "carreira"
+  
+  pergunta   Json     // { pt: string, en: string }
+  
+  contexto   String?  // Quando usar essa pergunta
+  prioridade String   // "alta", "média", "baixa"
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@map("questions")
+}

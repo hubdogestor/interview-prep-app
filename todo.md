@@ -21,11 +21,11 @@
    - [x] Recriar schema das coleções principais (Profile, Icebreaker, Competencia, Experiencia, Speech, Question)
    - [x] Implementar seeds mínimos para desenvolvimento (dados reais ou mock enriquecido)
    - [x] Configurar scripts `prisma generate`, `prisma db push` e política de migrations
-2. **Camada de serviços**
-   - Reconfigurar cliente Prisma compartilhado (`lib/db` ou similar)
-   - Reinstalar tRPC v11 e expor router raiz no App Router (`app/api/trpc/[trpc]/route.ts`)
-   - Criar routers por domínio (`profile`, `dashboard`, `icebreakers`, `competencias`, `experiencias`, `speeches`, `questions`)
-   - Implementar modelos de erro/respostas tipadas + middlewares (ex.: rate limit, logs)
+2. **Camada de serviços** ✅
+   - [x] Reconfigurar cliente Prisma compartilhado (`lib/db` ou similar)
+   - [x] Reinstalar tRPC v11 e expor router raiz no App Router (`app/api/trpc/[trpc]/route.ts`)
+   - [x] Criar routers por domínio (`profile`, `dashboard`, `icebreakers`, `competencias`, `experiencias`, `speeches`, `questions`)
+   - [x] Implementar modelos de erro/respostas tipadas + middlewares (logger implementado)
 3. **Integração com layout**
    - Substituir `mock.json` por loaders RSC consumindo as queries tRPC
    - Definir estado de loading/fallback para cards, gráficos e notificações

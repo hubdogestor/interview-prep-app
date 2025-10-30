@@ -50,11 +50,6 @@ import {
   transactions,
 } from "./data";
 
-// Lazy loading de componentes pesados
-const AnalyticsGrid = lazy(() => 
-  import("./analytics-grid").then(module => ({ default: module.AnalyticsGrid }))
-);
-
 // Hook para performance monitoring
 function usePerformanceMonitoring(componentName: string) {
   useEffect(() => {
@@ -483,17 +478,20 @@ const PerformanceSummary = React.memo(() => {
 
 PerformanceSummary.displayName = "PerformanceSummary";
 
-// Grid de análise com lazy loading
-const LazyAnalyticsGrid = React.memo(() => {
+// Grid de análise simplificado sem lazy loading para evitar erros
+const AnalyticsGrid = React.memo(() => {
   const { ref: gridRef, inView } = useThrottledIntersection();
   usePerformanceMonitoring('AnalyticsGrid');
 
   return (
     <div ref={gridRef}>
       {inView ? (
-        <Suspense fallback={<OptimizedAnalyticsGridSkeleton />}>
-          <AnalyticsGrid />
-        </Suspense>
+        <section className="analytics-grid">
+          <PerformanceSummary />
+          <WeeklyChecklist />
+          <TransactionsPanel />
+          <CompetencyAnalysis />
+        </section>
       ) : (
         <OptimizedAnalyticsGridSkeleton />
       )}
@@ -501,7 +499,7 @@ const LazyAnalyticsGrid = React.memo(() => {
   );
 });
 
-LazyAnalyticsGrid.displayName = "LazyAnalyticsGrid";
+AnalyticsGrid.displayName = "AnalyticsGrid";
 
 // Header com otimizações avançadas
 const DashboardHeader = React.memo<DashboardHeaderProps>(({ onToggleSidebar }) => {
@@ -940,7 +938,7 @@ const DashboardMain = React.memo<DashboardMainProps>(({ profile, profileLoading 
     >
       <ProfileCard profile={profile} isLoading={profileLoading} />
       <StatOverview />
-      <LazyAnalyticsGrid />
+      <AnalyticsGrid />
       <DashboardFooter />
     </main>
   );
@@ -951,15 +949,6 @@ DashboardMain.displayName = "DashboardMain";
 // Service Worker hook
 function usePerformanceOptimizer() {
   useServiceWorker();
-  
-  useEffect(() => {
-    // Preload critical components
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        import('./analytics-grid');
-      });
-    }
-  }, []);
 }
 
 export function DashboardShell() {

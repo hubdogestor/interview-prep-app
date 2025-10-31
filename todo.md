@@ -1,8 +1,8 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 31 de outubro de 2025
-**Status atual:** Fase 2.1 + 2.2 + Fase 3 (parcial) completas ✅
-**Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA
+**Atualização:** 31 de outubro de 2025 (noite)
+**Status atual:** Fase 2.1 + 2.2 + Fase 3 (IA contextual) completas ✅
+**Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA personalizadas
 
 📄 **Ver também:** `CONTEXT.md` para documentação completa do projeto
 
@@ -47,6 +47,8 @@
 - [x] Gerenciar múltiplas versões (Json array no schema)
 - [x] Mutations tRPC: create, update, delete, archive, favorite
 - [x] Botão "Gerar com IA" (UI completa + endpoint integrado)
+- [x] Modal de visualização de versões
+- [x] Durações ajustadas (30-60s / 60-120s / 120-240s)
 
 ### 2.2 Speeches [PRIORIDADE ALTA] ✅ COMPLETO
 - [x] CRUD completo com versioning
@@ -145,9 +147,51 @@
 - [x] Botão "Gerar com IA" nas páginas de Icebreakers e Speeches
 - [x] Redirecionamento automático para edição após geração
 - [x] Toast feedback de sucesso/erro
+- [x] Modal de visualização de versões de Icebreakers
+- [x] Context files para personalização da IA (/context-files/)
+- [x] Prompts adaptados para usar contexto rico (CV, playbook, experiências, competências)
 - [ ] Botões de "Regenerar" (dentro do formulário de edição)
 - [ ] Histórico de gerações (opcional)
 - [ ] Métricas de uso (tokens, tempo de resposta)
+
+---
+
+## Context Files · Sistema de IA Contextual (✅ implementado)
+
+### Estrutura
+```
+/context-files/
+├── README.md                    # Documentação
+├── cv.template.md               # Template de CV
+├── playbook.template.md         # Template de estratégias
+├── experiencias.template.md     # Template de experiências
+├── competencias.template.md     # Template de competências
+├── cv.md                        # Seus dados (gitignored)
+├── playbook.md                  # Seus dados (gitignored)
+├── experiencias.md              # Seus dados (gitignored)
+└── competencias.md              # Seus dados (gitignored)
+```
+
+### Como funciona
+1. Preencha os templates `.template.md` com suas informações reais
+2. Salve como `.md` (sem .template)
+3. A IA lerá TODOS esses arquivos durante geração de conteúdo
+4. Resultado: **apresentações altamente personalizadas** com métricas, realizações e tom de voz autêntico
+
+### Benefícios
+- ✅ Dados centralizados e versionáveis
+- ✅ Fácil de editar (Markdown)
+- ✅ Seguro (gitignored)
+- ✅ IA usa contexto RICO em vez de apenas Profile básico
+- ✅ Preparado para migração futura ao MongoDB
+
+### Status
+- [x] Estrutura criada com templates completos
+- [x] .gitignore configurado (arquivos .md são privados)
+- [x] Prompts da IA adaptados para ler context-files
+- [x] Funções `generateIcebreaker` e `generateSpeech` integradas
+- [ ] Preencher templates com dados reais (ação do usuário)
+- [ ] Migrar para MongoDB (Fase futura)
 
 ---
 
@@ -212,14 +256,62 @@
 
 ## Backlog / Ideias Futuras
 
+### 🎯 Melhorias UX (Alta Prioridade)
+- [ ] **Pré-visualização** de conteúdo gerado antes de salvar
+- [ ] **Comparação lado a lado** de versões (diff view)
+- [ ] **Modo Teleprompter** para speeches (tela cheia, auto-scroll, controle de velocidade)
+- [ ] **Export para PDF/Markdown** de Icebreakers e Speeches
+- [ ] **Timer de prática** para speeches com controle de pausas
+- [ ] **Gravação de áudio** para auto-avaliação e análise de tom
+
+### 🔧 Melhorias Técnicas (Média Prioridade)
+- [ ] **Rate Limiting com Redis/Upstash** (atual é em memória)
+- [ ] **Filtros avançados** nas listagens (favoritos, arquivados, por tipo, por tags)
+- [ ] **Busca full-text** de icebreakers/speeches por título ou conteúdo
+- [ ] **Tracking de tokens** consumidos do Gemini para monitorar custos
+- [ ] **Health check** da Google AI API Key
+- [ ] **Testes unitários** do módulo de IA
+
+### 📊 Dashboard & Métricas
+- [ ] **Widgets de progresso** no dashboard inicial
+  - Total de items por seção
+  - Últimas criações/edições
+  - Items favoritos em destaque
+  - Streak de dias praticando
+- [ ] **Estatísticas de uso da IA**
+  - Gerações por semana
+  - Tipos de conteúdo mais gerados
+  - Taxa de aprovação (editados vs descartados)
+
+### 🤖 IA Avançada
+- [ ] **Perguntas interativas** da IA durante criação de conteúdo
+  - "Qual foi o maior desafio desse projeto?"
+  - "Que métricas você tem desse resultado?"
+  - "Como isso se conecta com a vaga X?"
+- [ ] **Sugestões proativas** de melhorias em conteúdo existente
+- [ ] **Análise de fit** com descrição de vaga (match score + sugestões)
+- [ ] **Modo "coach"** com chat orientado por IA usando contexto do usuário
+- [ ] **Tradução automática** PT-BR → EN dos conteúdos
 - [ ] Integração com calendário para agendar sessões de prática
-- [ ] Modo "coach" com chat orientado por IA utilizando contexto do usuário
-- [ ] Gamificação completa (pontos, badges, níveis)
-- [ ] Exportação de relatórios (PDF/Markdown)
 - [ ] Conector com plataformas externas (LinkedIn, Google Drive)
+
+### 🎮 Gamificação
+- [ ] Pontos, badges, níveis por completude
+- [ ] Ranking de STAR cases por qualidade
+- [ ] Conquistas desbloqueáveis
+- [ ] Desafios semanais de prática
+
+### 🌐 Compartilhamento & Colaboração
 - [ ] PWA / modo offline
-- [ ] Editor rich text (TipTap) para speeches
 - [ ] Compartilhamento público de portfolio
+- [ ] Links compartilháveis de speeches (view-only)
+- [ ] Modo de revisão por pares (feedback de colegas)
+
+### ✏️ Edição Avançada
+- [ ] Editor rich text (TipTap) para speeches
+- [ ] Markdown support nativo
+- [ ] Templates customizáveis por tipo de vaga
+- [ ] Sistema de snippets/blocos reutilizáveis
 
 ---
 
@@ -235,9 +327,9 @@
 
 ### Ordem de Implementação Recomendada
 
-**Semana 1-2:** Fase 2.1 + 2.2 (Icebreakers + Speeches CRUD)
-**Semana 3:** Fase 3.1 + 3.2 (Setup Gemini + Prompts essenciais)
-**Semana 4:** Fase 2.3 + 2.4 (Questions + Experiências CRUD)
-**Semana 5:** Fase 3.3 + 2.5 (Revisão STAR + Competências)
+**Semana 1-2:** Fase 2.1 + 2.2 (Icebreakers + Speeches CRUD) ✅
+**Semana 3:** Fase 3.1 + 3.2 (Setup Gemini + Prompts essenciais) ✅
+**Semana 4:** Fase 2.3 + 2.4 + 2.5 (Questions + Experiências + Competências CRUD)
+**Semana 5:** Fase 3.3 + UI de revisão STAR
 **Semana 6:** Fase 2.6 + 4 (Dashboard + UX polish)
 **Semana 7:** Fase 5 (Deploy + CI/CD)

@@ -1,8 +1,54 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 31 de outubro de 2025 (noite - sessão 2)
-**Status atual:** Fase 2.1 + 2.2 + Fase 3.1-3.2 + Edição com IA completas ✅
+**Atualização:** 31 de outubro de 2025 (noite - sessão 3 CONCLUÍDA)
+**Status atual:** Fase 2.1 ✅ + 2.2 ✅ + 2.3 ✅ + Fase 3 (IA + UX) ✅ COMPLETAS
 **Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA personalizadas
+
+## ✅ Sessão 3 - CONCLUÍDA COM SUCESSO
+
+**4 melhorias UX implementadas:**
+1. ✅ Pré-visualização para Speeches (loading contextual + preview antes de salvar)
+2. ✅ Contadores de texto (TextStats) em todos os formulários
+3. ✅ Botões de Export (Markdown + PDF) nas 3 listagens
+4. ✅ Suggest with AI em Questions (8 perguntas personalizadas com IA)
+
+**Correções adicionais (Sessão 3.1):**
+1. ✅ Fix: Scroll no preview de Speeches (botões ficavam escondidos atrás do texto)
+2. ✅ Fix: Scroll no modal de Sugerir Perguntas (mesmo problema)
+3. ✅ Adicionado botão Voltar em todas as páginas de criação (Icebreaker, Speech, Question)
+4. ✅ Todas as tags agora exibem formato #hashtag em todos os componentes
+5. ✅ Múltiplas tags já funcionam (separar por vírgula no formulário)
+6. ✅ Export funcional em Icebreakers, Speeches e Questions
+
+## 🎯 Próximos Passos (Sessão 4)
+
+**Opções de continuação:**
+
+### Opção A: Modo Prática (Alta Prioridade) 🎯
+```plaintext
+Quero implementar o modo de prática completo:
+1. Teleprompter melhorado (resolver bugs: timer fechando modal, fullscreen)
+2. Sistema de gravação de prática com feedback
+3. Análise de performance (tempo, pausas, velocidade)
+```
+
+### Opção B: CRUD Restante (Completar Fase 2) 📝
+```plaintext
+Quero completar o CRUD das seções restantes:
+1. Questions - completar CRUD (falta apenas favoritar)
+2. Experiências - CRUD completo + STAR Cases
+3. Competências - CRUD completo + evidências
+```
+
+### Opção C: Dashboard & Métricas 📊
+```plaintext
+Quero deixar o Dashboard funcional com dados reais:
+1. Métricas de progresso por seção
+2. Últimas atividades e favoritos
+3. Notificações de revisão
+```
+
+---
 
 📄 **Ver também:** `CONTEXT.md` para documentação completa do projeto
 

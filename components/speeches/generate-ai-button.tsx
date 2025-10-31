@@ -15,9 +15,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import { ContextualLoading } from "@/components/ai/contextual-loading";
+import { TextStats } from "@/components/ui/text-stats";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
-import { Loader2, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+
+interface GeneratedSpeech {
+  conteudo: { pt: string; en: string };
+  duracaoEstimada: number;
+}
 
 export function GenerateAIButton() {
   const [open, setOpen] = useState(false);
@@ -26,26 +35,17 @@ export function GenerateAIButton() {
   const [descricaoVaga, setDescricaoVaga] = useState("");
   const [foco, setFoco] = useState("");
   const [duracaoDesejada, setDuracaoDesejada] = useState(3);
+  const [generatedSpeech, setGeneratedSpeech] = useState<GeneratedSpeech | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+
   const router = useRouter();
   const utils = trpc.useUtils();
 
   const generateMutation = trpc.speeches.generateWithAI.useMutation({
     onSuccess: (data) => {
-      toast.success("Speech gerado com sucesso!");
-      setOpen(false);
-
-      // Cria um novo speech com o conteúdo gerado
-      createMutation.mutate({
-        tipoVaga,
-        titulo: `Speech para ${tipoVaga}`,
-        versao: "1.0",
-        conteudo: data.conteudo,
-        duracaoEstimada: data.duracaoEstimada,
-        foco: foco
-          .split(",")
-          .map((f) => f.trim())
-          .filter(Boolean),
-      });
+      setGeneratedSpeech(data);
+      setShowPreview(true);
+      toast.success("Speech gerado! Revise antes de salvar.");
     },
     onError: (error: { message: string }) => {
       toast.error("Erro ao gerar speech: " + error.message);
@@ -55,6 +55,10 @@ export function GenerateAIButton() {
   const createMutation = trpc.speeches.create.useMutation({
     onSuccess: (data) => {
       utils.speeches.list.invalidate();
+      toast.success("Speech salvo com sucesso!");
+      setOpen(false);
+      setShowPreview(false);
+      setGeneratedSpeech(null);
       router.push(`/speeches/${data.id}/editar`);
     },
     onError: (error: { message: string }) => {
@@ -80,7 +84,32 @@ export function GenerateAIButton() {
     });
   };
 
-  const isLoading = generateMutation.isPending || createMutation.isPending;
+  const handleSave = () => {
+    if (!generatedSpeech) return;
+
+    createMutation.mutate({
+      tipoVaga,
+      titulo: `Speech para ${tipoVaga}`,
+      versao: "1.0",
+      conteudo: generatedSpeech.conteudo,
+      duracaoEstimada: generatedSpeech.duracaoEstimada,
+      foco: foco
+        .split(",")
+        .map((f) => f.trim())
+        .filter(Boolean),
+    });
+  };
+
+  const handleRegenerate = () => {
+    setShowPreview(false);
+    setGeneratedSpeech(null);
+    handleGenerate();
+  };
+
+  const handleCancel = () => {
+    setShowPreview(false);
+    setGeneratedSpeech(null);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,147 +122,166 @@ export function GenerateAIButton() {
           Gerar com IA
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle className="uppercase font-display">
-            Gerar Speech com IA
+          <DialogTitle className="uppercase font-display flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-chart-1" />
+            {showPreview ? "Pré-visualização" : "Gerar Speech com IA"}
           </DialogTitle>
           <DialogDescription>
-            Forneça informações sobre a vaga e a IA criará um speech completo e
-            estruturado baseado no seu perfil.
+            {showPreview
+              ? "Revise o discurso gerado e salve ou regenere"
+              : "Configure as opções e gere um discurso personalizado"}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-6 py-4">
-          <div className="grid gap-3">
-            <Label htmlFor="tipoVaga" className="uppercase">
-              Tipo de Vaga *
-            </Label>
-            <Input
-              id="tipoVaga"
-              placeholder="Ex: Senior Backend Engineer, Tech Lead, CPO, etc."
-              value={tipoVaga}
-              onChange={(e) => setTipoVaga(e.target.value)}
-              disabled={isLoading}
+        <div className="flex-1 min-h-0">
+          {generateMutation.isPending ? (
+            <ContextualLoading
+              messages={[
+                "Analisando seu perfil...",
+                "Coletando experiências relevantes...",
+                "Estruturando o discurso...",
+                "Ajustando tom profissional...",
+                "Finalizando conteúdo..."
+              ]}
+              cycleDuration={2000}
             />
-            <p className="text-xs text-muted-foreground">
-              Para qual tipo de vaga você está se candidatando?
-            </p>
-          </div>
+          ) : showPreview && generatedSpeech ? (
+            <ScrollArea className="h-full max-h-[50vh] pr-4">
+              <Card className="p-6">
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-display uppercase text-sm">
+                      Speech Gerado
+                    </h4>
+                    <TextStats
+                      text={generatedSpeech.conteudo.pt}
+                      wordsPerMinute={150}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Duração estimada: ~{generatedSpeech.duracaoEstimada} minutos
+                  </p>
+                </div>
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                    {generatedSpeech.conteudo.pt}
+                  </p>
+                </div>
+              </Card>
+            </ScrollArea>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Tipo de Vaga <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  placeholder="Ex: Senior Software Engineer, Product Manager"
+                  value={tipoVaga}
+                  onChange={(e) => setTipoVaga(e.target.value)}
+                />
+              </div>
 
-          <div className="grid gap-3">
-            <Label htmlFor="nomeEmpresa" className="uppercase">
-              Nome da Empresa <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Input
-              id="nomeEmpresa"
-              placeholder="Ex: Amazon, Google, Nubank, etc."
-              value={nomeEmpresa}
-              onChange={(e) => setNomeEmpresa(e.target.value)}
-              disabled={isLoading}
-            />
-            <p className="text-xs text-muted-foreground">
-              A IA conectará suas experiências com os valores e cultura da empresa
-            </p>
-          </div>
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Nome da Empresa (Opcional)
+                </Label>
+                <Input
+                  placeholder="Ex: Google, Amazon"
+                  value={nomeEmpresa}
+                  onChange={(e) => setNomeEmpresa(e.target.value)}
+                />
+              </div>
 
-          <div className="grid gap-3">
-            <Label htmlFor="descricaoVaga" className="uppercase">
-              Descrição da Vaga <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Textarea
-              id="descricaoVaga"
-              placeholder="Cole aqui a descrição completa da vaga ou os requisitos principais..."
-              value={descricaoVaga}
-              onChange={(e) => setDescricaoVaga(e.target.value)}
-              disabled={isLoading}
-              rows={6}
-              className="resize-none"
-            />
-            <p className="text-xs text-muted-foreground">
-              A IA adaptará o speech para responder aos requisitos específicos da vaga
-            </p>
-          </div>
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Descrição da Vaga (Opcional)
+                </Label>
+                <Textarea
+                  placeholder="Cole a descrição da vaga para personalizar o speech"
+                  value={descricaoVaga}
+                  onChange={(e) => setDescricaoVaga(e.target.value)}
+                  rows={3}
+                />
+              </div>
 
-          <div className="grid gap-3">
-            <Label htmlFor="foco" className="uppercase">
-              Áreas de Foco <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Input
-              id="foco"
-              placeholder="Ex: liderança, arquitetura, AI/ML, transformação digital"
-              value={foco}
-              onChange={(e) => setFoco(e.target.value)}
-              disabled={isLoading}
-            />
-            <p className="text-xs text-muted-foreground">
-              Separe múltiplas áreas com vírgulas
-            </p>
-          </div>
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Áreas de Foco (Opcional)
+                </Label>
+                <Input
+                  placeholder="Ex: liderança, arquitetura, cloud"
+                  value={foco}
+                  onChange={(e) => setFoco(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Separe por vírgula
+                </p>
+              </div>
 
-          <div className="grid gap-3">
-            <Label htmlFor="duracao" className="uppercase">
-              Duração Desejada (minutos)
-            </Label>
-            <Input
-              id="duracao"
-              type="number"
-              min="1"
-              max="10"
-              value={duracaoDesejada}
-              onChange={(e) => setDuracaoDesejada(parseInt(e.target.value) || 3)}
-              disabled={isLoading}
-            />
-            <p className="text-xs text-muted-foreground">
-              Tempo aproximado de apresentação (1-10 minutos)
-            </p>
-          </div>
-
-          <div className="rounded-lg bg-muted p-4 text-sm">
-            <p className="font-semibold mb-2 uppercase">Estrutura do Speech:</p>
-            <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-              <li>Introdução pessoal e profissional</li>
-              <li>Experiência profissional relevante</li>
-              <li>Competências técnicas e soft skills</li>
-              <li>Realizações e impacto</li>
-              <li>Motivação para a vaga</li>
-            </ul>
-          </div>
-
-          {isLoading && (
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>
-                {generateMutation.isPending
-                  ? "Gerando speech com IA... (isso pode levar alguns segundos)"
-                  : "Salvando..."}
-              </span>
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Duração Desejada (minutos)
+                </Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={10}
+                  value={duracaoDesejada}
+                  onChange={(e) =>
+                    setDuracaoDesejada(parseInt(e.target.value) || 3)
+                  }
+                />
+              </div>
             </div>
           )}
         </div>
 
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={isLoading}
-          >
-            Cancelar
-          </Button>
-          <Button onClick={handleGenerate} disabled={isLoading || !tipoVaga}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Gerando...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Gerar Speech
-              </>
-            )}
-          </Button>
+        <DialogFooter className="flex-shrink-0">
+          <div className="flex items-center gap-2 w-full justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={showPreview ? handleCancel : () => setOpen(false)}
+              disabled={generateMutation.isPending || createMutation.isPending}
+            >
+              {showPreview ? "Voltar" : "Cancelar"}
+            </Button>
+            <div className="flex gap-2">
+              {showPreview ? (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleRegenerate}
+                    disabled={generateMutation.isPending || createMutation.isPending}
+                    className="text-chart-1 border-chart-1 hover:bg-chart-1/10"
+                  >
+                    <Sparkles className="mr-1 h-3 w-3" />
+                    Regenerar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={generateMutation.isPending || createMutation.isPending}
+                  >
+                    {createMutation.isPending ? "Salvando..." : "Salvar"}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={generateMutation.isPending}
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Gerar
+                </Button>
+              )}
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -4,11 +4,25 @@ import MicrophoneIcon from "@/components/icons/microphone";
 import { Button } from "@/components/ui/button";
 import { IcebreakerCard } from "@/components/icebreakers/icebreaker-card";
 import { GenerateAIButton } from "@/components/icebreakers/generate-ai-button";
+import { ExportButton } from "@/components/export/export-button";
 import { api } from "@/lib/trpc/server";
 
 export default async function IcebreakersPage() {
   const caller = await api();
   const icebreakers = await caller.icebreakers.list();
+
+  // Prepare export data
+  const exportItems = icebreakers.flatMap((icebreaker) =>
+    icebreaker.versoes.map((versao: any) => ({
+      title: `${icebreaker.titulo} - ${versao.nome}`,
+      content: versao.conteudo.pt,
+      metadata: {
+        Tipo: icebreaker.tipo,
+        "Duração": `${versao.duracao}s`,
+        Tags: versao.tags?.join(", ") || "",
+      },
+    }))
+  );
 
   return (
     <DashboardPageLayout
@@ -16,6 +30,7 @@ export default async function IcebreakersPage() {
         title: "Icebreakers",
         description: "Your introduction arsenal",
         icon: MicrophoneIcon,
+        action: <ExportButton items={exportItems} filename="icebreakers" />,
       }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

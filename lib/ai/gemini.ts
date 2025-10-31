@@ -104,6 +104,16 @@ export interface StarCaseReview {
   temMetricas: boolean;
 }
 
+export interface SuggestedQuestion {
+  categoria: "tecnica" | "comportamental" | "cultura" | "carreira";
+  pergunta: {
+    pt: string;
+    en: string;
+  };
+  contexto: string;
+  prioridade: "alta" | "media" | "baixa";
+}
+
 /**
  * Gera versões de icebreaker baseado no perfil do usuário
  */
@@ -523,6 +533,103 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     console.error("Erro ao revisar STAR case:", error);
     throw new Error(
       `Erro ao revisar STAR case: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * Sugere perguntas para fazer ao entrevistador baseado no perfil e vaga
+ */
+export async function suggestQuestions(
+  profile: {
+    nome: string;
+    titulo: string;
+    resumo: { pt: string; en: string };
+    anosExperiencia: number;
+  },
+  tipoVaga?: string,
+  empresaAlvo?: string,
+  userId: string = "default"
+): Promise<SuggestedQuestion[]> {
+  // Rate limiting
+  if (!checkRateLimit(`questions-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Tente novamente em alguns minutos."
+    );
+  }
+
+  const model = getModel();
+
+  const contextData = loadContextFiles();
+
+  const prompt = `
+Você é um especialista em preparação para entrevistas de emprego e carreira em tecnologia.
+
+**Perfil do candidato:**
+- Nome: ${profile.nome}
+- Título: ${profile.titulo}
+- Anos de experiência: ${profile.anosExperiencia}
+- Resumo: ${profile.resumo.pt}
+
+${contextData ? `**CONTEXTO ADICIONAL (use TODAS essas informações):**${contextData}` : ""}
+
+${tipoVaga ? `**Tipo de vaga:** ${tipoVaga}` : ""}
+${empresaAlvo ? `**Empresa alvo:** ${empresaAlvo}` : ""}
+
+**Tarefa:** Sugira 8 perguntas estratégicas que o candidato deve fazer ao entrevistador.
+
+**Categorias:**
+- **tecnica**: Perguntas sobre tecnologias, arquitetura, processos de desenvolvimento
+- **comportamental**: Perguntas sobre cultura de trabalho, dinâmica de equipe, estilo de liderança
+- **cultura**: Perguntas sobre valores, diversidade, ambiente de trabalho
+- **carreira**: Perguntas sobre crescimento, desenvolvimento profissional, oportunidades
+
+**Instruções CRÍTICAS:**
+1. Gere EXATAMENTE 8 perguntas distribuídas entre as 4 categorias (2 por categoria)
+2. As perguntas devem ser RELEVANTES ao perfil e experiência do candidato
+3. ${tipoVaga ? `Adapte as perguntas para a vaga de ${tipoVaga}` : "Adapte ao nível de senioridade do candidato"}
+4. ${empresaAlvo ? `Considere o contexto da empresa ${empresaAlvo}` : ""}
+5. Cada pergunta deve ter um contexto explicando QUANDO e POR QUE fazer essa pergunta
+6. Perguntas técnicas devem ser específicas (não genéricas como "qual stack?")
+7. Priorize perguntas que DIFERENCIEM o candidato e demonstrem maturidade profissional
+8. Evite perguntas óbvias que estão no site da empresa
+9. Use dados do contexto adicional para criar perguntas personalizadas
+10. A pergunta em inglês deve ser uma tradução natural e profissional
+
+**Prioridades:**
+- alta: Perguntas essenciais, demonstram profissionalismo, sempre relevantes
+- media: Perguntas importantes mas contextuais
+- baixa: Perguntas opcionais, usar se houver tempo
+
+**Formato de resposta (JSON array):**
+[
+  {
+    "categoria": "tecnica",
+    "pergunta": {
+      "pt": "Como vocês balanceiam débito técnico com entrega de novas features?",
+      "en": "How do you balance technical debt with delivering new features?"
+    },
+    "contexto": "Usar após discutir arquitetura do sistema. Demonstra preocupação com qualidade a longo prazo.",
+    "prioridade": "alta"
+  },
+  ...
+]
+
+Responda APENAS com o JSON array válido, sem markdown ou texto adicional.
+`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+
+    // Parse do JSON (removendo markdown se houver)
+    const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+    return JSON.parse(jsonText);
+  } catch (error: any) {
+    console.error("Erro ao sugerir perguntas:", error);
+    throw new Error(
+      `Erro ao sugerir perguntas: ${error.message || "Erro desconhecido"}`
     );
   }
 }

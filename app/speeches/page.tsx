@@ -4,17 +4,32 @@ import MessageIcon from "@/components/icons/message";
 import { Button } from "@/components/ui/button";
 import { SpeechCard } from "@/components/speeches/speech-card";
 import { GenerateAIButton } from "@/components/speeches/generate-ai-button";
+import { ExportButton } from "@/components/export/export-button";
 import { api } from "@/lib/trpc/server";
 
 export default async function SpeechesPage() {
   const caller = await api();
   const speeches = await caller.speeches.list();
+
+  // Prepare export data
+  const exportItems = speeches.map((speech) => ({
+    title: speech.titulo,
+    content: speech.conteudo.pt,
+    metadata: {
+      "Tipo de Vaga": speech.tipoVaga,
+      Versão: speech.versao,
+      "Duração": `${speech.duracaoEstimada} min`,
+      Foco: speech.foco?.join(", ") || "",
+    },
+  }));
+
   return (
     <DashboardPageLayout
       header={{
         title: "Speeches",
         description: "Your complete narratives",
         icon: MessageIcon,
+        action: <ExportButton items={exportItems} filename="speeches" />,
       }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

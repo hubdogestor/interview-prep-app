@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { TextStats } from "@/components/ui/text-stats";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
 
@@ -249,6 +250,7 @@ export function QuestionForm({ initialData }: QuestionFormProps) {
                   {...field}
                 />
               </FormControl>
+              <TextStats text={field.value || ""} wordsPerMinute={150} className="mt-2" />
               <FormDescription>
                 Quando ou como usar esta pergunta (opcional)
               </FormDescription>

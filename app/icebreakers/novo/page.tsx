@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { IcebreakerForm } from "@/components/icebreakers/icebreaker-form";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import MicrophoneIcon from "@/components/icons/microphone";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
 
@@ -28,6 +30,16 @@ export default function NovoIcebreakerPage() {
         title: "Novo Icebreaker",
         description: "Crie uma nova apresentação",
         icon: MicrophoneIcon,
+        action: (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/icebreakers")}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar
+          </Button>
+        ),
       }}
     >
       <div className="max-w-4xl">

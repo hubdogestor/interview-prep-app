@@ -1,5 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { z } from "zod";
+import { suggestQuestions } from "@/lib/ai/gemini";
 
 export const questionsRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
@@ -87,5 +88,37 @@ export const questionsRouter = createTRPCRouter({
         where: { id: input.id },
         data: { favorite: !question.favorite },
       });
+    }),
+
+  suggestWithAI: publicProcedure
+    .input(
+      z.object({
+        tipoVaga: z.string().optional(),
+        empresaAlvo: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Buscar perfil do usuário (assumindo que existe apenas um)
+      const profile = await ctx.prisma.profile.findFirst();
+
+      if (!profile) {
+        throw new Error(
+          "Perfil não encontrado. Crie um perfil antes de gerar perguntas."
+        );
+      }
+
+      // Gerar perguntas com IA
+      const suggestions = await suggestQuestions(
+        {
+          nome: profile.nome,
+          titulo: profile.titulo,
+          resumo: profile.resumo as { pt: string; en: string },
+          anosExperiencia: profile.anosExperiencia,
+        },
+        input.tipoVaga,
+        input.empresaAlvo
+      );
+
+      return suggestions;
     }),
 });

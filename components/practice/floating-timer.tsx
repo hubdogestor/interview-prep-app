@@ -91,6 +91,7 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - position.x,
@@ -134,6 +135,8 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
         cursor: isDragging ? "grabbing" : "default",
       }}
       onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+      onMouseUp={(e) => e.stopPropagation()}
     >
       {/* Header com drag handle */}
       <div

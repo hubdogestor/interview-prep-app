@@ -125,7 +125,7 @@ export function SpeechCard({ speech }: SpeechCardProps) {
           <div className="flex flex-wrap gap-2">
             {speech.foco.map((item) => (
               <Badge key={item} variant="secondary" className="text-xs">
-                {item}
+                #{item}
               </Badge>
             ))}
           </div>

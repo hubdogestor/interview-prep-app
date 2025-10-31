@@ -98,7 +98,7 @@ export function ViewVersionsModal({
                     <div className="flex gap-2 flex-wrap">
                       {version.tags.map((tag) => (
                         <Badge key={tag} variant="secondary" className="text-xs">
-                          {tag}
+                          #{tag}
                         </Badge>
                       ))}
                     </div>

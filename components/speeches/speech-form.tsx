@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { TextStats } from "@/components/ui/text-stats";
 import { Sparkles, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
@@ -197,6 +198,7 @@ export function SpeechForm({
                   {...field}
                 />
               </FormControl>
+              <TextStats text={field.value || ""} wordsPerMinute={150} className="mt-2" />
               <FormDescription>
                 O texto completo do seu speech em português
               </FormDescription>

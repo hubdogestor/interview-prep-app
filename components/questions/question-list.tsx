@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SuggestAIButton } from "@/components/questions/suggest-ai-button";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
 import { Edit, Heart, Trash2 } from "lucide-react";
@@ -205,9 +206,7 @@ export function QuestionList({ initialQuestions }: { initialQuestions: Question[
         >
           + ADD NEW QUESTION
         </button>
-        <button className="p-4 border border-dashed border-border hover:border-chart-1 hover:bg-chart-1/10 rounded-lg transition-colors uppercase text-sm font-display text-chart-1">
-          ✨ SUGGEST QUESTIONS WITH AI
-        </button>
+        <SuggestAIButton />
       </div>
     </>
   );

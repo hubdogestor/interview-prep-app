@@ -34,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { TextStats } from "@/components/ui/text-stats";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
@@ -278,6 +279,7 @@ export function IcebreakerForm({
                           {...field}
                         />
                       </FormControl>
+                      <TextStats text={field.value || ""} wordsPerMinute={120} className="mt-2" />
                       <FormMessage />
                     </FormItem>
                   )}

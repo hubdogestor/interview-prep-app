@@ -18,6 +18,7 @@ import {
   Settings,
 } from "lucide-react";
 import { TextStats } from "@/components/ui/text-stats";
+import { toast } from "sonner";
 
 interface TeleprompterViewProps {
   open: boolean;
@@ -100,17 +101,20 @@ export function TeleprompterView({
     }
   }, [open]);
 
-  const toggleFullscreen = () => {
+  const toggleFullscreen = async () => {
     if (!containerRef.current) return;
 
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().then(() => {
+    try {
+      if (!document.fullscreenElement) {
+        await containerRef.current.requestFullscreen();
         setIsFullscreen(true);
-      });
-    } else {
-      document.exitFullscreen().then(() => {
+      } else {
+        await document.exitFullscreen();
         setIsFullscreen(false);
-      });
+      }
+    } catch (error) {
+      console.error("Fullscreen error:", error);
+      toast.error("Erro ao alternar tela cheia");
     }
   };
 

@@ -1,7 +1,7 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 30 de outubro de 2025
-**Status atual:** Fase 1 completa ✅ | Iniciando Fase 2
+**Atualização:** 31 de outubro de 2025
+**Status atual:** Fase 2.1 + 2.2 + Fase 3 (parcial) completas ✅
 **Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA
 
 📄 **Ver também:** `CONTEXT.md` para documentação completa do projeto
@@ -39,23 +39,23 @@
 
 ## Fase 2 · Funcionalidades Interview Prep (🚧 em andamento)
 
-### 2.1 Icebreakers [PRIORIDADE ALTA]
-- [ ] CRUD completo (criar, editar, listar, arquivar)
-- [ ] Formulário com React Hook Form + Zod
-- [ ] Favoritar icebreakers
-- [ ] Tipos: elevator_pitch, quick_intro, personal_story
-- [ ] Gerenciar múltiplas versões (Json array no schema)
-- [ ] Mutations tRPC: create, update, delete, archive, favorite
-- [ ] Botão "Gerar com IA" (preparar handler, implementar IA na Fase 3)
+### 2.1 Icebreakers [PRIORIDADE ALTA] ✅ COMPLETO
+- [x] CRUD completo (criar, editar, listar, arquivar)
+- [x] Formulário com React Hook Form + Zod
+- [x] Favoritar icebreakers
+- [x] Tipos: elevator_pitch, quick_intro, personal_story
+- [x] Gerenciar múltiplas versões (Json array no schema)
+- [x] Mutations tRPC: create, update, delete, archive, favorite
+- [x] Botão "Gerar com IA" (UI completa + endpoint integrado)
 
-### 2.2 Speeches [PRIORIDADE ALTA]
-- [ ] CRUD completo com versioning
-- [ ] Editor de texto simples (textarea, não rich text ainda)
-- [ ] Filtros por tipo de vaga
-- [ ] Campo de duração estimada (minutos)
-- [ ] Áreas de foco (tags array)
-- [ ] Mutations tRPC: create, update, delete, favorite
-- [ ] Botão "Gerar versão alternativa com IA" (handler pronto, IA na Fase 3)
+### 2.2 Speeches [PRIORIDADE ALTA] ✅ COMPLETO
+- [x] CRUD completo com versioning
+- [x] Editor de texto simples (textarea, não rich text ainda)
+- [x] Página de visualização de speech
+- [x] Campo de duração estimada (minutos)
+- [x] Áreas de foco (tags array)
+- [x] Mutations tRPC: create, update, delete, favorite, archive
+- [x] Botão "Gerar com IA" (UI completa + endpoint integrado)
 
 ### 2.3 Questions [PRIORIDADE MÉDIA]
 - [ ] CRUD completo
@@ -100,34 +100,39 @@
 
 ---
 
-## Fase 3 · Camada de IA & Automação (🤖)
+## Fase 3 · Camada de IA & Automação (🤖 parcialmente completo)
 
-### 3.1 Configuração Base
-- [ ] Instalar SDK do Google AI (Gemini 2.5 Pro)
-- [ ] Criar módulo `lib/ai/gemini.ts` como provider principal
-- [ ] Configurar `GOOGLE_AI_API_KEY` em `.env.local`
-- [ ] Sistema básico de rate limiting e retry
-- [ ] Error handling e mensagens amigáveis na UI
+### 3.1 Configuração Base ✅ COMPLETO
+- [x] Instalar SDK do Google AI (Gemini 2.5 Pro) - `@google/generative-ai`
+- [x] Criar módulo `lib/ai/gemini.ts` como provider principal
+- [x] Configurar `GOOGLE_AI_API_KEY` em `.env.local`
+- [x] Sistema básico de rate limiting em memória (10 req/min)
+- [x] Error handling e mensagens amigáveis na UI
 
-### 3.2 Prompts Essenciais [ALTA PRIORIDADE]
-- [ ] **Gerar Icebreaker**
-  - Input: Profile (nome, título, resumo, anos exp)
-  - Output: 2-3 versões de apresentação
-  - Tipos: elevator_pitch, quick_intro, personal_story
-  - Armazenar no campo `versoes` (Json array)
+### 3.2 Prompts Essenciais [ALTA PRIORIDADE] ✅ COMPLETO
+- [x] **Gerar Icebreaker**
+  - [x] Input: Profile (nome, título, resumo, anos exp)
+  - [x] Output: 3 versões de apresentação (Curta, Média, Longa)
+  - [x] Tipos: elevator_pitch, quick_intro, personal_story
+  - [x] Endpoint tRPC: `icebreakers.generateWithAI`
+  - [x] UI: Dialog com seleção de tipo
+  - [x] Cria automaticamente icebreaker com versões geradas
 
-- [ ] **Gerar Speech**
-  - Input: Profile + tipo de vaga
-  - Output: discurso completo estruturado
-  - Considerar: foco, duração, tom
-  - Armazenar no campo `conteudo` (Json {pt, en})
+- [x] **Gerar Speech**
+  - [x] Input: Profile + tipo de vaga + foco + duração
+  - [x] Output: discurso completo estruturado
+  - [x] Considerar: foco, duração, tom profissional
+  - [x] Endpoint tRPC: `speeches.generateWithAI`
+  - [x] UI: Dialog com inputs de configuração
+  - [x] Cria automaticamente speech com conteúdo gerado
 
-- [ ] **Revisar STAR Case**
-  - Input: STAR case existente
-  - Output: análise + sugestões
-  - Validar: tem S, T, A, R?
-  - Sugerir: métricas quantificáveis, clareza, impacto
-  - Retornar score de qualidade (0-100)
+- [x] **Revisar STAR Case** (função implementada, UI pendente)
+  - [x] Função `reviewStarCase()` em `lib/ai/gemini.ts`
+  - [x] Validar: tem S, T, A, R?
+  - [x] Sugerir: métricas quantificáveis, clareza, impacto
+  - [x] Retornar score de qualidade (0-100)
+  - [ ] Integrar endpoint tRPC
+  - [ ] Criar UI de revisão
 
 ### 3.3 Nice-to-have [BACKLOG]
 - [ ] Sugerir perguntas para entrevistadores (baseado em vaga)
@@ -136,8 +141,11 @@
 - [ ] Traduzir conteúdo PT-BR → EN automaticamente
 
 ### 3.4 Integrações
-- [ ] Loading states durante geração de IA
-- [ ] Botões de "Regenerar" e "Aceitar/Editar"
+- [x] Loading states durante geração de IA (spinner + mensagens)
+- [x] Botão "Gerar com IA" nas páginas de Icebreakers e Speeches
+- [x] Redirecionamento automático para edição após geração
+- [x] Toast feedback de sucesso/erro
+- [ ] Botões de "Regenerar" (dentro do formulário de edição)
 - [ ] Histórico de gerações (opcional)
 - [ ] Métricas de uso (tokens, tempo de resposta)
 

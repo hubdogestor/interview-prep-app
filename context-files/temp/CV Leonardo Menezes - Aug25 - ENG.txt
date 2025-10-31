@@ -1,0 +1,81 @@
+Leonardo Menezes de Souza
+Program Management | Strategy | Innovation
+Phone: +55 51 9 9961 2787 | Email: leon4rdo@gmail.com | Location: Porto Alegre / RS
+LinkedIn: https://www.linkedin.com/in/menezesleonardo/ 
+
+SUMMARY
+Executive leader with 15+ years of experience driving digital transformation, AI-powered process optimization, and strategic governance across payments, financial services, healthcare, telecom, and government sectors. Recognized for aligning strategy, innovation, and execution to deliver measurable business value. Proven track record leading end-to-end programs; including digital bank launches, public-sector modernization, and regulatory compliance; with product portfolios generating $200M+ in revenue. Skilled in leading cross-functional teams (tech and non-tech) across LATAM, US, Europe, and China. 
+
+Core competencies: Strategy & Innovation | Digital Transformation | Governance & Portfolio Management | Program Management | Six Sigma | Lean | Product Management | OKRs & Value-Based Management | PMO & VMO | Agile & SAFe | Executive Leadership | Global Team Development | Corporate Venture & Startup Mentoring | AI | ML | n8n
+
+EXPERIENCE
+Advisor (CAGE / Executive Office)				?? 07/2024 – Present 	?? RS State, Brazil
+Secretaria da Fazenda do RS
+State Treasury of Rio Grande do Sul, responsible for fiscal management and tax administration.
+* Led the PMO for the Profisco II Program in partnership with the Inter-American Development Bank (IDB).
+* Designed and implemented value-based management frameworks, OKRs, and governance processes.
+* Developed and launched an executive PMO Portal featuring real-time dashboards and knowledge base.
+* Initiated AI-readiness assessment to explore ML-based forecasting models and predictive risk indicators for fiscal operations.
+* Mentored government teams in portfolio management, standardizing practices (~$1.4M in efficiency gains through process optimization and reduced project overruns).
+* Key Impact: Modernizing fiscal management and strengthening governance practices at state level.
+
+Strategy Advisor / Group Product Manager		?? 05/2021 - 02/2024 	?? Porto Alegre, Brazil
+Unimed
+Largest healthcare cooperative in Southern Brazil (695k members; $3.2B revenue).
+* Reported to CEO/Board, advising on strategy and market positioning.
+* Designed and implemented corporate OKR & KPI frameworks.
+* Led AI initiative to automate claims triage and member onboarding, improving decision-making speed and reducing processing time by 30%.
+* Launched 4 new digital products, one representing 5% of total revenue (~$16M).
+* Increased EBITDA by 22% (~$70.4M impact), improved NPS by 6%, reduced app churn by 15% (~$45M savings).
+* Key Impact: Boosted financial performance and customer satisfaction, positioning Unimed Porto Alegre as an industry innovator.
+
+Product Strategist						?? 05/2018 - 05/2021 	?? Brazil
+Sicredi
+Brazil's first cooperative financial institution (6.4M+ members, $263B assets).
+* Defined product strategy and lifecycle management (discovery ? delivery).
+* Released 15+ digital products; increased adoption of Woop Digital Bank App by 25% (~$50M revenue).
+* Led process automation initiatives using ML-based analytics to accelerate credit scoring and fraud detection, boosting operational metrics.
+* Contributed as board advisor in transformation planning and change management.
+* Evaluator in Inovar Juntos Innovation Program (PUC).
+* Key Impact: Expanded Sicredi's digital portfolio while strengthening product management maturity.
+PMO Manager & Agile Leader				?? 05/2015 - 05/2018 	?? Global
+HSBC & Bradesco
+One of the world's largest banks (60+ countries, $2.9T assets) / Brazil's largest private bank ($1.7T assets; 36M+ clients).
+* Directed PMO for Banquo Program, HSBC ? Bradesco migration; transitioned ($3B migration) accounts with 0 data loss.
+* Ensured seamless migration with FATCA compliance and client retention;
+* Increased private banking portfolio by 30%. 
+* Spearheaded the launch of Banco Digital Next; Reduced service time by 20%.
+* Partnered with data science team to explore machine learning models for personalized digital banking offers.
+* Co-founded Agile Community @ InovaBra, scaling Agile across 2k+ professionals.
+* Key Impact: Delivered strategic digital transformation and embedded agile culture in a top-tier bank.
+
+Program & PMO Manager					?? 10/2009 - 04/2015 	?? Latin America
+Huawei
+Global ICT leader (170+ countries; $90B+ revenue).
+* Led PMO War Room; mentored 30+ PMs, managed 20+ subcontracted teams.
+* Delivered turnkey telecom programs for major operators (Vivo, Claro, Oi, TIM).
+* Applied Lean Six Sigma to develop a proprietary TO-BE process model, reducing SLA from 382 to 62 days, adopted globally (~$120M in efficiency gains).
+* Managed Brazil's first 4G station (2012) and FIFA World Cup 2014 telecom rollout.
+* Key Impact: Awarded as Global Excellent PM (2012, 2013 and 2014) for operational efficiency at scale.
+
+
+EDUCATION
+MSc, Business Management (Innovation & Sustainability) - Unisinos, 2022
+Postgraduate, Cooperative Financial Institutions Management - Escoop, 2021
+MBA, Digital Product Leadership - TERA, 2019
+MBA, Project Management - FGV, 2012
+BSc, Business Administration - Unicruz, 2009
+
+TRAINING / COURSES
+AI Agent Manager Program - NoCodeStartup, 2025
+Next frontier – AI & Data - JoinIA, 2023
+Innovating in Healthcare - Harvard School of Public Health, 2023
+Product Management - PM3, 2021
+Product Discovery - PM3, 2021
+Future-oriented teams - Aerolito, 2020
+
+LANGUAGES
+English: Fluent 	Portuguese: Native 	Chinese: Beginner 
+
+CERTIFICATIONS
+CPA-10 | CPA-20 | PMP ® | CSM ® | SFC ® | PMO-CP ® | CAC ® | SAFe SSM ® | VMP ®

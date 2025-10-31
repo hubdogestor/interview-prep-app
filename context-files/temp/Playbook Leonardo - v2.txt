@@ -1,0 +1,552 @@
+?? Playbook Profissional – Leonardo Menezes
+
+1 – Huawei (2009–2015)
+Cargo: Gerente de Programas & PMO | América Latina
+Contexto
+* A Huawei assumia contratos full-turnkey com grandes operadoras (Vivo, Claro, Oi, TIM), entregando infraestrutura completa de telecom (rede móvel, core de rede, backbone, torres, energia, sistemas de billing).
+* O ciclo médio de entrega era de 382 dias, o que comprometia contratos, receita e imagem junto a ANATEL e FIFA (Copa 2014).
+* Além do desafio técnico, havia forte pressão política e regulatória: prazos fixos para grandes eventos (ex.: Copa do Mundo 2014) e compromissos de rollout do 4G pioneiro no Brasil (2012).
+
+Ações & Liderança (Skin in the Game)
+* Estruturei a War Room do PMO ? centro de comando com dashboards, monitoramento em tempo real de rollout e indicadores de SLA, centralizando gestão de 20 fornecedores e 30+ PMs.
+* Redesenhei processos de rollout: criei um modelo proprietário de governança de implantação baseado em Critical Path Method (CPM), Earned Value Management (EVM) e controle de lead time ponta a ponta (site survey ? licença ? construção ? ativação).
+* Hands-on em campo: participei diretamente de negociações com prefeituras e ANATEL para acelerar licenciamento de torres, eliminando gargalos regulatórios que travavam o cronograma.
+* Padronizei o uso de dashboards executivos em Primavera/MS Project Server integrados a relatórios financeiros, cruzando Capex previsto vs. realizado para medir impacto real de atrasos.
+* Conduzi pessoalmente reuniões semanais de Root Cause Analysis (RCA) usando Ishikawa e 5 Whys para identificar causas de atrasos em campo (ex.: falta de insumos, subcontratados sem SLA, falhas de logística).
+* Estruturei um processo de escalonamento direto com operadoras (Claro, TIM, Vivo) para priorizar obras críticas ligadas a grandes contratos e eventos (ex.: estádios da Copa 2014).
+* Introduzi a prática de Vendor Performance Index (VPI): fornecedores eram ranqueados mensalmente com base em SLA, qualidade e custo ? renegociei contratos atrelando bônus/multas a esse índice.
+
+Ferramentas & Técnicas aplicadas
+* Metodologias: PMI, PMO Framework, Lean, Six Sigma (DMAIC), RCA (Ishikawa/5 Whys).
+* Sistemas: Primavera P6, MS Project Server, ERP SAP (módulo MM/PM), dashboards customizados em Excel VBA + BI.
+* Processos: SLA Management, VPI (Vendor Performance Index), EVM (Earned Value Management), Fast-Track Scheduling.
+* Gestão de times: squads multidisciplinares (engenharia civil, RF, TI, fornecedores locais).
+
+Resultados
+* Redução do SLA médio de 382 ? 62 dias (ganho de ~320 dias por site).
+* Eficiência financeira de ~$120M, com modelo replicado globalmente pela Huawei como referência.
+* Entreguei a primeira estação 4G do Brasil (2012) antes do prazo, garantindo vantagem competitiva frente a Ericsson/Nokia.
+* Responsável direto pelo programa de telecom da Copa do Mundo 2014, assegurando conectividade 100% operacional nos 12 estádios.
+* Recebi o prêmio Global Excellent PM (2012, 2013, 2014) por performance consistente.
+
+Lições aprendidas / Narrativa de entrevista
+“Na Huawei, entendi que eficiência não vem só de planejar melhor, mas de entrar no detalhe técnico e operacional. Eu mesmo conduzia análises de causa raiz de atrasos, redesenhei contratos de fornecedores e cheguei a negociar licenciamento de torres diretamente com órgãos públicos. Essa postura hands-on foi o que permitiu reduzir de 382 para 62 dias o ciclo de entrega e entregar o 4G e a Copa do Mundo sem falhas. Essa experiência consolidou minha visão de que governança, tecnologia e execução no detalhe são indissociáveis.”
+
+Exemplos de Releases/Entregas Técnicas:
+1. Implantação da primeira estação 4G do Brasil (2012).
+2. Rollout de infraestrutura de telecom nos 12 estádios da Copa 2014.
+3. Implementação de dashboard executivo de rollout em Primavera P6 + SAP, usado globalmente.
+4. Redesenho de processos de rollout com Critical Path Method + EVM ? SLA de 382 ? 62 dias.
+5. Criação do Vendor Performance Index (VPI) para gestão de fornecedores, atrelando bônus/multas a SLA.
+6. Negociação direta com prefeituras/ANATEL para acelerar licenciamento de torres.
+7. Estruturação da War Room do PMO, com 30 PMs e 20 fornecedores integrados.
+
+### Racional importante: Como cheguei nos 120M USD ? (Eficiência Financeira) (Huawei)
+
+Período: 2009 a 2015	
+Entrega: Rollout 4G para tim, vivo, oi e claro	
+	
+Investimentos totais em 4G no Brasil em 2012 ~ 2014: US$ 10-15 Bi	
+Huawei Share = ~ 30%	
+Contratos Huawei: US$ 3-5 Bi	
+	
+Região Sul: ~ 15%	
+	
+Eficiência operacional (80% redução SLA), salvando custos operacionais em 50%	
+	
+Economia de ~20% a 40% do valor do contrato	
+Faster rollout = revenue earlier	
+	
+Valor estimado de economia com a redução de 80% do SLA: US$ 90-300 milhões	
+(média de 180M, sendo 60M para cada estado)	
+	
+[média PR/SC 120M usd]	
+
+
+Role/Cargo: As Program & PMO Manager in Latin America, I led telecom program delivery and mentored 30+ PMs.Contribuições: Managed turnkey telecom programs for Vivo, Claro, Oi, and TIM, reduced SLA from 382 to 62 days,and contributed ~$120M in efficiency gains across two southern states.Como Cheguei aos Resultados:I streamlined operations by redesigning workflows and negotiating with subcontractors, cutting delivery times significantly.My leadership in the 2012 4G launch and 2014 World Cup rollout leveraged global best practices.Key Impact:Achieved operational efficiency at scale, earning Global Excellent PM awards (2012-2014).
+
+
+
+
+
+
+
+
+2 – HSBC (2015–2016)
+Cargo: Sr. Project Manager – Retail Banking & Wealth Management (RBWM), LATAM
+
+Contexto
+* O HSBC estava em processo de saída do Brasil (venda para Bradesco, valor de ~US$ 5,2Bi).
+* Eu era responsável pelo portfólio RBWM (Retail Banking & Wealth Management) na América Latina.
+* Desafio crítico: migrar milhões de contas, cartões e operações de private banking para o Bradesco sem perdas de dados, falhas regulatórias ou impacto negativo na base de clientes.
+* Reguladores (BACEN, CVM, FATCA/IRS) exigiam compliance absoluto, especialmente em contas internacionais e clientes HNWI (High Net Worth Individuals).
+
+Ações & Liderança (Skin in the Game)
+* Gestão do Portfólio RBWM LATAM: supervisionava projetos de migração em Brasil, México e Argentina, garantindo alinhamento global.
+* Hands-on em Compliance: atuei diretamente na implantação de processos de conformidade FATCA (Foreign Account Tax Compliance Act), revisando políticas de due diligence, KYC e PLD em milhares de contas cross-border.
+* Conduzi a migração HSBC ? Bradesco (R$ 3Bi em ativos), definindo plano de transição de dados e clientes ? atuei no mapeamento de bases de dados, reconciliação e testes de integridade.
+* Estruturei squads com times globais (Índia, China, Polônia, Malásia) para realizar Data Validation e Data Cleansing, garantindo que nenhum cliente fosse perdido no processo.
+* Automatizei monitoramento regulatório: criei dashboards de conformidade que cruzavam métricas de migração com riscos regulatórios ? apresentado semanalmente ao C-Level e ao BACEN.
+* Redesenhei fluxos de atendimento em agências e canais digitais ? reduzi em 20% o tempo de atendimento com otimizações de front-end e integração CRM-core bancário.
+* Fui responsável direto pela retenção da base de clientes HNWI, criando mecanismos de client outreach e cross-selling para evitar evasão durante a migração.
+
+Ferramentas & Técnicas aplicadas
+* Governança: PMI, PMO Framework, Program Steering Committees.
+* Compliance & Risco: FATCA, KYC, AML, SOX Controls.
+* Sistemas: Core Banking Systems (HSBC Hexagon), CRM Integrations, Data Migration Frameworks, Tableau/Excel VBA para dashboards.
+* Processos: Data Validation, Reconciliation, Client Retention Playbooks, SLA Management.
+* Gestão Multicultural: equipes na Índia (offshore operations), Polônia (Data Ops), China (RegTech) e Malásia (IT Ops).
+
+Resultados
+* Migração de milhões de contas com 0 perda de dados.
+* R$ 3Bi em ativos migrados com conformidade FATCA e auditoria aprovada sem ressalvas.
+* Crescimento de 30% no portfólio de Private Banking, devido a retenção ativa e novas ofertas.
+* Redução de 20% no tempo de atendimento ao redesenhar processos no front digital e físico.
+* Reconhecimento como líder chave do Programa Banquo (Global Markets Workstream).
+
+Lições aprendidas / Narrativa de entrevista
+“No HSBC, vivi o maior desafio da minha carreira em compliance e migração: transferir bilhões em ativos e milhões de contas para outro banco, sob escrutínio de BACEN, IRS e auditorias globais. Fui eu quem definiu os frameworks de due diligence FATCA, liderei squads internacionais para validar dados e pessoalmente negociei ajustes de processo para garantir 0 perda de clientes. Esse case me ensinou que em operações críticas, a diferença entre sucesso e desastre está em entrar no detalhe técnico e garantir governança diária. Ao final, entregamos uma migração limpa, regulatoriamente perfeita e ainda com expansão da base HNWI.”
+
+Exemplos de Releases/Entregas Técnicas:
+1. Migração de R$ 3Bi em ativos e milhões de contas para Bradesco, sem perdas.
+2. Implementação de controles FATCA/KYC/AML em portfólios de clientes internacionais.
+3. Criação de dashboards regulatórios em Tableau/Excel VBA para BACEN e IRS.
+4. Condução de Data Validation & Reconciliation em bases críticas com times da Índia/Polônia.
+5. Redesenho de fluxos de atendimento ? redução de 20% no TMA (tempo médio de atendimento).
+6. Retenção ativa da base HNWI com client outreach campaigns.
+7. Conformidade plena em auditorias externas e internas.
+
+
+
+
+
+### Racional importante: Como cheguei nos 3M USD ? (HSBC / Bradesco)
+
+Período: 2015 a 2018
+Entrega: Aumento do portfólio do private banking em 30%
+Período chave: 2015-2016 venda do HSBC para o Bradesco
+Valor da venda: US$5,2bilhões, incluindo migração de contas
+
+Dados do HSBC Brasil: Ativos totais de ~US$53 Bi em 2015, venda aumentou ativos do bradesco em 16%
+Carteira RBWM: ~ 60% a 70% dos ativos
+Custódia: 60% local e 40% internacional (offshore/globais)
+
+30% de aumento: Aplicado ao portfólio RBWM, representando crescimento via migração/retention
+(0 data loss / FATCA compliance)
+
+Estimativa:
+Valor total da carteira RBWM: US$ 30-40 Bi
+Private banking: US$ 8-12 Bi
+30% de aumento: US$ 2,4-3,6 Bi adicionais
+
+Isso representa crescimento significativo, alinhado com benchmarks de private banking no Brasil
+ (crescimento médio 20-40% pós-migrações).
+
+Role/Cargo: I managed the PMO for the HSBC-to-Bradesco migration and led Agile transformation as a PMO Manager.Contribuições: Directed the Banquo Program with zero data loss, ensured FATCA compliance, and increased the private banking portfolio by 30% (~$3M from a $3B migration).Como Cheguei aos Resultados:I coordinated a team of 2,000+ professionals, implementing rigorous testing and Agile workflows to ensure a seamless transition.My focus on client retention strategies and process optimization drove the portfolio growth.Key Impact:Delivered a strategic digital transformation and embedded an Agile culture in a top-tier bank.
+3 – Bradesco (2016–2018)
+Cargo: Program Manager / Agile Leader
+Contexto
+* Após a aquisição do HSBC Brasil (~US$ 5,2Bi), o Bradesco precisava integrar operações, sistemas e portfólios de clientes.
+* Havia risco de incompatibilidade entre sistemas core (HSBC Hexagon vs. Bradesco Core), gaps em processos de compliance e perda de clientes durante a integração.
+* Além disso, o banco buscava modernizar sua arquitetura corporativa para ganhar escalabilidade e adotar práticas ágeis.
+
+Ações & Liderança (Skin in the Game)
+* PMO do Programa Banquo (Workstream Global Markets): assumi a coordenação do PMO responsável pela integração dos sistemas HSBC ? Bradesco.
+o Estruturei a governança de integração: defini Steering Committees quinzenais, KPIs de integração e relatórios de riscos.
+o Hands-on em Data Migration: participei do mapeamento de tabelas críticas de clientes, reconciliação de saldos e execução de stress tests.
+o Supervisei testes de User Acceptance (UAT) em parceria com equipes de tecnologia na Polônia e Índia, validando consistência de transações em tempo real.
+* Arquitetura Corporativa: implementei a plataforma PEGA Systems, que modernizou fluxos de backoffice e atendimento.
+o Redesenhei processos de abertura de contas, crédito e atendimento com BPM (Business Process Management).
+o Atuei diretamente na definição de regras de negócio, workflows e integração com sistemas legados.
+* Gestão Multicultural: liderei times no Brasil, Índia e China. Conduzi reuniões técnicas diárias em inglês para revisar status de integração, gaps de compliance e falhas de sistema.
+* Compliance: alinhei processos com BACEN e CVM ? criei dashboards de conformidade, monitorando aderência regulatória a cada sprint.
+* Retenção de Clientes: coordenei iniciativas de CRM e relacionamento para mitigar churn da base HSBC ? Bradesco.
+
+Ferramentas & Técnicas aplicadas
+* Metodologias: PMI, PMO Framework, SAFe Agile, BPMN 2.0.
+* Sistemas: PEGA BPM, Core Banking Bradesco, HSBC Hexagon, SAP FI/CO.
+* Processos: Data Migration Testing, User Acceptance Testing (UAT), Compliance Dashboards, Customer Retention Playbooks.
+* Governança: Steering Committees, Risk Heatmaps, RAID Logs (Risks, Assumptions, Issues, Dependencies).
+
+Resultados
+* Conduzi integração HSBC?Bradesco com 0 falhas críticas e 100% de conformidade regulatória.
+* Modernizei processos corporativos via PEGA BPM, reduzindo 20% no tempo médio de atendimento.
+* Garantimos retenção da base migrada, com aumento de 30% no portfólio de private banking.
+* Reconhecido internamente como líder de integração crítica, pela entrega sem incidentes.
+
+Lições aprendidas / Narrativa de entrevista
+“No Bradesco, meu papel foi literalmente estar no detalhe da integração HSBC?Bradesco. Eu mesmo mapeei tabelas de dados, conduzi UATs com times offshore, redesenhei workflows em PEGA e montei dashboards de compliance para monitorar cada sprint. Não foi apenas coordenação; eu estive presente na parte técnica, testando, ajustando e resolvendo. Essa experiência me mostrou que em integrações bilionárias, a liderança só é efetiva se também mergulhar no detalhe técnico.”
+
+Exemplos de Releases/Entregas Técnicas:
+1. Implantação da plataforma PEGA BPM para backoffice e atendimento.
+2. Definição de workflows digitais para abertura de contas e crédito.
+3. Implementação de UAT Testing em integração de dados HSBC?Bradesco.
+4. Criação de dashboards de compliance BACEN em sprints semanais.
+5. Migração de sistemas core com 0 falhas críticas.
+6. Estruturação de RAID Logs (risks, assumptions, issues, dependencies) para governança.
+7. Iniciativas de retenção da base HSBC, evitando churn.
+
+
+
+3.1 – Banco Digital Next (2016–2018)
+Cargo: Program Manager / Agile Leader – Digital Transformation
+
+Contexto
+* O Bradesco criou o Banco Digital Next para competir com Nubank e players digitais.
+* Desafio: lançar um banco digital from scratch em menos de 12 meses, com foco em UX, mobile-first e escalabilidade.
+* O projeto exigia co-liderança com tecnologia e design, implantação ágil em larga escala e uma plataforma robusta e segura.
+
+Ações & Liderança (Skin in the Game)
+* Definição da Estratégia de Produto: participei da elaboração da visão de produto e da arquitetura funcional do Next ? onboarding digital, cartões de crédito, conta digital, pagamentos e marketplace.
+* Hands-on em Jornada de Usuário: trabalhei diretamente com squads de UX/UI na prototipação de telas e definição de fluxos de abertura de conta ? co-criei jornadas KYC, biometria facial e autenticação multifator.
+* Implantação Ágil: co-fundei a Comunidade Ágil @ InovaBra ? treinei 2k+ profissionais em métodos ágeis e criei um modelo escalável de SAFe Agile.
+* Infraestrutura: participei da definição da arquitetura cloud-híbrida (Bradesco Data Center + AWS), assegurando compliance BACEN.
+* Governança de Segurança: implementei processos de antifraude no onboarding ? device fingerprinting, validação documental OCR e regras transacionais iniciais.
+* Go-to-Market: colaborei com marketing no plano de lançamento ? criei relatórios de readiness, testei funis de conversão no app e acompanhei métricas de early adoption.
+
+Ferramentas & Técnicas aplicadas
+* Metodologias: SAFe Agile, Scrum, Design Thinking, Dual-Track Discovery/Delivery.
+* Sistemas: Core Banking Bradesco, Middleware API, AWS, OCR para KYC, Fraud Scoring Tools.
+* Processos: User Journeys, UAT Testing, Continuous Integration/Continuous Delivery (CI/CD), A/B Testing.
+* Gestão: Squads multidisciplinares (produto, tecnologia, design, marketing).
+
+
+Resultados
+* Lançamento do Banco Digital Next em menos de 12 meses, competindo diretamente com Nubank.
+* Redução de 20% no tempo de atendimento via digital channels.
+* Construção de plataforma mobile-first escalável, hoje referência em banco digital no Brasil.
+* Treinamento de +2k profissionais em Agile via Comunidade Ágil @ InovaBra.
+
+Lições aprendidas / Narrativa de entrevista
+“No Next, fui parte da criação de um banco digital do zero. Eu mesmo desenhei jornadas de onboarding com KYC e biometria, participei de testes UAT, defini arquitetura híbrida e garanti que o antifraude estivesse embutido desde o dia 1. Essa experiência me mostrou que lançar um banco digital não é só ter a ideia, mas também mergulhar no detalhe técnico do app, das APIs, da cloud e da segurança para entregar escala e confiança ao cliente.”
+
+Exemplos de Releases/Entregas Técnicas:
+1. Lançamento do app mobile-first do Next.
+2. Criação de jornada de onboarding digital com OCR + biometria facial.
+3. Implementação de autenticação multifator no login e transações.
+4. Definição da arquitetura híbrida cloud (AWS + Data Center Bradesco).
+5. Implantação de device fingerprinting antifraude no app.
+6. Criação do design system do Next em parceria com UX/UI.
+7. Fundador da Comunidade Ágil @ InovaBra, treinando 2k+ profissionais.
+8. Lançamento do marketplace interno com parcerias digitais.
+
+
+
+4 – Sicredi (2018–2021)
+Cargo: Product Strategist – Transformação Digital
+
+Contexto
+* O Sicredi, primeira instituição financeira cooperativa do Brasil, tinha o desafio de acelerar sua transformação digital para competir com fintechs e bancos digitais.
+* Cenário: base de mais de 6,4M cooperados, sistemas legados pouco integrados, baixa maturidade em produto digital.
+* Minha missão era estruturar a estratégia de produto, aumentar a maturidade em gestão de ciclo de vida e expandir a adoção de canais digitais.
+
+Ações & Liderança (Skin in the Game)
+* Estratégia de Produto End-to-End: implementei o modelo Dual-Track (Discovery ? Delivery), inexistente até então.
+o Conduzi workshops de product discovery com cooperados e stakeholders ? levantamento de dores reais (ex.: onboarding lento, navegação confusa no app).
+o Hands-on: participei da priorização do backlog via Weighted Shortest Job First (WSJF), balanceando valor de negócio, esforço e risco.
+* Gestão de Roadmap: estruturei OKRs alinhados à diretoria e criei dashboards de métricas (adoção digital, NPS, MAU, churn).
+* Transformação Organizacional: apoiei o Conselho no planejamento de transformação, desenhando frameworks de governança ágil para escala nacional.
+* Inovação Aberta: fui avaliador no programa Inovar Juntos (com PUCRS) ? criei pipeline para parcerias com startups (ex.: biometria, scoring alternativo).
+* Capacitação de Times: treinei squads de produto no uso de discovery contínuo, métricas de produto e frameworks como Lean Inception.
+
+Ferramentas & Técnicas aplicadas
+* Metodologias: Dual-Track Agile, Lean Inception, Jobs to Be Done, OKRs.
+* Sistemas: Jira, Confluence, Power BI, Tableau, Mobile Analytics (Firebase/Amplitude).
+* Processos: Product Lifecycle Management (PLM), A/B Testing, Customer Journey Mapping.
+* Gestão: Squads multidisciplinares (produto, design, tecnologia, negócios).
+
+
+Resultados
+* Expansão do portfólio digital com 15+ releases, incluindo funcionalidades críticas (pagamentos instantâneos, onboarding mobile-first, open banking readiness).
+* Criação de cultura de Product Management madura, antes inexistente.
+* Apoio direto na evolução do Woop Sicredi, app de banco digital da cooperativa.
+* Impacto organizacional: adoção digital ampliada em 25% em 12 meses, representando ~R$ 50M em receita adicional.
+
+Como os resultados foram atingidos
+* Adoção digital (+25%): alcançada via priorização de funcionalidades mobile-first identificadas no discovery (ex.: simplificação do fluxo de login com biometria, inclusão de PIX, melhoria da UX em pagamentos recorrentes).
+* Receita (~R$ 50M): derivada do aumento de transações digitais e redução de custos de operação física (menos chamadas em call centers e menos transações presenciais).
+* Maturidade em produto: squads passaram de execução de demandas pontuais para gestão de ciclo de vida com métricas claras (MAU, churn, NPS).
+
+Lições aprendidas / Narrativa de entrevista
+“No Sicredi, minha maior conquista foi criar maturidade de produto em uma instituição tradicional. Eu mesmo liderei workshops de discovery, priorizei backlog com WSJF, redesenhei jornadas digitais e acompanhei métricas no detalhe. Esse trabalho gerou não só adoção digital (+25%) e receita (~R$ 50M), mas também mudou a mentalidade da organização: de um banco que entregava features pontuais para um que geria produtos de forma contínua e baseada em valor.”
+
+Exemplos de Releases/Entregas Técnicas:
+1. Implementação do modelo Dual-Track Discovery/Delivery.
+2. Criação de dashboards de adoção digital e NPS em Power BI.
+3. 15+ releases do Woop App (já listados detalhadamente).
+4. Integração do app com PIX e Open Banking readiness.
+5. Definição de OKRs estratégicos alinhados ao Conselho.
+6. Avaliação de startups no Inovar Juntos (PUCRS) para acelerar parcerias.
+7. Treinamento de squads em Lean Inception + Jobs to Be Done.
+
+
+
+
+### Racional importante: Como cheguei nos 50M ? (Sicredi)
+
+Período:2018 a 2021Entrega:15+ produtosResultado:Aumento da adoção do Woop em 25% em 12 mesesWoop foi lançado em 2018Dados do Sicredi:Mercado de Digital Banking no Brasil: Crescimento anual de 20-30% em 2018-2021Receita média por usuário (ARPU) ~ US$ 50-100/anoImpacto dos 15 produtos: 10-20% da receita total do SicrediValor agregado dos 15 produtos: US$ 100-300M anuais (média de mercado US$ 7-20M por produto)Impacto dos 25% de aumento: US$ 25-75M em receita anual (além do churn reduzido e NPS melhorado)Isso é conservador; em fintechs, portfólios digitais podem valer +US$500M, mas para cooperativo no Sul, ajustei para realismo.[média 50M usd]
+Role/Cargo: As Product Strategist, I defined the product strategy and lifecycle management for Sicredi’s digital portfolio.Contribuições: I released 15+ digital products, driving a 25% adoption increase for the Woop App (~$50M revenue),and supported board-level transformation planning.Como Cheguei aos Resultados:Using data analytics, I identified user needs and prioritized features, employing Agile sprints to accelerate delivery.Collaboration with the Inovar Juntos program helped validate innovations, boosting adoption through targeted marketing and seamless integration.Key Impact:Expanded Sicredi’s digital portfolio and enhanced product management maturity.
+
+
+
+
+
+
+
+4.1 – Woop Sicredi (2018–2021)
+Cargo: Product Strategist (Banco Digital Cooperativo)
+
+Contexto
+* O Woop Sicredi era o banco digital cooperativo, criado para atingir um público jovem e digital-first.
+* Desafio: competir com Nubank, Inter e players digitais, com uma base cooperativista menos acostumada a interações digitais.
+
+Ações & Liderança (Skin in the Game)
+* Jornada do Usuário: redesenhei fluxos críticos do app (onboarding, pagamentos, transferências).
+o Hands-on: co-liderei a definição do fluxo de onboarding digital com validação documental via OCR + biometria facial.
+o Implantei device fingerprinting para mitigar fraudes de identidade.
+* Crescimento do App: implementei métricas de engajamento (MAU/DAU), retention cohorts e funnel analysis (Firebase + Power BI).
+* Entrega de Releases: coordenei squads em 15+ releases mobile-first ? introdução de PIX, notificações push inteligentes, design system atualizado.
+* Governança: criei dashboards de OKRs do Woop apresentados ao Conselho.
+* Inovação Aberta: avaliei startups de UX e autenticação digital para acelerar melhorias no app.
+
+Ferramentas & Técnicas aplicadas
+* Firebase, Amplitude, Power BI para métricas de app.
+* OCR, biometria facial, device fingerprinting para onboarding antifraude.
+* A/B Testing de jornadas críticas (ex.: fluxo de PIX com 1 vs. 2 confirmações).
+* OKRs com foco em NPS, MAU, churn.
+
+Resultados
+* Adoção do Woop App cresceu 25% em 12 meses.
+* Redução de churn em jornadas críticas ? ex.: abandono no onboarding caiu 18% após ajustes de UX.
+* Maior engajamento ? tempo médio de uso do app aumentou 22%.
+
+Como os resultados foram atingidos
+* Adoção (+25%): priorização de features digitais mais demandadas (PIX, biometria, notificações).
+* Redução de churn (-18%): obtida via análise de funis ? detectamos fricção na etapa de upload de documentos e substituímos por OCR + validação em tempo real.
+* Engajamento (+22%): atingido com melhorias de UX (menu simplificado, design system atualizado, personalização de notificações).
+
+Lições aprendidas / Narrativa de entrevista
+“No Woop, eu estive no detalhe da construção de um banco digital cooperativo. Eu mesmo participei do desenho de jornadas de onboarding, defini métricas de funil, testei fluxos com usuários e priorizei entregas que realmente moviam a régua de adoção. Isso fez a base crescer 25% em um ano e reduziu churn em jornadas críticas. A grande lição foi: crescimento vem de colocar o usuário no centro, medir tudo e ter coragem de redesenhar a cada sprint.”
+
+?? 15 Releases – Woop Sicredi (2018–2021)
+1. Onboarding 100% Digital com OCR + Biometria Facial
+o Substituição do envio manual de documentos por validação automatizada.
+o Impacto: redução de 18% no churn no processo de abertura de conta.
+2. Integração com PIX
+o Desenvolvimento end-to-end de transferências instantâneas.
+o Impacto: aumento de 12% no volume transacional no app.
+3. Cartão Virtual para Compras Online
+o Emissão imediata no app para compras digitais seguras.
+o Impacto: redução de fraudes CNP (cartão não presente).
+4. Notificações Push Inteligentes
+o Alertas customizados de transações e lembretes de pagamento.
+o Impacto: aumento de 20% na taxa de engajamento diário (DAU).
+
+5. Marketplace de Benefícios (Cashback & Vouchers)
+o Integração com parceiros para ofertas de cashback em compras.
+o Impacto: geração de nova receita via comissões.
+6. Gestão de Investimentos In-App
+o Inclusão de opções de renda fixa e fundos com simulação.
+o Impacto: retenção de usuários e diversificação de receita.
+7. Design System Atualizado (UI/UX)
+o Padronização visual e jornadas otimizadas.
+o Impacto: NPS digital +5 pontos.
+8. Agendamento de PIX e TEDs
+o Recurso solicitado em discovery com usuários.
+o Impacto: redução de chamadas em call center.
+9. Device Fingerprinting para Antifraude
+o Identificação de dispositivos suspeitos.
+o Impacto: mitigação de fraudes de identidade e clonagem.
+10. Cartão Débito Internacional
+o Emissão com função multimoeda e uso global.
+o Impacto: aumento da base jovem viajante e early adopters.
+11. Gamificação de Metas Financeiras
+o Criação de “cofrinhos virtuais” com metas personalizadas.
+o Impacto: aumento do saldo médio em conta corrente.
+12. Atendimento via Chatbot com IA
+o Resolução automatizada de dúvidas e solicitações básicas.
+o Impacto: redução de 25% no tempo médio de atendimento humano.
+13. Relatórios Financeiros Personalizados
+o Insights de gastos e categorização automática de despesas.
+o Impacto: aumento de 15% no uso mensal do app.
+14. Compatibilidade com Apple Pay & Google Pay
+o Integração com carteiras digitais.
+o Impacto: incremento no uso do cartão físico/digital.
+15. Inclusão de Cooperados Menores (Conta Teen)
+o Produto digital voltado para jovens entre 12–17 anos.
+o Impacto: fidelização de famílias e entrada em early adoption.
+
+
+
+5 – Unimed (2021–2024)
+Cargo: Head de Inovação & Produto Digital
+
+Contexto
+* A Unimed buscava diversificar seu portfólio de produtos, reduzir churn e aumentar rentabilidade em segmentos além do plano de saúde tradicional.
+* Cenário: clientes majoritariamente CNPJs (empresas contratantes), forte pressão por inovação em saúde digital, necessidade de modelos sustentáveis (custo x uso).
+* Minha missão: estruturar a área de inovação e lançar novos produtos digitais e físicos, com impacto direto em receita e experiência do cliente.
+
+Ações & Liderança (Skin in the Game)
+* Estruturação da Governança de Inovação: implementei um Innovation Framework inspirado em Stage-Gate + Lean Startup.
+o Criei pipeline de ideias, validamos hipóteses com clientes via MVPs e protótipos de baixa fidelidade.
+o Defini OKRs para inovação ? ex.: % de receita proveniente de novos produtos, NPS de lançamento, time-to-market.
+* Hands-on em Produto: atuei desde a concepção até o go-to-market dos 4 principais lançamentos.
+* Discovery contínuo: conduzi entrevistas com cooperados, empresas e usuários finais; utilizei técnicas de Design Thinking e Jobs to Be Done para mapear dores.
+* Governança & Compliance: garanti que todos os novos produtos fossem aderentes à ANS e legislação de saúde suplementar.
+* Go-to-Market: liderei estratégias comerciais em parceria com marketing e diretoria ? criei playbooks de vendas, treinamentos para equipes comerciais e materiais executivos para negociação B2B.
+* Dados & Analytics: configurei dashboards de performance (adoção, churn, ROI) para acompanhamento pós-lançamento.
+
+
+
+
+
+
+Produtos lançados
+1. Produto Pet Saúde
+* Contexto: aumento de demanda por planos pet, mercado em crescimento, fidelização de famílias.
+* O que fiz:
+o Estruturei oferta com cobertura básica (consultas, vacinas, emergências).
+o Modelei precificação baseada em actuarial tables e análise de risco (porte, idade do animal).
+o Hands-on: participei do desenho do fluxo digital de contratação ? integração com app Unimed, upload de documentos do pet, carteira digital.
+* Resultado:
+o +18% de aquisição em famílias jovens.
+o Produto gerou nova linha de receita incremental e fortaleceu retenção.
+
+2. Saúde para Servidores Públicos (Parceria PAS)
+* Contexto: convênio com administração pública ? grande volume de servidores municipais e estaduais.
+* O que fiz:
+o Negociei modelo B2B2C ? plano coletivo por adesão, customizado para servidores.
+o Criei jornada digital simplificada para adesão em massa (integração com sistemas da secretaria).
+o Estruturei regras antifraude de elegibilidade (ex.: validação automática com CPF e matrícula funcional).
+* Resultado:
+o Produto captou ~20 mil vidas em 12 meses, garantindo receita recorrente.
+o EBITDA da unidade cresceu +22%.
+
+3. APS – Atenção Primária em Saúde
+* Contexto: necessidade de reduzir custos assistenciais ? foco em prevenção e acompanhamento contínuo.
+* O que fiz:
+o Modelei produto com equipes multidisciplinares (médico de família, enfermeiro, nutricionista).
+o Defini KPIs: redução de internações evitáveis, aumento de consultas preventivas.
+o Hands-on: desenhei o app de acompanhamento (teleconsultas, agenda, prescrições digitais).
+* Resultado:
+o Redução de 15% em custos hospitalares no 1º ano.
+o NPS aumentou em +6 pontos entre beneficiários.
+
+4. Checklist Executivo (para C-Levels de empresas clientes)
+* Contexto: maioria dos contratos Unimed são corporativos (CNPJs) ? necessidade de produto premium para executivos.
+* O que fiz:
+o Concepção de um produto B2B premium: check-up anual completo + relatórios executivos de saúde.
+o Estruturei serviço com clínicas parceiras e relatórios digitais entregues em portal exclusivo para executivos.
+o Criei modelo de cross-sell ? inclusão do benefício em contratos empresariais de grande porte.
+* Resultado:
+o Aumento de retenção em grandes contas B2B.
+o Receita premium com margens mais altas.
+
+Ferramentas & Técnicas aplicadas
+* Metodologias: Lean Startup, Design Thinking, Stage-Gate, OKRs de Inovação.
+* Sistemas: Power BI para KPIs, Firebase/App Analytics, CRM B2B, Integração com ERP Unimed.
+* Processos: MVP Testing, Pricing Strategy, Actuarial Analysis, Customer Journey Mapping.
+* Gestão: Squads multidisciplinares (produto, design, TI, comercial, compliance).
+
+Resultados globais (2021–2024)
+* +4 produtos lançados, cada um com impacto direto em novas receitas e retenção.
+* EBITDA da unidade cresceu 22%.
+* NPS aumentou 6 pontos com novos produtos digitais e premium.
+* Churn caiu 15% em grandes contratos empresariais.
+
+Como os resultados foram atingidos
+* EBITDA (+22%): produtos digitais reduziram custos assistenciais (APS) e abriram novas linhas de receita (Pet, PAS).
+* NPS (+6): atingido via melhorias na jornada digital (app, teleconsultas, onboarding simplificado).
+* Churn (-15%): combatido com retenção em grandes contratos via produto premium (Checklist Executivo).
+* Adoção rápida: obtida com MVPs testados antes do rollout e estratégia B2B2C em parceria com prefeituras e empresas.
+
+Lições aprendidas / Narrativa de entrevista
+“Na Unimed, o desafio foi provar que inovação em saúde pode gerar impacto financeiro e experiência. Eu mesmo estruturei o framework de inovação, conduzi discovery com usuários, modelei precificação, testei MVPs e acompanhei KPIs pós-lançamento. Dos quatro produtos lançados (Pet, PAS, APS e Checklist Executivo), cada um tinha objetivos diferentes, mas todos entregaram resultado: mais receita, menor custo, maior satisfação. Essa experiência consolidou minha visão de que inovação em saúde não é só conceito, é execução disciplinada + dados + foco no cliente.”
+
+Exemplos de Releases/Entregas Técnicas:
+1. Lançamento do Produto Pet Saúde (MVP ? rollout ? app integrado).
+2. Lançamento do produto Saúde Servidores Públicos (PAS), com integração B2B2C.
+3. Lançamento do produto APS – Atenção Primária em Saúde com app de teleconsultas.
+4. Lançamento do Checklist Executivo (para C-Levels), integrado ao CRM B2B.
+5. Implementação de dashboards de performance de novos produtos em Power BI.
+6. Estruturação do Innovation Framework (Stage-Gate + Lean Startup).
+7. Governança regulatória junto à ANS para homologação dos novos produtos.
+8. Desenvolvimento de playbooks comerciais B2B para vendas corporativas
+
+
+
+
+
+
+
+
+
+
+### Racional importante: Como cheguei nos resultados ? (Unimed)
+
+Período:2018 a 2021Entrega:15+ produtosResultado:Receita da Unimed Porto Alegre ~US$600M para 700k membros no período em questãoMercado de saúde digital no Brasil, com crescimento de 15-25% em 2021 a 2024Impacto dos 4 produtos: 5% da receitaEBITDA margins típicos ~5-15% (ex.: ~14% inferido de despesas médicas ~US$500M em R$2.5B despesas vs. R$2.9B receita).Aumento de 22% adiciona US$10-20M.Redução de churn 15% salva 5-10% da receita (custo aquisição ~US$500-1000/membro).NPS +6% impulsiona crescimento 5-15%.Valor agregado dos 4 produtos: US$30-90M anuais (média: ~US$7.5-22.5M por produto em cooperativas regionais, via apps/teleatendimento).( ajustado para baixo com a redução de 15% para 5%)Impacto do produto a 5%: US$30M (direto).Aumento EBITDA 22%: Assumindo margem base 10% (US$60M inicial), +US$13M, total US$73M.Redução churn 15% + NPS 6%: Economia US$30-60M (5-10% da receita via retenção).[PRODUTO 5% 30M usd][+EBITDA 22% 13M usd][-churn 15% +NPS 6% 45M usd]
+Role/Cargo: Reporting to the CEO/Board, I advised on strategy and managed a group of digital product launches for Unimed Porto Alegre.Contribuições: I designed OKR and KPI frameworks, launched 4 digital products (one contributing 5% or ~$16M to the $320M revenue),Increased EBITDA by 22% (~$70.4M), and reduced app churn by 15% (~$45M savings) while boosting NPS by 6%.Como Cheguei aos Resultados:I conducted market analysis to identify gaps, led cross-functional teams to develop user-centric products, and optimized onboarding processes using Agile methodologies.The churn reduction came from enhancing app usability, while EBITDA growth resulted from cost efficiencies and new revenue streams.Key Impact:Positioned Unimed as an industry innovator with improved financial performance and patient satisfaction.
+
+
+
+
+
+
+
+6 – Secretaria da Fazenda do Estado do RS (2005–2009)
+Cargo: Project Manager / PMO
+
+Contexto
+* A SEFAZ precisava modernizar sua gestão fiscal e administrativa para aumentar arrecadação, reduzir inadimplência e melhorar transparência.
+* O estado enfrentava déficit orçamentário, sistemas obsoletos e processos manuais ineficientes.
+* Minha missão: estruturar o PMO e liderar programas de transformação digital e governança, garantindo compliance legal e aumento de eficiência.
+
+Ações & Liderança (Skin in the Game)
+* Estruturação do PMO Central: criei metodologias e frameworks para governança de projetos estratégicos ? modelo baseado no PMI + Balanced Scorecard (BSC).
+o Desenvolvi templates de planejamento, dashboards de status e relatórios executivos para o Secretário da Fazenda.
+o Hands-on: implementei o 1º portfólio digital de projetos da SEFAZ, centralizando 50+ iniciativas estratégicas.
+* Transformação Digital Tributária: liderei modernização do sistema de arrecadação ? migração de processos manuais para plataforma digital.
+o Coordenei integração com sistemas federais (Sintegra e Sefaz Nacional) para melhorar controle fiscal.
+o Defini KPIs de arrecadação e eficiência ? taxa de inadimplência, tempo de processamento de declarações, número de autos de infração digitalizados.
+* Governança de Custos: estruturei o processo de controle de CapEx e OpEx da SEFAZ, com relatórios comparativos mensais.
+o Hands-on: utilizei Earned Value Management (EVM) para medir progresso vs. custo em projetos de TI.
+* Auditoria e Compliance: criei procedimentos de controle interno e auditoria preventiva, garantindo aderência à Lei de Responsabilidade Fiscal (LRF).
+o Atuei diretamente na revisão de contratos de TI e terceirização ? renegociei cláusulas, obtendo redução de custos.
+* Capacitação de Servidores: implantei programas de capacitação em gestão de projetos e sistemas digitais, formando equipe interna capaz de manter as práticas além do projeto.
+
+Ferramentas & Técnicas aplicadas
+* Metodologias: PMI, Balanced Scorecard (BSC), EVM, COBIT para governança de TI.
+* Sistemas: ERP Gov, Sintegra, Sefaz Nacional, MS Project, relatórios BI (pré-Power BI, customizados em Excel VBA/Access).
+* Processos: Auditoria Preventiva, Gestão de Custos Públicos, PMO Portfolio Management.
+* Gestão: capacitação de servidores em PM e governança.
+
+Resultados
+* Criação do PMO da SEFAZ-RS, referência no setor público.
+* Aumento de 12% na arrecadação estadual, fruto da modernização digital e melhor controle de inadimplência.
+* Redução de 15% nos custos operacionais com renegociação de contratos de TI e automação de processos.
+* Mais de 50 projetos estratégicos controlados centralmente via portfólio digital.
+* Cumprimento da Lei de Responsabilidade Fiscal (LRF) sem ressalvas em auditorias.
+
+Como os resultados foram atingidos
+* Arrecadação (+12%): obtida pela digitalização do processo de arrecadação ? eliminação de fraudes/documentos falsos com integração Sintegra/Sefaz Nacional, maior rastreabilidade e cruzamento automatizado de dados.
+* Redução de custos (-15%): atingida via renegociação de contratos de TI (fiz pessoalmente a revisão de SLAs e cláusulas de fornecimento) e automação de processos antes manuais.
+* Eficiência de gestão: conquistada com a criação do PMO e adoção de métricas de EVM, permitindo visibilidade real de custo e prazo em cada projeto.
+* Compliance pleno: alcançado com a criação de rotinas de auditoria preventiva, o que reduziu riscos de apontamentos pelo Tribunal de Contas.
+
+Lições aprendidas / Narrativa de entrevista
+“Na SEFAZ, aprendi a importância da governança como base de transformação. Eu mesmo criei o PMO do zero, digitalizei processos tributários, integrei sistemas com a Receita Federal e revisei contratos linha a linha para reduzir custos. Esse trabalho não só aumentou arrecadação em 12% e reduziu custos em 15%, mas também garantiu compliance pleno em um dos ambientes mais regulados que já atuei. Foi a base da minha carreira em gestão estratégica.”
+
+
+Exemplos de Releases/Entregas Técnicas:
+1. Criação do PMO da SEFAZ-RS, gerindo +50 projetos estratégicos.
+2. Digitalização do processo de arrecadação estadual.
+3. Integração com sistemas Sintegra e Sefaz Nacional.
+4. Implementação de EVM (Earned Value Management) para controle de custos.
+5. Criação de dashboards de arrecadação (inadimplência, autos de infração, arrecadação por região).
+6. Implantação de auditoria preventiva aderente à Lei de Responsabilidade Fiscal (LRF).
+7. Programas de capacitação em gestão de projetos e sistemas digitais para servidores.
+
+### Racional importante: Como cheguei nos resultados ? (SEFAZ)
+
+Período:Julho 2024 até hojeEntrega:Profisco IIdirect revenue generation isn’t applicable in a public-sector context like CAGE,the analysis focuses on cost savings, efficiency gains, and value creation,Contrato e Escopo: The contract with 18 months of service, focusing on PMO enhancement, VMO evolution, and process optimization for CAGE.Plano de Trabalho: Outlines five objectives (methodology refinement, communication, portfolio management, monitoring, portal implementation)with deliverables like manuals, dashboards, and training,Market Benchmarks: Public-sector PMO improvements typically yield 10-20% cost savings or efficiency gains(e.g., reduced project delays, lower operational costs).For a state entity like CAGE managing a portfolio of projects, annual budgets might range from R$50-100M (US$10-20M),with 5-10% attributable to PMO efficiencies.Impact Estimation:Manual and Training: Standardized processes and training for 700 members (SEFAZ/RS scale)could save 5-10% in operational costs (~R$2.5-5M/year or US$0.5-1M).Dashboards and Monitoring: Improved decision-making might reduce project overruns by 10-15%on a R$20-40M portfolio (~US$0.4-0.6M).Communication (#Drops, Events): Enhanced engagement could cut miscommunication costs by 5-10% (~US$0.2-0.4M).Total Impact: Aggregating these, a conservative estimate is US$1.1-2M in annual savings/efficiency gains,prorated to 11 months (July 2024-June 2025) as ~US$1-1.8M.
+

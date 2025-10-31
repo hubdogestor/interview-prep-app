@@ -19,6 +19,11 @@ yarn-error.log*
 # env files
 .env*
 
+# context files (personal data)
+/context-files/*.md
+!/context-files/*.template.md
+!/context-files/README.md
+
 # vercel
 .vercel
 

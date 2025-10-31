@@ -15,53 +15,52 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import MicrophoneIcon from "@/components/icons/microphone";
-import { ViewVersionsModal } from "@/components/icebreakers/view-versions-modal";
+import MessageIcon from "@/components/icons/message";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
 
-interface IcebreakerCardProps {
-  icebreaker: {
+interface SpeechCardProps {
+  speech: {
     id: string;
-    tipo: string;
+    tipoVaga: string;
     titulo: string;
-    versoes: any[];
+    versao: string;
+    duracaoEstimada: number;
+    foco: string[];
     favorite?: boolean;
     archived?: boolean;
   };
 }
 
-export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
+export function SpeechCard({ speech }: SpeechCardProps) {
   const router = useRouter();
   const utils = trpc.useUtils();
 
-  const deleteMutation = trpc.icebreakers.delete.useMutation({
+  const deleteMutation = trpc.speeches.delete.useMutation({
     onSuccess: () => {
-      toast.success("Icebreaker removido com sucesso!");
-      utils.icebreakers.list.invalidate();
+      toast.success("Speech removido com sucesso!");
+      utils.speeches.list.invalidate();
     },
     onError: (error: { message: string }) => {
-      toast.error("Erro ao remover icebreaker: " + error.message);
+      toast.error("Erro ao remover speech: " + error.message);
     },
   });
 
-  const toggleFavoriteMutation = trpc.icebreakers.toggleFavorite.useMutation({
+  const toggleFavoriteMutation = trpc.speeches.toggleFavorite.useMutation({
     onSuccess: () => {
-      utils.icebreakers.list.invalidate();
+      utils.speeches.list.invalidate();
     },
     onError: (error: { message: string }) => {
       toast.error("Erro ao favoritar: " + error.message);
     },
   });
 
-  const toggleArchiveMutation = trpc.icebreakers.toggleArchive.useMutation({
+  const toggleArchiveMutation = trpc.speeches.toggleArchive.useMutation({
     onSuccess: () => {
       toast.success(
-        icebreaker.archived
-          ? "Icebreaker desarquivado!"
-          : "Icebreaker arquivado!"
+        speech.archived ? "Speech desarquivado!" : "Speech arquivado!"
       );
-      utils.icebreakers.list.invalidate();
+      utils.speeches.list.invalidate();
     },
     onError: (error: { message: string }) => {
       toast.error("Erro ao arquivar: " + error.message);
@@ -69,19 +68,23 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
   });
 
   const handleEdit = () => {
-    router.push(`/icebreakers/${icebreaker.id}/editar`);
+    router.push(`/speeches/${speech.id}/editar`);
+  };
+
+  const handleView = () => {
+    router.push(`/speeches/${speech.id}`);
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate({ id: icebreaker.id });
+    deleteMutation.mutate({ id: speech.id });
   };
 
   const handleToggleFavorite = () => {
-    toggleFavoriteMutation.mutate({ id: icebreaker.id });
+    toggleFavoriteMutation.mutate({ id: speech.id });
   };
 
   const handleToggleArchive = () => {
-    toggleArchiveMutation.mutate({ id: icebreaker.id });
+    toggleArchiveMutation.mutate({ id: speech.id });
   };
 
   return (
@@ -89,39 +92,56 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <h3 className="text-xl font-display mb-2 uppercase">
-            {icebreaker.titulo}
+            {speech.titulo}
           </h3>
-          <p className="text-sm text-muted-foreground uppercase">
-            {icebreaker.tipo}
+          <p className="text-sm text-muted-foreground uppercase mb-2">
+            {speech.tipoVaga}
           </p>
         </div>
-        <MicrophoneIcon className="size-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
+        <MessageIcon className="size-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
       </div>
 
       <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <ViewVersionsModal
-          versions={icebreaker.versoes as any}
-          titulo={icebreaker.titulo}
-        />
-        {icebreaker.favorite && (
+        <Badge variant="outline" className="uppercase">
+          v{speech.versao}
+        </Badge>
+        <Badge variant="secondary" className="uppercase">
+          {speech.duracaoEstimada}min
+        </Badge>
+        {speech.favorite && (
           <Badge variant="default" className="uppercase bg-yellow-600">
             ⭐ Favorito
           </Badge>
         )}
-        {icebreaker.archived && (
+        {speech.archived && (
           <Badge variant="secondary" className="uppercase">
             📦 Arquivado
           </Badge>
         )}
       </div>
 
+      {speech.foco && speech.foco.length > 0 && (
+        <div className="mb-4">
+          <div className="flex flex-wrap gap-2">
+            {speech.foco.map((item) => (
+              <Badge key={item} variant="secondary" className="text-xs">
+                {item}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-2 flex-wrap">
         <Button
           variant="default"
           size="sm"
           className="flex-1 min-w-[100px]"
-          onClick={handleEdit}
+          onClick={handleView}
         >
+          Ver
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleEdit}>
           Editar
         </Button>
         <Button
@@ -129,18 +149,18 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
           size="sm"
           onClick={handleToggleFavorite}
           disabled={toggleFavoriteMutation.isPending}
-          title={icebreaker.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+          title={speech.favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
         >
-          {icebreaker.favorite ? "⭐" : "☆"}
+          {speech.favorite ? "⭐" : "☆"}
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={handleToggleArchive}
           disabled={toggleArchiveMutation.isPending}
-          title={icebreaker.archived ? "Desarquivar" : "Arquivar"}
+          title={speech.archived ? "Desarquivar" : "Arquivar"}
         >
-          {icebreaker.archived ? "📂" : "📦"}
+          {speech.archived ? "📂" : "📦"}
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -156,7 +176,7 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
               <AlertDialogDescription>
-                Tem certeza que deseja excluir o icebreaker "{icebreaker.titulo}"?
+                Tem certeza que deseja excluir o speech "{speech.titulo}"?
                 Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>

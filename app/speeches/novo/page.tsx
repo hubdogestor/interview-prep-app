@@ -1,0 +1,41 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { SpeechForm } from "@/components/speeches/speech-form";
+import DashboardPageLayout from "@/components/dashboard/layout";
+import MessageIcon from "@/components/icons/message";
+import { trpc } from "@/lib/trpc/react";
+import { toast } from "sonner";
+
+export default function NovoSpeechPage() {
+  const router = useRouter();
+  const utils = trpc.useUtils();
+
+  const createMutation = trpc.speeches.create.useMutation({
+    onSuccess: () => {
+      toast.success("Speech criado com sucesso!");
+      utils.speeches.list.invalidate();
+      router.push("/speeches");
+    },
+    onError: (error: { message: string }) => {
+      toast.error("Erro ao criar speech: " + error.message);
+    },
+  });
+
+  return (
+    <DashboardPageLayout
+      header={{
+        title: "Novo Speech",
+        description: "Crie um novo discurso completo",
+        icon: MessageIcon,
+      }}
+    >
+      <div className="max-w-4xl">
+        <SpeechForm
+          onSubmit={(data) => createMutation.mutate(data)}
+          isSubmitting={createMutation.isPending}
+        />
+      </div>
+    </DashboardPageLayout>
+  );
+}

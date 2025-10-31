@@ -35,6 +35,8 @@ model Icebreaker {
   tipo      String   // elevator_pitch | quick_intro | personal_story
   titulo    String
   versoes   Json[]   // [{ nome: string, conteudo: { pt: string, en: string }, duracao: number, tags: string[] }]
+  favorite  Boolean  @default(false)
+  archived  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -86,8 +88,10 @@ model Speech {
   titulo          String
   versao          String
   conteudo        Json     // { pt: string, en: string }
-  duracaoEstimada Int
+  duracaoEstimada Int      // minutos
   foco            String[]
+  favorite        Boolean  @default(false)
+  archived        Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

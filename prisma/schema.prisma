@@ -103,10 +103,11 @@ model Speech {
 // ========================================
 model Question {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  categoria  String   // cultura | produto | time | carreira
+  categoria  String   // tecnica | comportamental | cultura | carreira
   pergunta   Json     // { pt: string, en: string }
   contexto   String?
   prioridade String   // alta | media | baixa
+  favorite   Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

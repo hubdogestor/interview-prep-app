@@ -1,7 +1,7 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 31 de outubro de 2025 (noite)
-**Status atual:** Fase 2.1 + 2.2 + Fase 3 (IA contextual) completas ✅
+**Atualização:** 31 de outubro de 2025 (noite - sessão 2)
+**Status atual:** Fase 2.1 + 2.2 + Fase 3.1-3.2 + Edição com IA completas ✅
 **Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA personalizadas
 
 📄 **Ver também:** `CONTEXT.md` para documentação completa do projeto
@@ -48,7 +48,10 @@
 - [x] Mutations tRPC: create, update, delete, archive, favorite
 - [x] Botão "Gerar com IA" (UI completa + endpoint integrado)
 - [x] Modal de visualização de versões
-- [x] Durações ajustadas (30-60s / 60-120s / 120-240s)
+- [x] Durações ajustadas (1-2min / 2-4min / 4-6min)
+- [x] Configuração de geração: categoria + orientações customizadas
+- [x] Botão "Editar com IA" para ajustes granulares de versões
+- [x] Prompts otimizados para tom LEVE e CONVERSACIONAL
 
 ### 2.2 Speeches [PRIORIDADE ALTA] ✅ COMPLETO
 - [x] CRUD completo com versioning
@@ -58,6 +61,9 @@
 - [x] Áreas de foco (tags array)
 - [x] Mutations tRPC: create, update, delete, favorite, archive
 - [x] Botão "Gerar com IA" (UI completa + endpoint integrado)
+- [x] Configuração de geração: nome empresa + descrição vaga
+- [x] Botão "Editar com IA" para refinamento de conteúdo
+- [x] Prompts otimizados para tom ESTRUTURADO e PROFISSIONAL
 
 ### 2.3 Questions [PRIORIDADE MÉDIA]
 - [ ] CRUD completo
@@ -113,20 +119,36 @@
 
 ### 3.2 Prompts Essenciais [ALTA PRIORIDADE] ✅ COMPLETO
 - [x] **Gerar Icebreaker**
-  - [x] Input: Profile (nome, título, resumo, anos exp)
+  - [x] Input: Profile + categoria (8 opções) + orientações customizadas
   - [x] Output: 3 versões de apresentação (Curta, Média, Longa)
   - [x] Tipos: elevator_pitch, quick_intro, personal_story
   - [x] Endpoint tRPC: `icebreakers.generateWithAI`
-  - [x] UI: Dialog com seleção de tipo
+  - [x] UI: Dialog com seleção de tipo + categoria + instruções
   - [x] Cria automaticamente icebreaker com versões geradas
+  - [x] Tom LEVE e CONVERSACIONAL para uso com teleprompter
+
+- [x] **Editar Icebreaker**
+  - [x] Input: Conteúdo atual + instruções de edição
+  - [x] Output: Versão editada mantendo tom conversacional
+  - [x] Endpoint tRPC: `icebreakers.editWithAI`
+  - [x] UI: Botão ao lado de "Remover" + Dialog com textarea
+  - [x] Permite ajustes granulares: "fale da empresa X", "foram 14 anos, não 15"
 
 - [x] **Gerar Speech**
-  - [x] Input: Profile + tipo de vaga + foco + duração
+  - [x] Input: Profile + tipo de vaga + foco + duração + empresa + descrição vaga
   - [x] Output: discurso completo estruturado
   - [x] Considerar: foco, duração, tom profissional
   - [x] Endpoint tRPC: `speeches.generateWithAI`
   - [x] UI: Dialog com inputs de configuração
   - [x] Cria automaticamente speech com conteúdo gerado
+  - [x] Tom ESTRUTURADO e PROFISSIONAL para CV speech genérico
+
+- [x] **Editar Speech**
+  - [x] Input: Conteúdo atual + instruções de edição
+  - [x] Output: Versão editada mantendo tom profissional
+  - [x] Endpoint tRPC: `speeches.editWithAI`
+  - [x] UI: Botão no topo do campo de conteúdo + Dialog
+  - [x] Permite refinamentos mantendo estrutura profissional
 
 - [x] **Revisar STAR Case** (função implementada, UI pendente)
   - [x] Função `reviewStarCase()` em `lib/ai/gemini.ts`

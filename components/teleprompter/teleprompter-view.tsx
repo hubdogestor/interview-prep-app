@@ -1,0 +1,245 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Maximize2,
+  Minimize2,
+  Pause,
+  Play,
+  RotateCcw,
+  Settings,
+} from "lucide-react";
+import { TextStats } from "@/components/ui/text-stats";
+
+interface TeleprompterViewProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  content: string;
+}
+
+export function TeleprompterView({
+  open,
+  onOpenChange,
+  title,
+  content,
+}: TeleprompterViewProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [scrollSpeed, setScrollSpeed] = useState(1);
+  const [fontSize, setFontSize] = useState(24);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<number | null>(null);
+  const scrollRef = useRef<number | null>(null);
+
+  // Auto-scroll logic
+  useEffect(() => {
+    if (!isPlaying || !contentRef.current || !containerRef.current) return;
+
+    scrollRef.current = window.setInterval(() => {
+      if (contentRef.current && containerRef.current) {
+        const newPosition = contentRef.current.scrollTop + scrollSpeed;
+        const maxScroll =
+          contentRef.current.scrollHeight - contentRef.current.clientHeight;
+
+        if (newPosition >= maxScroll) {
+          setIsPlaying(false);
+        } else {
+          contentRef.current.scrollTop = newPosition;
+          setScrollPosition(newPosition);
+        }
+      }
+    }, 50);
+
+    return () => {
+      if (scrollRef.current) clearInterval(scrollRef.current);
+    };
+  }, [isPlaying, scrollSpeed]);
+
+  // Timer logic
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    timerRef.current = window.setInterval(() => {
+      setElapsedTime((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isPlaying]);
+
+  // Reset on open
+  useEffect(() => {
+    if (open) {
+      setIsPlaying(false);
+      setScrollPosition(0);
+      setElapsedTime(0);
+      if (contentRef.current) {
+        contentRef.current.scrollTop = 0;
+      }
+    }
+  }, [open]);
+
+  const toggleFullscreen = () => {
+    if (!containerRef.current) return;
+
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().then(() => {
+        setIsFullscreen(true);
+      });
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+      });
+    }
+  };
+
+  const handleReset = () => {
+    setIsPlaying(false);
+    setScrollPosition(0);
+    setElapsedTime(0);
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        ref={containerRef}
+        className="sm:max-w-[90vw] sm:max-h-[90vh] p-0 bg-black text-white border-none"
+      >
+        <div className="flex flex-col h-[90vh]">
+          {/* Header */}
+          <DialogHeader className="px-6 py-4 border-b border-white/10 flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="uppercase font-display text-white">
+                {title}
+              </DialogTitle>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-mono text-white/70">
+                  {formatTime(elapsedTime)}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="text-white hover:bg-white/10"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleFullscreen}
+                  className="text-white hover:bg-white/10"
+                >
+                  {isFullscreen ? (
+                    <Minimize2 className="h-4 w-4" />
+                  ) : (
+                    <Maximize2 className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* Settings Panel */}
+            {showSettings && (
+              <div className="mt-4 space-y-4 p-4 bg-white/5 rounded-lg">
+                <div className="space-y-2">
+                  <label className="text-xs uppercase text-white/70">
+                    Velocidade: {scrollSpeed.toFixed(1)}x
+                  </label>
+                  <Slider
+                    value={[scrollSpeed]}
+                    onValueChange={(value) => setScrollSpeed(value[0])}
+                    min={0.5}
+                    max={5}
+                    step={0.5}
+                    className="w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs uppercase text-white/70">
+                    Tamanho da Fonte: {fontSize}px
+                  </label>
+                  <Slider
+                    value={[fontSize]}
+                    onValueChange={(value) => setFontSize(value[0])}
+                    min={16}
+                    max={48}
+                    step={2}
+                    className="w-full"
+                  />
+                </div>
+                <TextStats
+                  text={content}
+                  className="text-white/50 justify-center"
+                />
+              </div>
+            )}
+          </DialogHeader>
+
+          {/* Content */}
+          <div
+            ref={contentRef}
+            className="flex-1 overflow-y-auto px-8 py-12 scroll-smooth"
+            style={{ scrollBehavior: "smooth" }}
+          >
+            <div
+              className="max-w-4xl mx-auto leading-relaxed"
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              <p className="whitespace-pre-wrap">{content}</p>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="px-6 py-4 border-t border-white/10 flex items-center justify-center gap-4 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleReset}
+              className="text-white hover:bg-white/10"
+            >
+              <RotateCcw className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="text-white hover:bg-white/10 w-16 h-16 rounded-full"
+            >
+              {isPlaying ? (
+                <Pause className="h-8 w-8" />
+              ) : (
+                <Play className="h-8 w-8" />
+              )}
+            </Button>
+            <div className="w-8" /> {/* Spacer for symmetry */}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

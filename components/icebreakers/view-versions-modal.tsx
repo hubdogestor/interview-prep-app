@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { CopyButton } from "@/components/ui/copy-button";
 import { TextStats } from "@/components/ui/text-stats";
 import { TeleprompterView } from "@/components/teleprompter/teleprompter-view";
-import { PracticeTimer } from "@/components/practice/practice-timer";
+import { FloatingTimer } from "@/components/practice/floating-timer";
 import { Eye, Monitor, Timer } from "lucide-react";
 
 interface Version {
@@ -39,7 +39,7 @@ export function ViewVersionsModal({
 }: ViewVersionsModalProps) {
   const [open, setOpen] = useState(false);
   const [teleprompterOpen, setTeleprompterOpen] = useState(false);
-  const [timerOpen, setTimerOpen] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState<Version | null>(null);
 
   const handleOpenTeleprompter = (version: Version) => {
@@ -49,7 +49,7 @@ export function ViewVersionsModal({
 
   const handleOpenTimer = (version: Version) => {
     setSelectedVersion(version);
-    setTimerOpen(true);
+    setShowTimer(true);
   };
 
   return (
@@ -154,11 +154,12 @@ export function ViewVersionsModal({
             title={`${titulo} - ${selectedVersion.nome}`}
             content={selectedVersion.conteudo.pt}
           />
-          <PracticeTimer
-            open={timerOpen}
-            onOpenChange={setTimerOpen}
-            targetDuration={selectedVersion.duracao}
-          />
+          {showTimer && (
+            <FloatingTimer
+              targetDuration={selectedVersion.duracao}
+              onClose={() => setShowTimer(false)}
+            />
+          )}
         </>
       )}
     </>

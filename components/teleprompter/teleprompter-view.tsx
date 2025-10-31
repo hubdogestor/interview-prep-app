@@ -47,25 +47,31 @@ export function TeleprompterView({
 
   // Auto-scroll logic
   useEffect(() => {
-    if (!isPlaying || !contentRef.current || !containerRef.current) return;
+    if (!isPlaying || !contentRef.current) {
+      return;
+    }
 
-    scrollRef.current = window.setInterval(() => {
-      if (contentRef.current && containerRef.current) {
-        const newPosition = contentRef.current.scrollTop + scrollSpeed;
-        const maxScroll =
-          contentRef.current.scrollHeight - contentRef.current.clientHeight;
+    const scrollInterval = window.setInterval(() => {
+      if (contentRef.current) {
+        const container = contentRef.current;
+        const currentScroll = container.scrollTop;
+        const maxScroll = container.scrollHeight - container.clientHeight;
+        const newScroll = currentScroll + scrollSpeed;
 
-        if (newPosition >= maxScroll) {
+        if (newScroll >= maxScroll) {
           setIsPlaying(false);
+          container.scrollTop = maxScroll;
         } else {
-          contentRef.current.scrollTop = newPosition;
-          setScrollPosition(newPosition);
+          container.scrollTop = newScroll;
+          setScrollPosition(newScroll);
         }
       }
     }, 50);
 
+    scrollRef.current = scrollInterval;
+
     return () => {
-      if (scrollRef.current) clearInterval(scrollRef.current);
+      clearInterval(scrollInterval);
     };
   }, [isPlaying, scrollSpeed]);
 
@@ -203,12 +209,12 @@ export function TeleprompterView({
           {/* Content */}
           <div
             ref={contentRef}
-            className="flex-1 overflow-y-auto px-8 py-12 scroll-smooth"
-            style={{ scrollBehavior: "smooth" }}
+            className="flex-1 overflow-y-scroll px-8 py-12"
+            style={{ scrollBehavior: "auto" }}
           >
             <div
               className="max-w-4xl mx-auto leading-relaxed"
-              style={{ fontSize: `${fontSize}px` }}
+              style={{ fontSize: `${fontSize}px`, lineHeight: "1.8" }}
             >
               <p className="whitespace-pre-wrap">{content}</p>
             </div>

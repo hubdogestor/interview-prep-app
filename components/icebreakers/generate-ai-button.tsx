@@ -21,9 +21,13 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ContextualLoading } from "@/components/ai/contextual-loading";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
-import { Loader2, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 const TIPO_OPTIONS = [
   { value: "elevator_pitch", label: "Elevator Pitch (1-2 min)" },
@@ -42,6 +46,13 @@ const CATEGORIA_OPTIONS = [
   { value: "trabalho_equipe", label: "Como você trabalha em equipe?" },
 ] as const;
 
+interface GeneratedVersion {
+  nome: string;
+  conteudo: { pt: string; en: string };
+  duracao: number;
+  tags: string[];
+}
+
 export function GenerateAIButton() {
   const [open, setOpen] = useState(false);
   const [tipo, setTipo] = useState<
@@ -49,20 +60,17 @@ export function GenerateAIButton() {
   >("elevator_pitch");
   const [categoria, setCategoria] = useState<string>("");
   const [orientacoesCustomizadas, setOrientacoesCustomizadas] = useState("");
+  const [generatedVersions, setGeneratedVersions] = useState<GeneratedVersion[] | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+
   const router = useRouter();
   const utils = trpc.useUtils();
 
   const generateMutation = trpc.icebreakers.generateWithAI.useMutation({
     onSuccess: (data) => {
-      toast.success("Icebreakers gerados com sucesso!");
-      setOpen(false);
-
-      // Cria um novo icebreaker com as versões geradas
-      createMutation.mutate({
-        tipo,
-        titulo: `Icebreaker Gerado - ${TIPO_OPTIONS.find((t) => t.value === tipo)?.label}`,
-        versoes: data.versoes,
-      });
+      setGeneratedVersions(data.versoes);
+      setShowPreview(true);
+      toast.success("Icebreakers gerados! Revise antes de salvar.");
     },
     onError: (error: { message: string }) => {
       toast.error("Erro ao gerar icebreaker: " + error.message);
@@ -72,6 +80,10 @@ export function GenerateAIButton() {
   const createMutation = trpc.icebreakers.create.useMutation({
     onSuccess: (data) => {
       utils.icebreakers.list.invalidate();
+      toast.success("Icebreaker salvo com sucesso!");
+      setOpen(false);
+      setShowPreview(false);
+      setGeneratedVersions(null);
       router.push(`/icebreakers/${data.id}/editar`);
     },
     onError: (error: { message: string }) => {
@@ -87,136 +99,193 @@ export function GenerateAIButton() {
     });
   };
 
-  const isLoading = generateMutation.isPending || createMutation.isPending;
+  const handleSave = () => {
+    if (!generatedVersions) return;
+
+    createMutation.mutate({
+      tipo,
+      titulo: `Icebreaker - ${TIPO_OPTIONS.find((t) => t.value === tipo)?.label}`,
+      versoes: generatedVersions,
+    });
+  };
+
+  const handleRegenerate = () => {
+    setShowPreview(false);
+    setGeneratedVersions(null);
+    handleGenerate();
+  };
+
+  const handleCancel = () => {
+    setShowPreview(false);
+    setGeneratedVersions(null);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-full h-full p-4 border-dashed uppercase text-chart-1 hover:border-chart-1 hover:bg-chart-1/10"
-        >
+        <Button className="w-full">
           <Sparkles className="mr-2 h-4 w-4" />
           Gerar com IA
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle className="uppercase font-display">
-            Gerar Icebreaker com IA
+          <DialogTitle className="uppercase font-display flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-chart-1" />
+            {showPreview ? "Pré-visualização" : "Gerar Icebreaker com IA"}
           </DialogTitle>
           <DialogDescription>
-            Selecione o tipo de apresentação que deseja gerar. A IA criará 3
-            versões diferentes baseadas no seu perfil.
+            {showPreview
+              ? "Revise as versões geradas e salve ou regenere"
+              : "Configure as opções e gere apresentações personalizadas"}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-6 py-4">
-          <div className="grid gap-3">
-            <Label htmlFor="tipo" className="uppercase">
-              Tipo de Apresentação
-            </Label>
-            <Select
-              value={tipo}
-              onValueChange={(value: any) => setTipo(value)}
-              disabled={isLoading}
-            >
-              <SelectTrigger id="tipo">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TIPO_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid gap-3">
-            <Label htmlFor="categoria" className="uppercase">
-              Categoria/Foco <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Select
-              value={categoria}
-              onValueChange={setCategoria}
-              disabled={isLoading}
-            >
-              <SelectTrigger id="categoria">
-                <SelectValue placeholder="Selecione uma categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORIA_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.label}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid gap-3">
-            <Label htmlFor="orientacoes" className="uppercase">
-              Orientações Customizadas <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Textarea
-              id="orientacoes"
-              placeholder="Ex: A vaga é na Amazon, fale sobre como me identifico com os Leadership Principles..."
-              value={orientacoesCustomizadas}
-              onChange={(e) => setOrientacoesCustomizadas(e.target.value)}
-              disabled={isLoading}
-              rows={4}
-              className="resize-none"
+        <div className="flex-1 min-h-0">
+          {generateMutation.isPending ? (
+            <ContextualLoading
+              messages={[
+                "Analisando seu perfil...",
+                "Buscando experiências relevantes...",
+                "Gerando versões personalizadas...",
+                "Ajustando tom e duração...",
+                "Finalizando conteúdo..."
+              ]}
+              cycleDuration={2000}
             />
-            <p className="text-xs text-muted-foreground">
-              Use este campo para dar instruções específicas à IA sobre o contexto ou foco desejado.
-            </p>
-          </div>
+          ) : showPreview && generatedVersions ? (
+            <ScrollArea className="h-full pr-4">
+              <div className="space-y-4">
+                {generatedVersions.map((version, index) => (
+                  <Card key={index} className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h4 className="font-display uppercase text-sm">
+                          {version.nome}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
+                          ~{version.duracao}s de leitura
+                        </p>
+                      </div>
+                      {version.tags && version.tags.length > 0 && (
+                        <div className="flex gap-1 flex-wrap">
+                          {version.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                      {version.conteudo.pt}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">Tipo</Label>
+                <Select
+                  value={tipo}
+                  onValueChange={(value) =>
+                    setTipo(value as typeof tipo)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TIPO_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="rounded-lg bg-muted p-4 text-sm">
-            <p className="font-semibold mb-2 uppercase">O que será gerado:</p>
-            <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-              <li>Versão Curta ({tipo === "elevator_pitch" ? "1 min" : tipo === "quick_intro" ? "2 min" : "4 min"})</li>
-              <li>Versão Média ({tipo === "elevator_pitch" ? "1.5 min" : tipo === "quick_intro" ? "3 min" : "5 min"})</li>
-              <li>Versão Longa ({tipo === "elevator_pitch" ? "2 min" : tipo === "quick_intro" ? "4 min" : "6 min"})</li>
-            </ul>
-          </div>
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Categoria (Opcional)
+                </Label>
+                <Select value={categoria} onValueChange={setCategoria}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione uma categoria..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIA_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {isLoading && (
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>
-                {generateMutation.isPending
-                  ? "Gerando com IA..."
-                  : "Salvando..."}
-              </span>
+              <div className="space-y-2">
+                <Label className="uppercase text-xs">
+                  Orientações Customizadas (Opcional)
+                </Label>
+                <Textarea
+                  placeholder='Ex: "Mencionar experiência na Amazon", "Focar em liderança técnica"'
+                  value={orientacoesCustomizadas}
+                  onChange={(e) => setOrientacoesCustomizadas(e.target.value)}
+                  rows={3}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Adicione instruções específicas para personalizar ainda mais
+                </p>
+              </div>
             </div>
           )}
         </div>
 
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={isLoading}
-          >
-            Cancelar
-          </Button>
-          <Button onClick={handleGenerate} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Gerando...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Gerar
-              </>
-            )}
-          </Button>
+        <DialogFooter className="flex-shrink-0">
+          <div className="flex items-center gap-2 w-full justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={showPreview ? handleCancel : () => setOpen(false)}
+              disabled={generateMutation.isPending || createMutation.isPending}
+            >
+              {showPreview ? "Voltar" : "Cancelar"}
+            </Button>
+            <div className="flex gap-2">
+              {showPreview ? (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleRegenerate}
+                    disabled={generateMutation.isPending || createMutation.isPending}
+                    className="text-chart-1 border-chart-1 hover:bg-chart-1/10"
+                  >
+                    <Sparkles className="mr-1 h-3 w-3" />
+                    Regenerar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={generateMutation.isPending || createMutation.isPending}
+                  >
+                    {createMutation.isPending ? "Salvando..." : "Salvar"}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={generateMutation.isPending}
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Gerar
+                </Button>
+              )}
+            </div>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

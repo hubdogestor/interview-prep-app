@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { CopyButton } from "@/components/ui/copy-button";
 import { TextStats } from "@/components/ui/text-stats";
 import { TeleprompterView } from "@/components/teleprompter/teleprompter-view";
-import { PracticeTimer } from "@/components/practice/practice-timer";
+import { FloatingTimer } from "@/components/practice/floating-timer";
 import { ExportButton } from "@/components/export/export-button";
 import { Monitor, Timer } from "lucide-react";
 
@@ -28,7 +28,7 @@ interface SpeechViewProps {
 
 export function SpeechView({ speech }: SpeechViewProps) {
   const [teleprompterOpen, setTeleprompterOpen] = useState(false);
-  const [timerOpen, setTimerOpen] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
 
   const conteudo = speech.conteudo.pt;
   const targetSeconds = speech.duracaoEstimada * 60;
@@ -104,7 +104,7 @@ export function SpeechView({ speech }: SpeechViewProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setTimerOpen(true)}
+              onClick={() => setShowTimer(true)}
             >
               <Timer className="mr-1 h-3 w-3" />
               Timer
@@ -147,11 +147,12 @@ export function SpeechView({ speech }: SpeechViewProps) {
         content={conteudo}
       />
 
-      <PracticeTimer
-        open={timerOpen}
-        onOpenChange={setTimerOpen}
-        targetDuration={targetSeconds}
-      />
+      {showTimer && (
+        <FloatingTimer
+          targetDuration={targetSeconds}
+          onClose={() => setShowTimer(false)}
+        />
+      )}
     </>
   );
 }

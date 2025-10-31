@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { generateSpeech } from "@/lib/ai/gemini";
+import { generateSpeech, editSpeech } from "@/lib/ai/gemini";
 
 // Schema para criar speech
 const createSpeechSchema = z.object({
@@ -128,6 +128,8 @@ export const speechesRouter = createTRPCRouter({
         tipoVaga: z.string().min(1, "Tipo de vaga é obrigatório"),
         foco: z.array(z.string()).default([]),
         duracaoDesejada: z.number().positive().default(3),
+        nomeEmpresa: z.string().optional(),
+        descricaoVaga: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -151,12 +153,35 @@ export const speechesRouter = createTRPCRouter({
         input.tipoVaga,
         input.foco,
         input.duracaoDesejada,
-        profile.id
+        profile.id,
+        input.nomeEmpresa,
+        input.descricaoVaga
       );
 
       return {
         conteudo: result.conteudo,
         duracaoEstimada: result.duracaoEstimada,
       };
+    }),
+
+  editWithAI: publicProcedure
+    .input(
+      z.object({
+        conteudoAtual: z.string().min(1, "Conteúdo atual é obrigatório"),
+        instrucoes: z.string().min(1, "Instruções são obrigatórias"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Busca o perfil do usuário para usar como userId
+      const profile = await ctx.prisma.profile.findFirst();
+      const userId = profile?.id || "default";
+
+      const conteudoEditado = await editSpeech(
+        input.conteudoAtual,
+        input.instrucoes,
+        userId
+      );
+
+      return { conteudoEditado };
     }),
 });

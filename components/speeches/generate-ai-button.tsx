@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
 import { Loader2, Sparkles } from "lucide-react";
@@ -21,6 +22,8 @@ import { Loader2, Sparkles } from "lucide-react";
 export function GenerateAIButton() {
   const [open, setOpen] = useState(false);
   const [tipoVaga, setTipoVaga] = useState("");
+  const [nomeEmpresa, setNomeEmpresa] = useState("");
+  const [descricaoVaga, setDescricaoVaga] = useState("");
   const [foco, setFoco] = useState("");
   const [duracaoDesejada, setDuracaoDesejada] = useState(3);
   const router = useRouter();
@@ -67,6 +70,8 @@ export function GenerateAIButton() {
 
     generateMutation.mutate({
       tipoVaga,
+      nomeEmpresa: nomeEmpresa || undefined,
+      descricaoVaga: descricaoVaga || undefined,
       foco: foco
         .split(",")
         .map((f) => f.trim())
@@ -88,7 +93,7 @@ export function GenerateAIButton() {
           Gerar com IA
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="uppercase font-display">
             Gerar Speech com IA
@@ -106,7 +111,7 @@ export function GenerateAIButton() {
             </Label>
             <Input
               id="tipoVaga"
-              placeholder="Ex: Senior Backend Engineer, Tech Lead, etc."
+              placeholder="Ex: Senior Backend Engineer, Tech Lead, CPO, etc."
               value={tipoVaga}
               onChange={(e) => setTipoVaga(e.target.value)}
               disabled={isLoading}
@@ -117,18 +122,52 @@ export function GenerateAIButton() {
           </div>
 
           <div className="grid gap-3">
+            <Label htmlFor="nomeEmpresa" className="uppercase">
+              Nome da Empresa <span className="text-muted-foreground text-xs">(Opcional)</span>
+            </Label>
+            <Input
+              id="nomeEmpresa"
+              placeholder="Ex: Amazon, Google, Nubank, etc."
+              value={nomeEmpresa}
+              onChange={(e) => setNomeEmpresa(e.target.value)}
+              disabled={isLoading}
+            />
+            <p className="text-xs text-muted-foreground">
+              A IA conectará suas experiências com os valores e cultura da empresa
+            </p>
+          </div>
+
+          <div className="grid gap-3">
+            <Label htmlFor="descricaoVaga" className="uppercase">
+              Descrição da Vaga <span className="text-muted-foreground text-xs">(Opcional)</span>
+            </Label>
+            <Textarea
+              id="descricaoVaga"
+              placeholder="Cole aqui a descrição completa da vaga ou os requisitos principais..."
+              value={descricaoVaga}
+              onChange={(e) => setDescricaoVaga(e.target.value)}
+              disabled={isLoading}
+              rows={6}
+              className="resize-none"
+            />
+            <p className="text-xs text-muted-foreground">
+              A IA adaptará o speech para responder aos requisitos específicos da vaga
+            </p>
+          </div>
+
+          <div className="grid gap-3">
             <Label htmlFor="foco" className="uppercase">
-              Áreas de Foco
+              Áreas de Foco <span className="text-muted-foreground text-xs">(Opcional)</span>
             </Label>
             <Input
               id="foco"
-              placeholder="Ex: liderança, arquitetura, performance"
+              placeholder="Ex: liderança, arquitetura, AI/ML, transformação digital"
               value={foco}
               onChange={(e) => setFoco(e.target.value)}
               disabled={isLoading}
             />
             <p className="text-xs text-muted-foreground">
-              Separe múltiplas áreas com vírgulas (opcional)
+              Separe múltiplas áreas com vírgulas
             </p>
           </div>
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { generateIcebreaker } from "@/lib/ai/gemini";
+import { generateIcebreaker, editIcebreaker } from "@/lib/ai/gemini";
 
 // Schema para versão individual de icebreaker
 const versaoSchema = z.object({
@@ -117,6 +117,8 @@ export const icebreakersRouter = createTRPCRouter({
     .input(
       z.object({
         tipo: z.enum(["elevator_pitch", "quick_intro", "personal_story"]),
+        categoria: z.string().optional(),
+        orientacoesCustomizadas: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -138,9 +140,32 @@ export const icebreakersRouter = createTRPCRouter({
           anosExperiencia: profile.anosExperiencia,
         },
         input.tipo,
-        profile.id
+        profile.id,
+        input.categoria,
+        input.orientacoesCustomizadas
       );
 
       return { versoes };
+    }),
+
+  editWithAI: publicProcedure
+    .input(
+      z.object({
+        conteudoAtual: z.string().min(1, "Conteúdo atual é obrigatório"),
+        instrucoes: z.string().min(1, "Instruções são obrigatórias"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Busca o perfil do usuário para usar como userId
+      const profile = await ctx.prisma.profile.findFirst();
+      const userId = profile?.id || "default";
+
+      const conteudoEditado = await editIcebreaker(
+        input.conteudoAtual,
+        input.instrucoes,
+        userId
+      );
+
+      return { conteudoEditado };
     }),
 });

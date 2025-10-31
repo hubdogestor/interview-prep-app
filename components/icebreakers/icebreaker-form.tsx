@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,6 +14,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -24,6 +34,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Sparkles, Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc/react";
+import { toast } from "sonner";
 
 // Schema para versão individual de icebreaker
 const versaoSchema = z.object({
@@ -62,6 +76,10 @@ export function IcebreakerForm({
   onSubmit,
   isSubmitting = false,
 }: IcebreakerFormProps) {
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editInstructions, setEditInstructions] = useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
@@ -82,6 +100,41 @@ export function IcebreakerForm({
     control: form.control,
     name: "versoes",
   });
+
+  const editMutation = trpc.icebreakers.editWithAI.useMutation({
+    onSuccess: (data) => {
+      if (editingIndex !== null) {
+        form.setValue(`versoes.${editingIndex}.conteudo.pt`, data.conteudoEditado);
+        toast.success("Conteúdo editado com sucesso!");
+        setIsEditDialogOpen(false);
+        setEditInstructions("");
+        setEditingIndex(null);
+      }
+    },
+    onError: (error) => {
+      toast.error("Erro ao editar: " + error.message);
+    },
+  });
+
+  const handleEditWithAI = (index: number) => {
+    setEditingIndex(index);
+    setEditInstructions("");
+    setIsEditDialogOpen(true);
+  };
+
+  const handleConfirmEdit = () => {
+    if (editingIndex === null) return;
+    if (!editInstructions.trim()) {
+      toast.error("Por favor, descreva o que deseja editar");
+      return;
+    }
+
+    const currentContent = form.getValues(`versoes.${editingIndex}.conteudo.pt`);
+    editMutation.mutate({
+      conteudoAtual: currentContent,
+      instrucoes: editInstructions,
+    });
+  };
 
   const handleTagsChange = (index: number, value: string) => {
     const tags = value
@@ -171,17 +224,29 @@ export function IcebreakerForm({
                   <h4 className="font-display uppercase">
                     Versão {index + 1}
                   </h4>
-                  {fields.length > 1 && (
+                  <div className="flex gap-2">
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
-                      onClick={() => remove(index)}
-                      className="text-destructive"
+                      onClick={() => handleEditWithAI(index)}
+                      className="text-chart-1 border-chart-1 hover:bg-chart-1/10"
                     >
-                      Remover
+                      <Sparkles className="mr-1 h-3 w-3" />
+                      Editar com IA
                     </Button>
-                  )}
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => remove(index)}
+                        className="text-destructive"
+                      >
+                        Remover
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Nome da versão */}
@@ -290,6 +355,74 @@ export function IcebreakerForm({
           </Button>
         </div>
       </form>
+
+      {/* Dialog de Edição com IA */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="uppercase font-display">
+              Editar com IA
+            </DialogTitle>
+            <DialogDescription>
+              Descreva o que você quer mudar no texto e a IA fará a edição para você.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-3">
+              <Label htmlFor="edit-instructions" className="uppercase">
+                O que deseja editar?
+              </Label>
+              <Textarea
+                id="edit-instructions"
+                placeholder='Ex: "Fale sobre a empresa Amazon e não Nubank" ou "Coloque que foram 14 anos, não 15" ou "Torne o texto mais direto e objetivo"'
+                value={editInstructions}
+                onChange={(e) => setEditInstructions(e.target.value)}
+                disabled={editMutation.isPending}
+                rows={5}
+                className="resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                Seja específico nas suas instruções para obter o melhor resultado
+              </p>
+            </div>
+
+            {editMutation.isPending && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Editando com IA...</span>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+              disabled={editMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleConfirmEdit}
+              disabled={editMutation.isPending || !editInstructions.trim()}
+            >
+              {editMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Editando...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Editar
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 }

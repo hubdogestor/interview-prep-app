@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,8 +14,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Sparkles, Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc/react";
+import { toast } from "sonner";
 
 // Schema para criar speech
 const formSchema = z.object({
@@ -42,6 +55,9 @@ export function SpeechForm({
   onSubmit,
   isSubmitting = false,
 }: SpeechFormProps) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editInstructions, setEditInstructions] = useState("");
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
@@ -53,6 +69,36 @@ export function SpeechForm({
       foco: [],
     },
   });
+
+  const editMutation = trpc.speeches.editWithAI.useMutation({
+    onSuccess: (data) => {
+      form.setValue("conteudo.pt", data.conteudoEditado);
+      toast.success("Conteúdo editado com sucesso!");
+      setIsEditDialogOpen(false);
+      setEditInstructions("");
+    },
+    onError: (error) => {
+      toast.error("Erro ao editar: " + error.message);
+    },
+  });
+
+  const handleEditWithAI = () => {
+    setEditInstructions("");
+    setIsEditDialogOpen(true);
+  };
+
+  const handleConfirmEdit = () => {
+    if (!editInstructions.trim()) {
+      toast.error("Por favor, descreva o que deseja editar");
+      return;
+    }
+
+    const currentContent = form.getValues("conteudo.pt");
+    editMutation.mutate({
+      conteudoAtual: currentContent,
+      instrucoes: editInstructions,
+    });
+  };
 
   const handleFocoChange = (value: string) => {
     const focoArray = value
@@ -131,7 +177,19 @@ export function SpeechForm({
           name="conteudo.pt"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="uppercase">Conteúdo (Português)</FormLabel>
+              <div className="flex items-center justify-between mb-2">
+                <FormLabel className="uppercase">Conteúdo (Português)</FormLabel>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleEditWithAI}
+                  className="text-chart-1 border-chart-1 hover:bg-chart-1/10"
+                >
+                  <Sparkles className="mr-1 h-3 w-3" />
+                  Editar com IA
+                </Button>
+              </div>
               <FormControl>
                 <Textarea
                   placeholder="Escreva seu speech completo em português..."
@@ -213,6 +271,74 @@ export function SpeechForm({
           </Button>
         </div>
       </form>
+
+      {/* Dialog de Edição com IA */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="uppercase font-display">
+              Editar Speech com IA
+            </DialogTitle>
+            <DialogDescription>
+              Descreva o que você quer mudar no texto e a IA fará a edição para você.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-3">
+              <Label htmlFor="edit-instructions" className="uppercase">
+                O que deseja editar?
+              </Label>
+              <Textarea
+                id="edit-instructions"
+                placeholder='Ex: "Fale sobre a empresa Amazon e não Nubank" ou "Adicione mais detalhes sobre o projeto X" ou "Torne o discurso mais conciso"'
+                value={editInstructions}
+                onChange={(e) => setEditInstructions(e.target.value)}
+                disabled={editMutation.isPending}
+                rows={5}
+                className="resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                Seja específico nas suas instruções para obter o melhor resultado
+              </p>
+            </div>
+
+            {editMutation.isPending && (
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Editando com IA...</span>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+              disabled={editMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleConfirmEdit}
+              disabled={editMutation.isPending || !editInstructions.trim()}
+            >
+              {editMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Editando...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Editar
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 }

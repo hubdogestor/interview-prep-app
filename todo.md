@@ -190,7 +190,12 @@
 - [x] .gitignore configurado (arquivos .md são privados)
 - [x] Prompts da IA adaptados para ler context-files
 - [x] Funções `generateIcebreaker` e `generateSpeech` integradas
-- [ ] Preencher templates com dados reais (ação do usuário)
+- [x] **cv.md** preenchido com dados completos (202 linhas)
+- [x] **playbook.md** preenchido com estratégias e tom de voz (366 linhas)
+- [x] **experiencias.md** preenchido com STAR cases detalhados (687 linhas)
+- [x] **competencias.md** preenchido com skills e evidências (711 linhas)
+- [ ] Testar geração de IA com contexto rico
+- [ ] Limpar pasta /temp (opcional)
 - [ ] Migrar para MongoDB (Fase futura)
 
 ---

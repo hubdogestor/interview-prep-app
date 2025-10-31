@@ -115,7 +115,9 @@ export async function generateIcebreaker(
     anosExperiencia: number;
   },
   tipo: "elevator_pitch" | "quick_intro" | "personal_story",
-  userId: string = "default"
+  userId: string = "default",
+  categoria?: string,
+  orientacoesCustomizadas?: string
 ): Promise<IcebreakerVersion[]> {
   // Rate limiting
   if (!checkRateLimit(`icebreaker-${userId}`)) {
@@ -134,21 +136,21 @@ export async function generateIcebreaker(
       duracaoMin: 60,
       duracaoMedia: 90,
       duracaoMax: 120,
-      instruction: "Apresentação persuasiva e impactante, foco em destaque profissional"
+      instruction: "Apresentação persuasiva e impactante, foco em destaque profissional (1-2 minutos)"
     },
     quick_intro: {
       descricao: "uma apresentação rápida",
-      duracaoMin: 30,
-      duracaoMedia: 45,
-      duracaoMax: 60,
-      instruction: "Apresentação concisa e direta, apenas essencial"
-    },
-    personal_story: {
-      descricao: "uma história pessoal impactante",
       duracaoMin: 120,
       duracaoMedia: 180,
       duracaoMax: 240,
-      instruction: "Narrativa envolvente com storytelling, contexto + jornada + aprendizado"
+      instruction: "Apresentação equilibrada e completa, com contexto e destaques (2-4 minutos)"
+    },
+    personal_story: {
+      descricao: "uma história pessoal impactante",
+      duracaoMin: 240,
+      duracaoMedia: 300,
+      duracaoMax: 360,
+      instruction: "Narrativa envolvente e profunda com storytelling, contexto detalhado + jornada + aprendizados (4-6 minutos)"
     },
   };
 
@@ -169,14 +171,21 @@ ${contextData ? `**CONTEXTO ADICIONAL (use TODAS essas informações):**${contex
 
 **Tipo:** ${tipo} - ${config.instruction}
 
+${categoria ? `**Categoria/Foco:** ${categoria}` : ""}
+
+${orientacoesCustomizadas ? `**ORIENTAÇÕES ESPECÍFICAS DO USUÁRIO (PRIORIDADE MÁXIMA):**\n${orientacoesCustomizadas}\n` : ""}
+
 **Instruções CRÍTICAS:**
 1. Gere EXATAMENTE 3 versões com durações diferentes
-2. Use TODOS os dados do contexto adicional para criar apresentações RICAS e PERSONALIZADAS
-3. Inclua realizações REAIS e MÉTRICAS CONCRETAS do histórico do candidato
-4. Adapte o TOM DE VOZ conforme especificado no playbook (se disponível)
-5. Use PALAVRAS-CHAVE estratégicas para ATS (se especificadas no playbook)
-6. Seja NATURAL, CONFIANTE e AUTÊNTICO - evite clichês corporativos
-7. Para personal_story: inclua contexto, desafio, ação, resultado e aprendizado
+2. ${orientacoesCustomizadas ? "Siga FIELMENTE as orientações específicas fornecidas pelo usuário" : ""}
+3. ${categoria ? `Adapte o conteúdo para responder especificamente à categoria: "${categoria}"` : ""}
+4. IMPORTANTE: Icebreakers devem ser LEVES, CONVERSACIONAIS e NATURAIS - como uma conversa genuína, não um roteiro ou CV recitado
+5. Use dados do contexto adicional, MAS de forma seletiva e orgânica - não liste tudo
+6. Mencione 1-2 realizações específicas com métricas, mas de forma fluida e contextual
+7. Evite clichês corporativos e jargões vazios - seja direto e autêntico
+8. O tom deve ser confiante mas acessível, profissional mas humano
+9. Para personal_story: conte uma HISTÓRIA real com narrativa envolvente (contexto, desafio, solução, impacto, aprendizado)
+10. Adapte o TOM DE VOZ conforme especificado no playbook, mas mantendo naturalidade
 
 **Durações alvo:**
 - Versão Curta: ${config.duracaoMin}s
@@ -248,7 +257,9 @@ export async function generateSpeech(
   tipoVaga: string,
   foco: string[],
   duracaoDesejada: number,
-  userId: string = "default"
+  userId: string = "default",
+  nomeEmpresa?: string,
+  descricaoVaga?: string
 ): Promise<{ conteudo: SpeechContent; duracaoEstimada: number }> {
   // Rate limiting
   if (!checkRateLimit(`speech-${userId}`)) {
@@ -273,6 +284,8 @@ ${contextData ? `**CONTEXTO ADICIONAL (use TODAS essas informações):**${contex
 
 **Contexto da vaga:**
 - Tipo de vaga: ${tipoVaga}
+${nomeEmpresa ? `- Empresa: ${nomeEmpresa}` : ""}
+${descricaoVaga ? `- Descrição da vaga:\n${descricaoVaga}` : ""}
 - Áreas de foco: ${foco.join(", ") || "Não especificadas"}
 - Duração desejada: ${duracaoDesejada} minutos
 
@@ -281,12 +294,14 @@ ${contextData ? `**CONTEXTO ADICIONAL (use TODAS essas informações):**${contex
 **Instruções CRÍTICAS:**
 1. Use TODOS os dados do contexto adicional - experiências, projetos, competências, realizações
 2. O speech deve ter EXATAMENTE ${duracaoDesejada} minutos de duração (considere ~150 palavras por minuto)
-3. Inclua MÉTRICAS REAIS e RESULTADOS QUANTIFICÁVEIS do histórico do candidato
-4. Adapte o TOM DE VOZ conforme especificado no playbook (se disponível)
-5. Use PALAVRAS-CHAVE relevantes para ${tipoVaga} e estratégias ATS (se especificadas)
-6. Seja NATURAL, AUTÊNTICO e evite clichês corporativos genéricos
-7. Conecte experiências passadas com os requisitos da vaga ${tipoVaga}
-8. ${foco.length > 0 ? `Enfatize especialmente: ${foco.join(", ")}` : ""}
+3. ${nomeEmpresa ? `Conecte suas experiências com os valores e cultura da empresa ${nomeEmpresa}` : ""}
+4. ${descricaoVaga ? "Adapte o speech para responder aos requisitos ESPECÍFICOS da vaga fornecida" : ""}
+5. Inclua MÉTRICAS REAIS e RESULTADOS QUANTIFICÁVEIS do histórico do candidato
+6. Adapte o TOM DE VOZ conforme especificado no playbook (se disponível)
+7. Use PALAVRAS-CHAVE relevantes para ${tipoVaga} e estratégias ATS (se especificadas)
+8. Seja NATURAL, AUTÊNTICO e evite clichês corporativos genéricos
+9. Conecte experiências passadas com os requisitos da vaga ${tipoVaga}
+10. ${foco.length > 0 ? `Enfatize especialmente: ${foco.join(", ")}` : ""}
 
 **Estrutura sugerida:**
 1. **Introdução** (15%): Quem você é, contexto atual, gancho interessante
@@ -323,6 +338,114 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     console.error("Erro ao gerar speech:", error);
     throw new Error(
       `Erro ao gerar speech: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * Edita um icebreaker baseado em instruções do usuário
+ */
+export async function editIcebreaker(
+  conteudoAtual: string,
+  instrucoes: string,
+  userId: string = "default"
+): Promise<string> {
+  // Rate limiting
+  if (!checkRateLimit(`edit-icebreaker-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Tente novamente em alguns minutos."
+    );
+  }
+
+  const model = getModel();
+
+  const prompt = `
+Você é um especialista em preparação para entrevistas de emprego e edição de textos profissionais.
+
+**Conteúdo atual do icebreaker:**
+${conteudoAtual}
+
+**Instruções de edição do usuário:**
+${instrucoes}
+
+**Tarefa:** Edite o icebreaker seguindo EXATAMENTE as instruções fornecidas pelo usuário.
+
+**Instruções CRÍTICAS:**
+1. Mantenha o tom LEVE, CONVERSACIONAL e NATURAL - como se fosse uma conversa genuína, não um roteiro robotizado
+2. Aplique APENAS as mudanças solicitadas pelo usuário
+3. Preserve o estilo e estrutura original, a menos que o usuário peça para mudar
+4. O icebreaker deve soar como algo que você realmente falaria em uma entrevista, não como um CV recitado
+5. Evite clichês corporativos e frases genéricas - seja autêntico e direto
+6. Mantenha a duração similar ao original, a menos que seja pedido para alterar
+
+**Formato de resposta (apenas o texto editado, sem JSON ou markdown):**
+[texto editado do icebreaker em primeira pessoa]
+
+Responda APENAS com o texto editado, sem explicações adicionais.
+`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    return response.text().trim();
+  } catch (error: any) {
+    console.error("Erro ao editar icebreaker:", error);
+    throw new Error(
+      `Erro ao editar icebreaker: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * Edita um speech baseado em instruções do usuário
+ */
+export async function editSpeech(
+  conteudoAtual: string,
+  instrucoes: string,
+  userId: string = "default"
+): Promise<string> {
+  // Rate limiting
+  if (!checkRateLimit(`edit-speech-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Tente novamente em alguns minutos."
+    );
+  }
+
+  const model = getModel();
+
+  const prompt = `
+Você é um especialista em preparação para entrevistas de emprego e edição de discursos profissionais.
+
+**Conteúdo atual do speech:**
+${conteudoAtual}
+
+**Instruções de edição do usuário:**
+${instrucoes}
+
+**Tarefa:** Edite o speech seguindo EXATAMENTE as instruções fornecidas pelo usuário.
+
+**Instruções CRÍTICAS:**
+1. Este é um CV speech completo - deve ser estruturado e profissional
+2. Aplique APENAS as mudanças solicitadas pelo usuário
+3. Preserve a estrutura original (introdução, jornada, competências, motivação), a menos que o usuário peça para mudar
+4. Mantenha métricas e realizações quantificáveis
+5. O speech deve soar natural e fluido, como uma apresentação preparada
+6. Mantenha a duração similar ao original, a menos que seja pedido para alterar
+
+**Formato de resposta (apenas o texto editado, sem JSON ou markdown):**
+[texto editado do speech em primeira pessoa]
+
+Responda APENAS com o texto editado, sem explicações adicionais.
+`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    return response.text().trim();
+  } catch (error: any) {
+    console.error("Erro ao editar speech:", error);
+    throw new Error(
+      `Erro ao editar speech: ${error.message || "Erro desconhecido"}`
     );
   }
 }

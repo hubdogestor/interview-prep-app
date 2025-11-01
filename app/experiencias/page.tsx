@@ -1,13 +1,34 @@
+"use client";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import BriefcaseIcon from "@/components/icons/briefcase";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { api } from "@/lib/trpc/server";
+import { trpc } from "@/lib/trpc/react";
+import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 
-export default async function ExperienciasPage() {
-  const caller = await api();
-  const experiencias = await caller.experiencias.list();
+export default function ExperienciasPage() {
+  const router = useRouter();
+  const { data: experiencias = [], isLoading } = trpc.experiencias.list.useQuery();
+
+  if (isLoading) {
+    return (
+      <DashboardPageLayout
+        header={{
+          title: "Experiências",
+          description: "Your professional journey",
+          icon: BriefcaseIcon,
+        }}
+      >
+        <div className="flex items-center justify-center py-12">
+          <p className="text-muted-foreground">Carregando experiências...</p>
+        </div>
+      </DashboardPageLayout>
+    );
+  }
+
   return (
     <DashboardPageLayout
       header={{
@@ -45,7 +66,7 @@ export default async function ExperienciasPage() {
                   <div className="flex flex-wrap gap-2 mb-4">
                     {exp.tecnologias.map((tech) => (
                       <Badge key={tech} variant="secondary">
-                        {tech}
+                        #{tech}
                       </Badge>
                     ))}
                   </div>
@@ -58,10 +79,18 @@ export default async function ExperienciasPage() {
                 </div>
 
                 <div className="flex gap-2 pt-4 border-t border-border">
-                  <Button variant="default" size="sm">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => router.push(`/experiencias/${exp.id}`)}
+                  >
                     VIEW DETAILS
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.push(`/experiencias/${exp.id}`)}
+                  >
                     EDIT
                   </Button>
                 </div>
@@ -78,11 +107,14 @@ export default async function ExperienciasPage() {
       </div>
 
       <div className="mt-8">
-        <button className="w-full p-4 border border-dashed border-border hover:border-primary hover:bg-accent/50 rounded-lg transition-colors uppercase text-sm font-display">
-          + ADD NEW EXPERIENCE
+        <button
+          onClick={() => router.push("/experiencias/novo")}
+          className="w-full p-4 border border-dashed border-border hover:border-primary hover:bg-accent/50 rounded-lg transition-colors uppercase text-sm font-display flex items-center justify-center gap-2"
+        >
+          <Plus className="h-5 w-5" />
+          ADD NEW EXPERIENCE
         </button>
       </div>
     </DashboardPageLayout>
-  )
+  );
 }
-

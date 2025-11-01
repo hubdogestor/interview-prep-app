@@ -1,7 +1,7 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 31 de outubro de 2025 (noite - sessão 3 CONCLUÍDA)
-**Status atual:** Fase 2.1 ✅ + 2.2 ✅ + 2.3 ✅ + Fase 3 (IA + UX) ✅ COMPLETAS
+**Atualização:** 1 de novembro de 2025 (Sessão 4 - CRUD COMPLETO ✅)
+**Status atual:** Fase 2 COMPLETA ✅ + Fase 3 (IA + UX) ✅ + CRUD Experiências & Competências ✅
 **Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA personalizadas
 
 ## ✅ Sessão 3 - CONCLUÍDA COM SUCESSO
@@ -23,7 +23,7 @@
 **Implementações autônomas (Sessões B → C → A):**
 ### OPÇÃO B - CRUD Restante ✅
 1. ✅ Questions CRUD já estava completo (favoritar já funcionava)
-2. ⏸️ Experiências e Competências postergados (muito complexo, prioridade menor)
+2. ✅ Experiências e Competências implementados (Sessão 4)
 
 ### OPÇÃO C - Dashboard Funcional ✅
 1. ✅ Dashboard com métricas reais (Icebreakers, Speeches, Questions, Experiências)
@@ -40,6 +40,87 @@
 1. ✅ Dev server funciona perfeitamente (localhost:3000)
 2. ✅ Build completa com warnings de SSG esperados (client components em server pages)
 3. ℹ️ Warnings de prerendering são comportamento normal do Next.js 14 - não impedem funcionalidade
+
+## ✅ Sessão 4 - CRUD Experiências & Competências COMPLETO
+
+**CRUD de Experiências ✅**
+1. ✅ Router tRPC completo (`server/api/routers/experiencias.ts`)
+   - `list()` - Listagem ordenada por data
+   - `getById(id)` - Buscar por ID
+   - `create(data)` - Criar nova experiência
+   - `update(id, data)` - Atualizar experiência
+   - `delete(id)` - Deletar experiência
+
+2. ✅ Componente ExperienciaForm (`components/experiencias/experiencia-form.tsx`)
+   - Informações básicas (empresa, cargo, período)
+   - Tecnologias com tags (#hashtag)
+   - Elevator Pitch (PT/EN)
+   - Speech Completo (PT/EN)
+   - **STAR Cases** com dialog modal completo:
+     - Título, Idioma (PT/EN)
+     - Situation, Task, Action, Result
+     - TextStats em cada campo
+     - Edição e remoção de cases
+
+3. ✅ Páginas criadas:
+   - `/experiencias` - Listagem com timeline visual
+   - `/experiencias/novo` - Criar nova experiência
+   - `/experiencias/[id]` - Visualizar/Editar com botão de exclusão
+
+4. ✅ Features:
+   - Timeline visual com dots e linha
+   - Cards com hover effects
+   - Badges para tecnologias (#hashtag)
+   - Contador de STAR Cases
+   - AlertDialog para confirmação de exclusão
+   - Loading states
+   - Toast notifications
+
+**CRUD de Competências ✅**
+1. ✅ Router tRPC completo (`server/api/routers/competencias.ts`)
+   - `list()` - Listagem ordenada por nível + data
+   - `getById(id)` - Buscar por ID
+   - `create(data)` - Criar nova competência
+   - `update(id, data)` - Atualizar competência
+   - `delete(id)` - Deletar competência
+
+2. ✅ Componente CompetenciaForm (`components/competencias/competencia-form.tsx`)
+   - Informações básicas (nome, categoria, nível)
+   - Categorias: Technical, Soft Skills, Leadership
+   - Níveis: Basic, Intermediate, Advanced, Expert
+   - Descrição (PT/EN) com TextStats
+   - Ferramentas & Tecnologias com tags (#hashtag)
+   - Evidências (URLs, certificados)
+   - **Track Record**:
+     - Projeto, Resultado, Ano
+     - Múltiplos projetos por competência
+     - Cards individuais com edição/remoção
+
+3. ✅ Páginas criadas:
+   - `/competencias` - Listagem em grid
+   - `/competencias/novo` - Criar nova competência
+   - `/competencias/[id]` - Visualizar/Editar com botão de exclusão
+
+4. ✅ Features:
+   - Badges coloridos por categoria
+   - Display de nível de proficiência
+   - Tags para ferramentas (#hashtag)
+   - Lista de evidências
+   - AlertDialog para confirmação de exclusão
+   - Loading states
+   - Toast notifications
+
+**Arquivos criados/modificados:**
+- ✅ `server/api/routers/experiencias.ts` - Router completo
+- ✅ `server/api/routers/competencias.ts` - Router completo
+- ✅ `components/experiencias/experiencia-form.tsx` - Form com STAR Cases
+- ✅ `components/competencias/competencia-form.tsx` - Form com Track Record
+- ✅ `app/experiencias/page.tsx` - Listagem client component
+- ✅ `app/experiencias/novo/page.tsx` - Criar
+- ✅ `app/experiencias/[id]/page.tsx` - Editar/Visualizar
+- ✅ `app/competencias/page.tsx` - Listagem client component
+- ✅ `app/competencias/novo/page.tsx` - Criar
+- ✅ `app/competencias/[id]/page.tsx` - Editar/Visualizar
 
 ## 🎯 Próximos Passos (Sessão 5)
 

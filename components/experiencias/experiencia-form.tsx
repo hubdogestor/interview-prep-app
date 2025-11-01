@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StarCaseAIButton } from "@/components/experiencias/star-case-ai-button";
 
 // Schema para STAR Case individual
 const starCaseSchema = z.object({
@@ -411,14 +412,24 @@ export function ExperienciaForm({
           </div>
 
           {fields.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              Nenhum STAR Case adicionado ainda
-            </p>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Nenhum STAR Case adicionado ainda
+              </p>
+              <StarCaseAIButton
+                empresaNome={form.watch("empresa")}
+                cargoNome={form.watch("cargo")}
+                mode="create"
+                onGenerated={(starCase) => {
+                  append(starCase);
+                }}
+              />
+            </div>
           ) : (
             <div className="space-y-3">
               {fields.map((field, index) => (
                 <Card key={field.id} className="p-4">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <h4 className="font-semibold">{field.titulo}</h4>
@@ -441,27 +452,46 @@ export function ExperienciaForm({
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleOpenStarDialog(index)}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleOpenStarDialog(index)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => remove(index)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                      <StarCaseAIButton
+                        empresaNome={form.watch("empresa")}
+                        cargoNome={form.watch("cargo")}
+                        mode="rewrite"
+                        existingCase={field}
+                        onGenerated={(updatedCase) => {
+                          update(index, updatedCase);
+                        }}
+                      />
                     </div>
                   </div>
                 </Card>
               ))}
+              <StarCaseAIButton
+                empresaNome={form.watch("empresa")}
+                cargoNome={form.watch("cargo")}
+                mode="create"
+                onGenerated={(starCase) => {
+                  append(starCase);
+                }}
+              />
             </div>
           )}
         </Card>

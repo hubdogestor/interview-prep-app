@@ -114,6 +114,15 @@ export interface SuggestedQuestion {
   prioridade: "alta" | "media" | "baixa";
 }
 
+export interface StarCase {
+  titulo: string;
+  situation: string;
+  task: string;
+  action: string;
+  result: string;
+  idioma: "pt" | "en";
+}
+
 /**
  * Gera versões de icebreaker baseado no perfil do usuário
  */
@@ -630,6 +639,172 @@ Responda APENAS com o JSON array válido, sem markdown ou texto adicional.
     console.error("Erro ao sugerir perguntas:", error);
     throw new Error(
       `Erro ao sugerir perguntas: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * Gera um STAR Case baseado no perfil e experiência
+ */
+export async function generateStarCase(
+  mode: "auto" | "guided" | "rewrite",
+  idioma: "pt" | "en",
+  experienciaContext?: {
+    empresa?: string;
+    cargo?: string;
+  },
+  guidedInputs?: {
+    titulo?: string;
+    contexto?: string;
+    competenciaFoco?: string;
+  },
+  existingCase?: StarCase,
+  rewriteInstructions?: string,
+  userId: string = "default"
+): Promise<StarCase> {
+  // Rate limiting
+  if (!checkRateLimit(`starcase-generate-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Tente novamente em alguns minutos."
+    );
+  }
+
+  const model = getModel();
+  const contextData = loadContextFiles();
+
+  let prompt = "";
+
+  if (mode === "rewrite" && existingCase) {
+    prompt = `
+Você é um especialista em preparação para entrevistas comportamentais usando o método STAR.
+
+**STAR Case atual:**
+- Título: ${existingCase.titulo}
+- Situation: ${existingCase.situation}
+- Task: ${existingCase.task}
+- Action: ${existingCase.action}
+- Result: ${existingCase.result}
+- Idioma atual: ${existingCase.idioma}
+
+**Idioma desejado:** ${idioma}
+
+${rewriteInstructions ? `**Instruções específicas do usuário:**\n${rewriteInstructions}` : "**Tarefa:** Reescreva este STAR Case melhorando clareza, impacto e resultados quantificáveis."}
+
+**Instruções CRÍTICAS:**
+1. ${idioma !== existingCase.idioma ? `TRADUZA para ${idioma === "pt" ? "português" : "inglês"}` : "Mantenha o idioma"}
+2. ${rewriteInstructions ? "Siga FIELMENTE as instruções do usuário" : "Melhore a clareza e impacto"}
+3. Mantenha a estrutura STAR completa
+4. Adicione ou enfatize métricas quantificáveis nos resultados
+5. Torne a narrativa mais convincente e profissional
+6. Mantenha a autenticidade - deve soar real, não inventado
+7. Use primeira pessoa ("eu fiz", "eu liderei")
+
+**Formato de resposta (JSON):**
+{
+  "titulo": "Título do case",
+  "situation": "Descrição da situação/contexto...",
+  "task": "Qual era o desafio/objetivo...",
+  "action": "Ações específicas que você tomou...",
+  "result": "Resultados alcançados com métricas...",
+  "idioma": "${idioma}"
+}
+
+Responda APENAS com o JSON válido, sem markdown ou texto adicional.
+`;
+  } else if (mode === "guided" && guidedInputs) {
+    prompt = `
+Você é um especialista em preparação para entrevistas comportamentais usando o método STAR.
+
+${contextData ? `**CONTEXTO DO PERFIL (use essas informações):**${contextData}` : ""}
+
+${experienciaContext?.empresa && experienciaContext?.cargo ? `**Contexto da experiência:**\n- Empresa: ${experienciaContext.empresa}\n- Cargo: ${experienciaContext.cargo}` : ""}
+
+**Inputs do usuário:**
+- Título do case: ${guidedInputs.titulo}
+- Contexto/Situação: ${guidedInputs.contexto}
+${guidedInputs.competenciaFoco ? `- Competência em foco: ${guidedInputs.competenciaFoco}` : ""}
+
+**Idioma:** ${idioma === "pt" ? "português" : "inglês"}
+
+**Tarefa:** Crie um STAR Case completo baseado nos inputs do usuário e contexto do perfil.
+
+**Instruções CRÍTICAS:**
+1. Use o título e contexto fornecidos pelo usuário como base
+2. ${guidedInputs.competenciaFoco ? `Enfatize a competência: ${guidedInputs.competenciaFoco}` : ""}
+3. Complete a estrutura STAR de forma coerente e convincente
+4. Inclua MÉTRICAS QUANTIFICÁVEIS nos resultados (use dados do contexto se disponíveis)
+5. ${experienciaContext?.empresa ? `Contextualize na experiência da empresa ${experienciaContext.empresa}` : ""}
+6. A narrativa deve ser autêntica e realista
+7. Use primeira pessoa ("eu fiz", "eu liderei")
+8. Seja específico - evite generalidades
+
+**Formato de resposta (JSON):**
+{
+  "titulo": "${guidedInputs.titulo}",
+  "situation": "Descrição detalhada da situação/contexto...",
+  "task": "Qual era o desafio/objetivo específico...",
+  "action": "Ações específicas que você tomou (detalhadas)...",
+  "result": "Resultados alcançados com métricas quantificáveis...",
+  "idioma": "${idioma}"
+}
+
+Responda APENAS com o JSON válido, sem markdown ou texto adicional.
+`;
+  } else {
+    // Auto mode
+    prompt = `
+Você é um especialista em preparação para entrevistas comportamentais usando o método STAR.
+
+${contextData ? `**CONTEXTO DO PERFIL (use TODAS essas informações):**${contextData}` : ""}
+
+${experienciaContext?.empresa && experienciaContext?.cargo ? `**Contexto da experiência:**\n- Empresa: ${experienciaContext.empresa}\n- Cargo: ${experienciaContext.cargo}` : ""}
+
+**Idioma:** ${idioma === "pt" ? "português" : "inglês"}
+
+**Tarefa:** Crie um STAR Case completo e impactante automaticamente baseado no perfil do candidato${experienciaContext?.empresa ? ` e sua experiência na ${experienciaContext.empresa}` : ""}.
+
+**Instruções CRÍTICAS:**
+1. Use informações REAIS do contexto fornecido (experiências, projetos, competências)
+2. ${experienciaContext?.empresa && experienciaContext?.cargo ? `Baseie o STAR Case na experiência como ${experienciaContext.cargo} na ${experienciaContext.empresa}` : "Escolha a experiência mais relevante"}
+3. Inclua MÉTRICAS QUANTIFICÁVEIS nos resultados
+4. O case deve demonstrar impacto real e competências técnicas/comportamentais
+5. Escolha um projeto ou situação que seja destacável em entrevistas
+6. A narrativa deve ser autêntica e realista - não invente informações não presentes no contexto
+7. Use primeira pessoa ("eu fiz", "eu liderei")
+8. Título deve ser descritivo e impactante
+
+**Estrutura STAR:**
+- **Situation**: Contexto e cenário do desafio (2-3 sentenças)
+- **Task**: Objetivo específico ou desafio a resolver (1-2 sentenças)
+- **Action**: Ações específicas tomadas, metodologia, liderança (3-4 sentenças)
+- **Result**: Resultados quantificáveis, impacto, aprendizados (2-3 sentenças com métricas)
+
+**Formato de resposta (JSON):**
+{
+  "titulo": "Título impactante do case",
+  "situation": "Descrição da situação/contexto...",
+  "task": "Qual era o desafio/objetivo...",
+  "action": "Ações específicas que você tomou...",
+  "result": "Resultados alcançados com métricas...",
+  "idioma": "${idioma}"
+}
+
+Responda APENAS com o JSON válido, sem markdown ou texto adicional.
+`;
+  }
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+
+    // Parse do JSON (removendo markdown se houver)
+    const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+    return JSON.parse(jsonText);
+  } catch (error: any) {
+    console.error("Erro ao gerar STAR Case:", error);
+    throw new Error(
+      `Erro ao gerar STAR Case: ${error.message || "Erro desconhecido"}`
     );
   }
 }

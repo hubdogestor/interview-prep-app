@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
   technical: "bg-chart-1",
@@ -42,6 +42,16 @@ export default function CompetenciasPage() {
         title: "Competências",
         description: "Your skills arsenal",
         icon: StarIcon,
+        action: (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/dashboard")}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar
+          </Button>
+        ),
       }}
     >
       <div className="space-y-4">

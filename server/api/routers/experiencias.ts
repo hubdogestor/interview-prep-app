@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { generateStarCase } from "@/lib/ai/gemini";
 
 // Schema para STAR Case individual
 const starCaseSchema = z.object({
@@ -117,5 +118,42 @@ export const experienciasRouter = createTRPCRouter({
       return ctx.prisma.experiencia.delete({
         where: { id: input.id },
       });
+    }),
+
+  generateStarCaseWithAI: publicProcedure
+    .input(
+      z.object({
+        mode: z.enum(["auto", "guided", "rewrite"]),
+        idioma: z.enum(["pt", "en"]),
+        experienciaId: z.string().optional(),
+        empresaNome: z.string().optional(),
+        cargoNome: z.string().optional(),
+        // Guided mode
+        titulo: z.string().optional(),
+        contexto: z.string().optional(),
+        competenciaFoco: z.string().optional(),
+        // Rewrite mode
+        existingCase: starCaseSchema.optional(),
+        rewriteInstructions: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return generateStarCase(
+        input.mode,
+        input.idioma,
+        {
+          empresa: input.empresaNome,
+          cargo: input.cargoNome,
+        },
+        input.titulo && input.contexto
+          ? {
+              titulo: input.titulo,
+              contexto: input.contexto,
+              competenciaFoco: input.competenciaFoco,
+            }
+          : undefined,
+        input.existingCase,
+        input.rewriteInstructions
+      );
     }),
 });

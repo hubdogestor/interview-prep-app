@@ -1007,3 +1007,98 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     );
   }
 }
+
+/**
+ * Interface para avaliação de performance
+ */
+export interface PerformanceEvaluation {
+  clareza: number; // 0-100
+  fluencia: number; // 0-100
+  completude: number; // 0-100
+  pontosFortesw: string[];
+  areasAMelhorar: string[];
+  feedback: string;
+}
+
+/**
+ * Analisa performance de uma prática usando IA
+ */
+export async function analyzePerformance(
+  transcricao: string,
+  conteudoOriginal: string,
+  tipo: "icebreaker" | "speech" | "star_case",
+  duracao: number, // em segundos
+  userId: string = "default"
+): Promise<PerformanceEvaluation> {
+  // Rate limiting
+  if (!checkRateLimit(`performance-analyze-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Aguarde 1 minuto antes de tentar novamente."
+    );
+  }
+
+  const model = getModel();
+
+  const tipoLabels = {
+    icebreaker: "Icebreaker (apresentação de 30-60 segundos)",
+    speech: "Speech profissional",
+    star_case: "STAR Case (Situation, Task, Action, Result)",
+  };
+
+  const prompt = `Você é um coach profissional especialista em preparação para entrevistas e comunicação executiva.
+
+**TIPO DE PRÁTICA:** ${tipoLabels[tipo]}
+**DURAÇÃO DA PRÁTICA:** ${Math.floor(duracao / 60)} minutos e ${duracao % 60} segundos
+
+**CONTEÚDO ORIGINAL PREPARADO:**
+${conteudoOriginal}
+
+**TRANSCRIÇÃO DA PRÁTICA REALIZADA:**
+${transcricao}
+
+**TAREFA:**
+Analise a performance da prática comparando a transcrição com o conteúdo original. Avalie os seguintes critérios:
+
+1. **Clareza (0-100):** Quão clara e compreensível foi a comunicação
+2. **Fluência (0-100):** Fluidez da fala, pausas adequadas, ausência de hesitações excessivas
+3. **Completude (0-100):** Quanto do conteúdo original foi coberto
+
+**INSTRUÇÕES CRÍTICAS:**
+- Seja construtivo e encorajador no feedback
+- Destaque 2-4 pontos fortes específicos
+- Identifique 2-3 áreas de melhoria com sugestões práticas
+- Forneça feedback acionável e específico
+- Considere o tipo de prática ao avaliar (ex: STAR Cases devem cobrir todos os 4 elementos)
+
+Retorne APENAS um JSON válido no seguinte formato:
+{
+  "clareza": 85,
+  "fluencia": 78,
+  "completude": 92,
+  "pontosFortesw": [
+    "Excelente estruturação do Situation e Task",
+    "Uso de dados quantitativos no Result",
+    "Tom de voz confiante e profissional"
+  ],
+  "areasAMelhorar": [
+    "A seção Action poderia ter mais detalhes sobre o processo",
+    "Reduzir o uso de palavras de preenchimento como 'né' e 'tipo'",
+    "Melhorar a transição entre Task e Action"
+  ],
+  "feedback": "Sua prática demonstrou excelente estruturação dos elementos STAR, com destaque para a clareza na apresentação do Situation e do Task. Os resultados foram bem quantificados, o que adiciona credibilidade. Para melhorar ainda mais, sugiro expandir a seção Action com mais detalhes sobre seu processo e abordagem, e trabalhar na redução de palavras de preenchimento. Continue praticando as transições entre as seções para criar um fluxo mais natural."
+}`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().trim();
+
+    // Parse do JSON (removendo markdown se houver)
+    const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+    return JSON.parse(jsonText);
+  } catch (error: any) {
+    console.error("Erro ao analisar performance:", error);
+    throw new Error(
+      `Erro ao analisar performance: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}

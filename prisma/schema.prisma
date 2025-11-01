@@ -113,3 +113,23 @@ model Question {
 
   @@map("questions")
 }
+
+// ========================================
+// PRACTICE SESSION - histórico de práticas
+// ========================================
+model PracticeSession {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipo            String   // icebreaker | speech | star_case
+  itemId          String   // ID do item praticado (Icebreaker, Speech, ou Experiencia)
+  itemTitle       String   // Título do item para referência rápida
+  duracao         Int      // Duração da prática em segundos
+  transcricao     String?  // Transcrição do áudio (se disponível)
+  audioUrl        String?  // URL do áudio (se armazenado)
+  avaliacaoIA     Json?    // { clareza: number, fluencia: number, completude: number, pontosFortesw: string[], areasAMelhorar: string[], feedback: string }
+  notas           String?  // Notas pessoais do usuário
+  score           Int?     // Score geral (0-100)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("practice_sessions")
+}

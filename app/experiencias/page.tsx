@@ -13,6 +13,8 @@ import { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { exportExperiencias, downloadMarkdown } from "@/lib/export/markdown";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { staggerContainer, fadeInUp, buttonHover, buttonTap } from "@/lib/animations";
 
 export default function ExperienciasPage() {
   const router = useRouter();
@@ -137,9 +139,19 @@ export default function ExperienciasPage() {
         {/* Timeline line */}
         <div className="absolute left-6 top-0 bottom-0 w-px bg-border hidden md:block" />
 
-        <div className="space-y-8">
-          {filteredExperiencias.map((exp) => (
-            <div key={exp.id} className="relative">
+        <motion.div
+          className="space-y-8"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          {filteredExperiencias.map((exp, index) => (
+            <motion.div
+              key={exp.id}
+              className="relative"
+              variants={fadeInUp}
+              custom={index}
+            >
               {/* Timeline dot */}
               <div className="absolute left-6 top-6 size-3 rounded-full bg-primary border-4 border-background hidden md:block -translate-x-1/2" />
 
@@ -206,7 +218,7 @@ export default function ExperienciasPage() {
                   </div>
                 </div>
               </Card>
-            </div>
+            </motion.div>
           ))}
 
           {filteredExperiencias.length === 0 && experiencias.length > 0 && (
@@ -219,7 +231,7 @@ export default function ExperienciasPage() {
               <p className="uppercase">Nenhuma experiência cadastrada ainda</p>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
 
       <div className="mt-8">

@@ -2,6 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Download, FileText } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
 import { exportPortfolioCompleto, downloadMarkdown } from "@/lib/export/markdown";
@@ -39,15 +45,24 @@ export function ExportPortfolioButton() {
             </p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleExportPortfolio}
-          disabled={!hasData}
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Export Completo
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportPortfolio}
+                disabled={!hasData}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export Completo
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Baixar portfólio completo com estatísticas e índice</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </Card>
   );

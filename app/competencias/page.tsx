@@ -13,6 +13,8 @@ import { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { exportCompetencias, downloadMarkdown } from "@/lib/export/markdown";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { staggerContainer, fadeInUp } from "@/lib/animations";
 
 const categoryColors: Record<string, string> = {
   technical: "bg-chart-1",
@@ -160,12 +162,15 @@ export default function CompetenciasPage() {
         ),
       }}
     >
-      <div className="space-y-4">
-        {filteredCompetencias.map((comp) => (
-          <Card
-            key={comp.id}
-            className="p-6 hover:bg-accent/50 transition-colors group"
-          >
+      <motion.div
+        className="space-y-4"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {filteredCompetencias.map((comp, index) => (
+          <motion.div key={comp.id} variants={fadeInUp} custom={index}>
+            <Card className="p-6 hover:bg-accent/50 transition-colors group">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -216,6 +221,7 @@ export default function CompetenciasPage() {
               </Button>
             </div>
           </Card>
+          </motion.div>
         ))}
 
         {filteredCompetencias.length === 0 && competencias.length > 0 && (
@@ -228,7 +234,7 @@ export default function CompetenciasPage() {
             <p className="uppercase">Nenhuma competência cadastrada ainda</p>
           </div>
         )}
-      </div>
+      </motion.div>
 
       <div className="mt-6">
         <button

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Heart, MessageSquare, Mic, HelpCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { staggerContainer, fadeInUp } from "@/lib/animations";
 
 interface RecentItem {
   id: string;
@@ -73,17 +75,22 @@ export function RecentItems({ items }: RecentItemsProps) {
         <Clock className="h-5 w-5" />
         Atividades Recentes
       </h3>
-      <div className="space-y-3">
-        {items.map((item) => {
+      <motion.div
+        className="space-y-3"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {items.map((item, index) => {
           const config = typeConfig[item.type];
           const Icon = config.icon;
 
           return (
-            <Link
-              key={item.id}
-              href={config.href(item.id)}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-colors group"
-            >
+            <motion.div key={item.id} variants={fadeInUp} custom={index}>
+              <Link
+                href={config.href(item.id)}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-colors group"
+              >
               <div className={`${config.color} opacity-70 group-hover:opacity-100 transition-opacity`}>
                 <Icon className="h-5 w-5" />
               </div>
@@ -102,9 +109,10 @@ export function RecentItems({ items }: RecentItemsProps) {
                 {getRelativeTime(item.updatedAt)}
               </span>
             </Link>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </Card>
   );
 }

@@ -4,13 +4,22 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Plus,
   Mic,
   MessageSquare,
   HelpCircle,
   Briefcase,
   Star,
+  Target,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { buttonHover, buttonTap } from "@/lib/animations";
 
 const quickActions = [
   {
@@ -18,30 +27,42 @@ const quickActions = [
     href: "/icebreakers/novo",
     icon: Mic,
     color: "text-chart-1",
+    tooltip: "Crie uma nova apresentação de 30-60 segundos",
   },
   {
     label: "Novo Speech",
     href: "/speeches/novo",
     icon: MessageSquare,
     color: "text-chart-2",
+    tooltip: "Prepare uma narrativa profissional estruturada",
   },
   {
     label: "Nova Question",
     href: "/questions/new",
     icon: HelpCircle,
     color: "text-chart-3",
+    tooltip: "Adicione uma pergunta para fazer ao entrevistador",
   },
   {
     label: "Nova Experiência",
     href: "/experiencias/novo",
     icon: Briefcase,
     color: "text-chart-4",
+    tooltip: "Documente uma experiência profissional com STAR Cases",
   },
   {
     label: "Nova Competência",
     href: "/competencias/novo",
     icon: Star,
     color: "text-chart-1",
+    tooltip: "Registre uma competência técnica ou comportamental",
+  },
+  {
+    label: "Histórico de Práticas",
+    href: "/practice",
+    icon: Target,
+    color: "text-chart-4",
+    tooltip: "Veja seu histórico e estatísticas de práticas",
   },
 ];
 
@@ -53,21 +74,32 @@ export function QuickActions() {
         <Plus className="h-5 w-5 text-muted-foreground" />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {quickActions.map((action) => (
-          <Link key={action.href} href={action.href}>
-            <Button
-              variant="outline"
-              className="w-full h-auto flex flex-col items-center gap-2 py-4 hover:bg-accent/50 hover:border-primary transition-colors"
-            >
-              <action.icon className={`h-6 w-6 ${action.color}`} />
-              <span className="text-xs font-medium text-center">
-                {action.label}
-              </span>
-            </Button>
-          </Link>
-        ))}
-      </div>
+      <TooltipProvider>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {quickActions.map((action) => (
+            <Tooltip key={action.href}>
+              <TooltipTrigger asChild>
+                <motion.div whileHover={buttonHover} whileTap={buttonTap}>
+                  <Link href={action.href}>
+                    <Button
+                      variant="outline"
+                      className="w-full h-auto flex flex-col items-center gap-2 py-4 hover:bg-accent/50 hover:border-primary transition-colors"
+                    >
+                      <action.icon className={`h-6 w-6 ${action.color}`} />
+                      <span className="text-xs font-medium text-center">
+                        {action.label}
+                      </span>
+                    </Button>
+                  </Link>
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{action.tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+      </TooltipProvider>
     </Card>
   );
 }

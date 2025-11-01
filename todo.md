@@ -1,7 +1,7 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 1 de novembro de 2025 (Sessão 5 - STAR CASES IA + PRÁTICA ✅)
-**Status atual:** Fase 2 COMPLETA ✅ + Fase 3 (IA + UX) ✅ + STAR Cases IA + Prática ✅
+**Atualização:** 1 de novembro de 2025 (Sessão 6 - MODO PRÁTICA AVANÇADO ✅)
+**Status atual:** Fase 2 COMPLETA ✅ + Fase 3 (IA + UX) ✅ + STAR Cases IA ✅ + Modo Prática Avançado ✅
 **Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA personalizadas
 
 ## ✅ Sessão 3 - CONCLUÍDA COM SUCESSO
@@ -168,7 +168,155 @@
 - ✅ `app/experiencias/page.tsx` - Layout 2 colunas + botão Practice
 - ✅ `app/competencias/page.tsx` - Botão Voltar
 
+## ✅ Sessão 6 - MODO PRÁTICA AVANÇADO COMPLETO
+
+**Sistema de Gravação de Áudio ✅**
+1. ✅ Hook customizado `useAudioRecorder` criado
+   - MediaRecorder API para gravação
+   - Estados: isRecording, isPaused, recordingTime, audioBlob, audioURL
+   - Funções: start, stop, pause, resume, reset
+   - Timer em tempo real com setInterval
+   - MediaStream cleanup automático
+   - Blob storage + URL.createObjectURL para playback
+
+**Modelo de Histórico de Práticas ✅**
+1. ✅ Schema Prisma atualizado (`prisma/schema.prisma`)
+   - Novo modelo `PracticeSession`:
+     - tipo (icebreaker | speech | star_case)
+     - itemId, itemTitle (referência ao item praticado)
+     - duracao (segundos)
+     - transcricao (opcional, para Speech-to-Text futuro)
+     - audioUrl (opcional, para cloud storage futuro)
+     - avaliacaoIA (Json com scores + feedback)
+     - notas (anotações do usuário)
+     - score (0-100, score geral)
+   - `npx prisma generate` executado com sucesso
+
+**API tRPC de Práticas ✅**
+1. ✅ Router completo (`server/api/routers/practice.ts`)
+   - `list()` - Todas as sessões ordenadas por data
+   - `getById(id)` - Buscar sessão específica
+   - `listByType(tipo)` - Filtrar por tipo
+   - `listByItem(itemId)` - Filtrar por item praticado
+   - `create(data)` - Criar nova sessão de prática
+   - `update(id, data)` - Atualizar com transcrição/avaliação/notas
+   - `delete(id)` - Deletar sessão
+   - `stats()` - Estatísticas agregadas:
+     - totalSessions, totalDuracao, avgScore
+     - porTipo (breakdown por tipo)
+     - practicesByDay (últimos 7 dias para gráficos)
+2. ✅ Router integrado ao `server/api/root.ts`
+
+**Análise de Performance com IA ✅**
+1. ✅ Função `analyzePerformance()` adicionada (`lib/ai/gemini.ts`)
+   - Interface `PerformanceEvaluation`:
+     - clareza (0-100)
+     - fluencia (0-100)
+     - completude (0-100)
+     - pontosFortesw (array de strings)
+     - areasAMelhorar (array de strings)
+     - feedback (string com recomendações)
+   - Prompt especializado por tipo (icebreaker, speech, star_case)
+   - Compara transcrição vs. conteúdo original
+   - Considera duração da prática
+   - Feedback construtivo e acionável
+
+**Componente de Prática com Gravação ✅**
+1. ✅ `AudioPractice` criado (`components/practice/audio-practice.tsx`)
+   - Props: tipo, itemId, itemTitle, conteudoOriginal, onComplete
+   - Interface de gravação:
+     - Botões: Record, Pause/Resume, Stop
+     - Timer visual (MM:SS)
+     - Player de áudio após gravação
+     - Botão "Analisar com IA"
+   - Display de resultados:
+     - 3 cards de score (clareza, fluencia, completude)
+     - Lista de pontos fortes (badge verde)
+     - Lista de áreas para melhorar (badge laranja)
+     - Feedback geral em card separado
+   - Animações com Framer Motion (fadeIn, scaleIn)
+   - Integração com tRPC practice.create mutation
+   - Mock de transcrição/análise (produção usaria Speech-to-Text API)
+
+**Página de Histórico de Práticas ✅**
+1. ✅ Página criada (`app/practice/page.tsx`)
+   - Layout com DashboardPageLayout
+   - 4 cards de estatísticas:
+     - Total de Práticas (ícone Target)
+     - Tempo Total em minutos (ícone Clock)
+     - Score Médio (ícone TrendingUp)
+     - Dias Ativos (ícone Calendar)
+   - Lista de sessões recentes:
+     - Card por sessão com tipo badge
+     - Duração + data formatada (pt-BR)
+     - Score display
+     - Breakdown de avaliação IA (clareza, fluencia, completude)
+   - Animações com staggerContainer + fadeInUp
+   - Estado vazio com instruções
+   - Loading skeletons durante fetch
+   - Botão "Voltar" para dashboard
+
+**Integração com Dashboard ✅**
+1. ✅ Quick Actions atualizado (`components/dashboard/quick-actions.tsx`)
+   - Novo botão "Histórico de Práticas" adicionado
+   - Link para `/practice`
+   - Ícone Target
+   - Tooltip explicativo
+   - Grid ajustado para 6 colunas (lg:grid-cols-6)
+
+**Arquivos criados/modificados (Sessão 6):**
+- ✅ `hooks/use-audio-recorder.ts` - Hook de gravação (~140 linhas)
+- ✅ `prisma/schema.prisma` - Modelo PracticeSession adicionado
+- ✅ `server/api/routers/practice.ts` - Router completo (~160 linhas)
+- ✅ `server/api/root.ts` - Integração practice router
+- ✅ `lib/ai/gemini.ts` - Função analyzePerformance() (~100 linhas)
+- ✅ `components/practice/audio-practice.tsx` - Componente completo (~310 linhas)
+- ✅ `app/practice/page.tsx` - Página de histórico (~240 linhas)
+- ✅ `components/dashboard/quick-actions.tsx` - Botão histórico adicionado
+
 ## 🧪 TESTES PENDENTES (Para o Usuário)
+
+### Testes do Modo Prática Avançado (Sessão 6)
+
+- [ ] **Teste 1: Gravação de Áudio**
+  1. Ir em qualquer página de prática (futura integração)
+  2. Verificar permissão de microfone solicitada
+  3. Clicar em "Record" e verificar se timer inicia
+  4. Falar por ~30 segundos
+  5. Clicar em "Pause" e verificar se pausa
+  6. Clicar em "Resume" e continuar gravando
+  7. Clicar em "Stop"
+  8. Verificar se:
+     - Áudio aparece para playback
+     - Timer mostra duração total
+     - Pode ouvir a gravação
+
+- [ ] **Teste 2: Análise com IA (Mock)**
+  1. Após gravar áudio, clicar em "Analisar com IA"
+  2. Verificar loading contextual
+  3. Verificar se resultados aparecem:
+     - 3 cards de score (Clareza, Fluência, Completude)
+     - Lista de Pontos Fortes (badges verdes)
+     - Lista de Áreas para Melhorar (badges laranjas)
+     - Feedback geral
+  4. Verificar animações de entrada dos cards
+
+- [ ] **Teste 3: Histórico de Práticas**
+  1. Ir em Dashboard → "Histórico de Práticas"
+  2. Verificar 4 cards de estatísticas:
+     - Total de Práticas
+     - Tempo Total
+     - Score Médio
+     - Dias Ativos
+  3. Verificar lista de sessões (vazia inicialmente)
+  4. Após criar práticas, verificar se aparecem na lista
+  5. Verificar ordenação por data (mais recente primeiro)
+
+- [ ] **Teste 4: Integração Dashboard**
+  1. Ir em Dashboard
+  2. Verificar botão "Histórico de Práticas" em Quick Actions
+  3. Clicar e verificar navegação para `/practice`
+  4. Verificar tooltip explicativo no hover
 
 ### Testes de Geração de STAR Cases com IA
 - [ ] **Teste 1: Modo Automático**

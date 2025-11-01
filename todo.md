@@ -1,7 +1,7 @@
 # Plano de Entrega · Interview Prep App
 
-**Atualização:** 1 de novembro de 2025 (Sessão 4 - CRUD COMPLETO ✅)
-**Status atual:** Fase 2 COMPLETA ✅ + Fase 3 (IA + UX) ✅ + CRUD Experiências & Competências ✅
+**Atualização:** 1 de novembro de 2025 (Sessão 5 - STAR CASES IA + PRÁTICA ✅)
+**Status atual:** Fase 2 COMPLETA ✅ + Fase 3 (IA + UX) ✅ + STAR Cases IA + Prática ✅
 **Objetivo:** Tornar as seções de "Interview Prep" totalmente funcionais com dados reais e automações de IA personalizadas
 
 ## ✅ Sessão 3 - CONCLUÍDA COM SUCESSO
@@ -122,33 +122,275 @@
 - ✅ `app/competencias/novo/page.tsx` - Criar
 - ✅ `app/competencias/[id]/page.tsx` - Editar/Visualizar
 
-## 🎯 Próximos Passos (Sessão 5)
+## ✅ Sessão 5 - STAR CASES IA + MODO PRÁTICA COMPLETO
+
+**Melhorias UX em Experiências ✅**
+1. ✅ Botão "Voltar" adicionado em Experiências e Competências
+2. ✅ Layout de 2 colunas nos cards de Experiências
+   - Coluna esquerda: Info + Tecnologias + Botões
+   - Coluna direita: Contador visual de STAR Cases (estilo icebreakers)
+3. ✅ Botão "PRACTICE" nos cards (desabilitado se sem STAR Cases)
+
+**Geração de STAR Cases com IA ✅**
+1. ✅ Componente `StarCaseAIButton` criado
+   - **Modo Automático**: Gera STAR Case 100% baseado no perfil
+   - **Modo Guiado**: Usuário fornece título + contexto + competência foco
+   - **Modo Reescrever**: Reescreve case existente com instruções customizadas
+2. ✅ Endpoint tRPC `generateStarCaseWithAI` implementado
+3. ✅ Função `generateStarCase()` em `lib/ai/gemini.ts` (3 modos)
+4. ✅ Integrado no formulário de Experiências:
+   - Botão ao final da lista (criar novo)
+   - Botão "Reescrever com IA" em cada card existente
+   - Contexto automático (empresa + cargo)
+
+**Modo Prática para STAR Cases ✅**
+1. ✅ Componente `StarCaseTeleprompter` criado
+   - Auto-scroll com velocidade ajustável (0.5x a 3x)
+   - Timer integrado com duração estimada
+   - Controles: Play/Pause, Reset, Fullscreen, Settings
+   - Formatação STAR: cada seção com cor diferente
+   - Tamanho de fonte ajustável (16px a 48px)
+   - Fullscreen nativo
+2. ✅ Página `/experiencias/[id]/practice` criada
+   - Lista todos STAR Cases da experiência
+   - Botões: TELEPROMPTER e TIMER por case
+   - Preview de cada case (Situation + Result)
+3. ✅ `PracticeTimer` reutilizado (já existente)
+   - Timer de 3 minutos padrão para STAR Cases
+
+**Arquivos criados/modificados (Sessão 5):**
+- ✅ `components/experiencias/star-case-ai-button.tsx` - Componente IA (3 modos)
+- ✅ `components/experiencias/star-case-teleprompter.tsx` - Teleprompter formatado
+- ✅ `app/experiencias/[id]/practice/page.tsx` - Página de prática
+- ✅ `lib/ai/gemini.ts` - Função `generateStarCase()` adicionada
+- ✅ `server/api/routers/experiencias.ts` - Endpoint `generateStarCaseWithAI`
+- ✅ `components/experiencias/experiencia-form.tsx` - Integração botões IA
+- ✅ `app/experiencias/page.tsx` - Layout 2 colunas + botão Practice
+- ✅ `app/competencias/page.tsx` - Botão Voltar
+
+## 🧪 TESTES PENDENTES (Para o Usuário)
+
+### Testes de Geração de STAR Cases com IA
+- [ ] **Teste 1: Modo Automático**
+  1. Ir em Experiências → Editar uma experiência
+  2. Na seção STAR Cases, clicar em "GERAR STAR CASE COM IA"
+  3. Escolher tab "Automático"
+  4. Selecionar idioma (PT ou EN)
+  5. Clicar em "Gerar STAR Case"
+  6. Verificar se:
+     - Loading contextual aparece com mensagens
+     - STAR Case gerado tem todos os campos (S, T, A, R)
+     - Conteúdo é relevante à experiência (empresa + cargo)
+     - Idioma está correto
+
+- [ ] **Teste 2: Modo Guiado**
+  1. Ir em Experiências → Editar uma experiência
+  2. Na seção STAR Cases, clicar em "GERAR STAR CASE COM IA"
+  3. Escolher tab "Guiado"
+  4. Preencher:
+     - Título: "Ex: Migração de Sistema Legacy"
+     - Contexto: "Ex: Sistema antigo causava lentidão..."
+     - Competência (opcional): "Ex: Liderança Técnica"
+  5. Clicar em "Gerar STAR Case"
+  6. Verificar se:
+     - IA usou os inputs fornecidos
+     - Título é o mesmo fornecido
+     - Contexto/Situação incorpora o input
+
+- [ ] **Teste 3: Reescrever STAR Case**
+  1. Ter um STAR Case já criado
+  2. No card do STAR Case, clicar em "Reescrever com IA"
+  3. (Opcional) Adicionar instruções: "Ex: enfatize mais os resultados quantitativos"
+  4. Clicar em "Reescrever"
+  5. Verificar se:
+     - STAR Case foi atualizado
+     - Instruções foram seguidas
+     - Estrutura STAR mantida
+
+- [ ] **Teste 4: Tradução ao Reescrever**
+  1. Ter STAR Case em PT
+  2. Reescrever com idioma EN
+  3. Verificar se foi traduzido
+  4. Vice-versa (EN → PT)
+
+### Testes de Modo Prática
+- [ ] **Teste 5: Teleprompter**
+  1. Ir em Experiências → Card com STAR Cases → "PRACTICE"
+  2. Clicar em "TELEPROMPTER" em um STAR Case
+  3. Verificar se:
+     - Modal abre em tela grande
+     - Conteúdo está formatado (S, T, A, R com cores)
+     - Botão Play inicia scroll automático
+     - Velocidade pode ser ajustada (Settings)
+     - Tamanho de fonte pode ser ajustado
+     - Timer conta tempo decorrido
+     - Fullscreen funciona
+     - Pausar/Reset funcionam
+
+- [ ] **Teste 6: Timer de Prática**
+  1. Ir em Experiências → Card com STAR Cases → "PRACTICE"
+  2. Clicar em "TIMER" em um STAR Case
+  3. Verificar se:
+     - Modal de timer abre
+     - Timer padrão é 3 minutos (180s)
+     - Start/Stop funcionam
+     - Reset funciona
+     - Modal fecha corretamente
+
+### Testes de UI/UX
+- [ ] **Teste 7: Layout de 2 Colunas**
+  1. Ir em Experiências (listagem)
+  2. Verificar se:
+     - Cards têm 2 colunas no desktop
+     - Coluna direita mostra contador de STAR Cases
+     - Número é correto
+     - Responsivo em mobile (1 coluna)
+
+- [ ] **Teste 8: Botão Practice Desabilitado**
+  1. Criar experiência SEM STAR Cases
+  2. Verificar se botão "PRACTICE" está desabilitado/cinza
+  3. Adicionar 1 STAR Case
+  4. Verificar se botão ficou habilitado
+
+- [ ] **Teste 9: Botões Voltar**
+  1. Ir em Experiências → "Voltar" deve ir para Dashboard
+  2. Ir em Competências → "Voltar" deve ir para Dashboard
+  3. Verificar navegação correta
+
+### Testes de Integração
+- [ ] **Teste 10: Fluxo Completo**
+  1. Criar nova Experiência
+  2. Adicionar info básica (empresa, cargo, período)
+  3. Gerar STAR Case com IA (modo automático)
+  4. Editar STAR Case gerado
+  5. Reescrever com IA adicionando instruções
+  6. Salvar experiência
+  7. Ir para página de prática
+  8. Testar teleprompter
+  9. Testar timer
+  10. Voltar e editar novamente
+
+### Testes de Erro
+- [ ] **Teste 11: Sem API Key**
+  1. Remover `GOOGLE_AI_API_KEY` do `.env.local`
+  2. Tentar gerar STAR Case
+  3. Verificar mensagem de erro amigável
+
+- [ ] **Teste 12: Rate Limiting**
+  1. Gerar múltiplos STAR Cases rapidamente (>10 em 1 minuto)
+  2. Verificar mensagem de rate limit
+
+- [ ] **Teste 13: Sem Contexto**
+  1. Limpar context-files (renomear .md para .bak)
+  2. Gerar STAR Case
+  3. Verificar se funciona apenas com Profile básico
+  4. Restaurar context-files
+
+## 🎯 Próximos Passos (Sessão 6)
+
+**Status atual:** Fase 2 100% completa! Todas as seções têm CRUD funcional + IA integrada.
 
 **Opções de continuação:**
 
-### Opção A: Modo Prática (Alta Prioridade) 🎯
-```plaintext
-Quero implementar o modo de prática completo:
-1. Teleprompter melhorado (resolver bugs: timer fechando modal, fullscreen)
-2. Sistema de gravação de prática com feedback
-3. Análise de performance (tempo, pausas, velocidade)
-```
+### Opção A: Geração IA para Competências 🤖
+**O que falta:**
 
-### Opção B: CRUD Restante (Completar Fase 2) 📝
-```plaintext
-Quero completar o CRUD das seções restantes:
-1. Questions - completar CRUD (falta apenas favoritar)
-2. Experiências - CRUD completo + STAR Cases
-3. Competências - CRUD completo + evidências
-```
+- [ ] Gerar Competência com IA (baseado em cv.md e competencias.md)
+- [ ] Sugerir Track Record para competência existente
+- [ ] Gerar descrições bilíngues (PT/EN)
+- [ ] Sugerir evidências baseadas em experiências cadastradas
+- [ ] Integração com context-files
 
-### Opção C: Dashboard & Métricas 📊
-```plaintext
-Quero deixar o Dashboard funcional com dados reais:
-1. Métricas de progresso por seção
-2. Últimas atividades e favoritos
-3. Notificações de revisão
-```
+**Complexidade:** Média | **Impacto:** Alto | **Tempo estimado:** 2-3h
+
+### Opção B: Melhorias no Dashboard 📊
+**O que falta:**
+
+- [ ] Gráfico de progresso (quantos items por seção)
+- [ ] Widget "Próximas revisões" (STAR Cases sem prática há X dias)
+- [ ] Estatísticas de uso da IA (quantas gerações por semana)
+- [ ] Quick actions (botões para criar novo item de cada tipo)
+- [ ] Últimos 5 items editados (atualmente mostra 10)
+- [ ] Filtro de favoritos no dashboard
+
+**Complexidade:** Baixa-Média | **Impacto:** Médio | **Tempo estimado:** 1-2h
+
+### Opção C: Export & Sharing 📤
+**O que falta:**
+
+- [ ] Export de Experiências (PDF/Markdown) - similar aos já implementados
+- [ ] Export de Competências (PDF/Markdown)
+- [ ] Export consolidado: "Meu Portfólio Completo" (todas as seções)
+- [ ] Preview antes do export
+- [ ] Formatação customizada (com/sem versões, com/sem drafts)
+
+**Complexidade:** Baixa | **Impacto:** Médio | **Tempo estimado:** 1-2h
+
+### Opção D: Modo Prática Avançado 🎯
+**O que falta:**
+
+- [ ] Gravação de áudio durante prática
+- [ ] Análise de performance (tempo, pausas, velocidade de fala)
+- [ ] Histórico de práticas (quantas vezes praticou cada item)
+- [ ] Feedback visual após prática (score, sugestões)
+- [ ] Modo "Entrevista simulada" (perguntas aleatórias + timer)
+
+**Complexidade:** Alta | **Impacto:** Alto | **Tempo estimado:** 4-5h
+
+### Opção E: UX Polish & Refinamentos 🎨
+**O que falta:**
+
+- [ ] Loading skeletons em vez de texto "Carregando..."
+- [ ] Animações de transição entre páginas
+- [ ] Tooltips explicativos em formulários
+- [ ] Mensagens de estado vazio mais amigáveis
+- [ ] Atalhos de teclado (criar novo, buscar, etc)
+- [ ] Breadcrumbs de navegação
+- [ ] Dark mode refinements (se necessário)
+
+**Complexidade:** Baixa-Média | **Impacto:** Médio | **Tempo estimado:** 2-3h
+
+### Opção F: Busca & Filtros 🔍
+**O que falta:**
+
+- [ ] Busca global (search bar no header)
+- [ ] Busca por seção (filtrar icebreakers, speeches, etc)
+- [ ] Filtros avançados (favoritos, arquivados, por tag, por data)
+- [ ] Ordenação customizada (alfabética, data, mais praticados)
+- [ ] Paginação ou scroll infinito (se muitos items)
+
+**Complexidade:** Média | **Impacto:** Alto (melhora muito UX) | **Tempo estimado:** 2-3h
+
+---
+
+### 💡 Recomendação
+
+**Prioridade 1 (Essencial):** Opção A - Geração IA para Competências
+- Completa a paridade de features de IA entre todas as seções
+- Competências é a única seção sem IA ainda
+- Aproveita context-files já configurados
+
+**Prioridade 2 (Alta):** Opção F - Busca & Filtros
+- Fundamental quando houver muitos items cadastrados
+- Melhora muito a usabilidade
+- Relativamente rápido de implementar
+
+**Prioridade 3 (Média):** Opção B - Melhorias no Dashboard
+- Dashboard é a primeira tela que o usuário vê
+- Mostra progresso e motiva uso contínuo
+- Rápido de implementar
+
+---
+
+### 📋 Checklist Pós-Implementação
+
+Sempre que concluir uma sessão:
+
+- [ ] Rodar `npm run lint` e corrigir warnings
+- [ ] Rodar `npm run typecheck` e garantir sem erros
+- [ ] Testar fluxo completo na UI
+- [ ] Atualizar TODO.md com status
+- [ ] Commitar mudanças com mensagem descritiva
 
 ---
 

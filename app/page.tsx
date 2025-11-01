@@ -9,7 +9,10 @@ import ProcessorIcon from "@/components/icons/proccesor";
 import StarIcon from "@/components/icons/star";
 import MicrophoneIcon from "@/components/icons/microphone";
 import MessageIcon from "@/components/icons/message";
+import BriefcaseIcon from "@/components/icons/briefcase";
 import { api } from "@/lib/trpc/server";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { ExportPortfolioButton } from "@/components/dashboard/export-portfolio-button";
 
 export default async function DashboardOverview() {
   const caller = await api();
@@ -23,18 +26,24 @@ export default async function DashboardOverview() {
         icon: BracketsIcon,
       }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      {/* Quick Actions */}
+      <div className="mb-6">
+        <QuickActions />
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
         <DashboardStat
           label="ICEBREAKERS"
           value={String(dashboard.totals.icebreakers)}
-          description="YOUR INTRODUCTIONS"
+          description="INTRODUCTIONS"
           icon={MicrophoneIcon}
           intent="positive"
         />
         <DashboardStat
           label="SPEECHES"
           value={String(dashboard.totals.speeches)}
-          description="COMPLETE NARRATIVES"
+          description="NARRATIVES"
           icon={MessageIcon}
           intent="positive"
         />
@@ -48,7 +57,14 @@ export default async function DashboardOverview() {
         <DashboardStat
           label="EXPERIÊNCIAS"
           value={String(dashboard.totals.experiencias)}
-          description="PROFESSIONAL JOURNEY"
+          description="JOURNEY"
+          icon={BriefcaseIcon}
+          intent="positive"
+        />
+        <DashboardStat
+          label="COMPETÊNCIAS"
+          value={String(dashboard.totals.competencias)}
+          description="SKILLS"
           icon={ProcessorIcon}
           intent="positive"
         />
@@ -56,6 +72,11 @@ export default async function DashboardOverview() {
 
       <div className="mb-6">
         <DashboardChart />
+      </div>
+
+      {/* Export Portfolio */}
+      <div className="mb-6">
+        <ExportPortfolioButton />
       </div>
 
       {/* Main 2-column grid section */}

@@ -123,6 +123,23 @@ export interface StarCase {
   idioma: "pt" | "en";
 }
 
+export interface CompetenciaGenerated {
+  nome: string;
+  categoria: "technical" | "soft_skills" | "leadership";
+  nivel: "basic" | "intermediate" | "advanced" | "expert";
+  descricao: {
+    pt: string;
+    en: string;
+  };
+  ferramentas: string[];
+  evidencias: string[];
+  trackRecord: {
+    projeto: string;
+    resultado: string;
+    ano: number;
+  }[];
+}
+
 /**
  * Gera versões de icebreaker baseado no perfil do usuário
  */
@@ -805,6 +822,188 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     console.error("Erro ao gerar STAR Case:", error);
     throw new Error(
       `Erro ao gerar STAR Case: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * Gera uma Competência baseada no perfil e experiências
+ */
+export async function generateCompetencia(
+  mode: "auto" | "guided" | "rewrite",
+  guidedInputs?: {
+    nome?: string;
+    categoria?: "technical" | "soft_skills" | "leadership";
+    nivel?: "basic" | "intermediate" | "advanced" | "expert";
+    contexto?: string;
+  },
+  existingCompetencia?: CompetenciaGenerated,
+  rewriteInstructions?: string,
+  userId: string = "default"
+): Promise<CompetenciaGenerated> {
+  // Rate limiting
+  if (!checkRateLimit(`competencia-generate-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Tente novamente em alguns minutos."
+    );
+  }
+
+  const model = getModel();
+  const contextData = loadContextFiles();
+
+  let prompt = "";
+
+  if (mode === "rewrite" && existingCompetencia) {
+    prompt = `
+Você é um especialista em desenvolvimento de carreira e construção de perfil profissional.
+
+**Competência atual:**
+- Nome: ${existingCompetencia.nome}
+- Categoria: ${existingCompetencia.categoria}
+- Nível: ${existingCompetencia.nivel}
+- Descrição PT: ${existingCompetencia.descricao.pt}
+- Descrição EN: ${existingCompetencia.descricao.en}
+- Ferramentas: ${existingCompetencia.ferramentas.join(", ") || "N/A"}
+- Track Record: ${existingCompetencia.trackRecord.length} projetos
+
+${rewriteInstructions ? `**Instruções específicas do usuário:**\n${rewriteInstructions}` : "**Tarefa:** Reescreva esta competência melhorando clareza, impacto e descrições bilíngues."}
+
+**Instruções CRÍTICAS:**
+1. ${rewriteInstructions ? "Siga FIELMENTE as instruções do usuário" : "Melhore as descrições (PT e EN) tornando-as mais impactantes"}
+2. Mantenha a estrutura básica (nome, categoria, nível)
+3. Se as descrições PT e EN estiverem vazias ou incompletas, crie descrições completas e bilíngues
+4. Aprimore ferramentas e evidências com base no nome da competência
+5. Sugira track record relevante se estiver vazio ou limitado
+6. Descrições devem ser concisas mas impactantes (2-3 sentenças)
+7. Use primeira pessoa para descrições ("Tenho experiência em...", "I have experience in...")
+
+**Formato de resposta (JSON):**
+{
+  "nome": "${existingCompetencia.nome}",
+  "categoria": "${existingCompetencia.categoria}",
+  "nivel": "${existingCompetencia.nivel}",
+  "descricao": {
+    "pt": "Descrição melhorada em português...",
+    "en": "Improved description in English..."
+  },
+  "ferramentas": ["ferramenta1", "ferramenta2", "ferramenta3"],
+  "evidencias": ["evidencia1", "evidencia2"],
+  "trackRecord": [
+    {
+      "projeto": "Nome do projeto",
+      "resultado": "Impacto e resultados quantificáveis",
+      "ano": 2024
+    }
+  ]
+}
+
+Responda APENAS com o JSON válido, sem markdown ou texto adicional.
+`;
+  } else if (mode === "guided" && guidedInputs) {
+    prompt = `
+Você é um especialista em desenvolvimento de carreira e construção de perfil profissional.
+
+${contextData ? `**CONTEXTO DO PERFIL (use essas informações):**${contextData}` : ""}
+
+**Inputs do usuário:**
+- Nome: ${guidedInputs.nome}
+- Categoria: ${guidedInputs.categoria}
+- Nível: ${guidedInputs.nivel}
+${guidedInputs.contexto ? `- Contexto adicional: ${guidedInputs.contexto}` : ""}
+
+**Tarefa:** Crie uma competência completa baseada nos inputs do usuário e contexto do perfil.
+
+**Instruções CRÍTICAS:**
+1. Use o nome, categoria e nível fornecidos pelo usuário
+2. ${guidedInputs.contexto ? "Incorpore o contexto adicional nas descrições" : ""}
+3. Crie descrições BILÍNGUES (PT e EN) concisas e impactantes (2-3 sentenças cada)
+4. Sugira 3-5 ferramentas/tecnologias relevantes para esta competência
+5. Sugira 2-3 evidências baseadas no contexto do perfil (URLs, certificados, projetos)
+6. Sugira 1-3 projetos para track record com resultados quantificáveis
+7. Use informações do contexto do perfil sempre que possível
+8. Seja específico e autêntico - não invente informações se não tiver contexto
+9. Use primeira pessoa para descrições ("Tenho experiência em...", "I have experience in...")
+10. Anos no track record devem ser realistas (últimos 5 anos preferencialmente)
+
+**Formato de resposta (JSON):**
+{
+  "nome": "${guidedInputs.nome}",
+  "categoria": "${guidedInputs.categoria}",
+  "nivel": "${guidedInputs.nivel}",
+  "descricao": {
+    "pt": "Descrição em português (2-3 sentenças, primeira pessoa)...",
+    "en": "Description in English (2-3 sentences, first person)..."
+  },
+  "ferramentas": ["ferramenta1", "ferramenta2", "ferramenta3"],
+  "evidencias": ["evidencia1", "evidencia2"],
+  "trackRecord": [
+    {
+      "projeto": "Nome do projeto relevante",
+      "resultado": "Impacto e resultados quantificáveis",
+      "ano": 2024
+    }
+  ]
+}
+
+Responda APENAS com o JSON válido, sem markdown ou texto adicional.
+`;
+  } else {
+    // Auto mode
+    prompt = `
+Você é um especialista em desenvolvimento de carreira e construção de perfil profissional.
+
+${contextData ? `**CONTEXTO DO PERFIL (use TODAS essas informações):**${contextData}` : ""}
+
+**Tarefa:** Crie uma competência completa e impactante automaticamente baseada no perfil do candidato.
+
+**Instruções CRÍTICAS:**
+1. Analise o contexto do perfil (experiências, projetos, skills) e identifique UMA competência destacável
+2. Escolha uma competência que seja RELEVANTE e COMPROVÁVEL com base no histórico
+3. Classifique adequadamente: categoria (technical, soft_skills, leadership) e nível (basic, intermediate, advanced, expert)
+4. Crie descrições BILÍNGUES (PT e EN) concisas e impactantes (2-3 sentenças cada)
+5. Liste 3-5 ferramentas/tecnologias realmente usadas (baseadas no contexto)
+6. Sugira 2-3 evidências concretas (projetos do contexto, certificados se mencionados)
+7. Crie 1-3 projetos para track record com resultados REAIS do contexto e métricas quantificáveis
+8. Seja autêntico - use APENAS informações presentes no contexto
+9. Use primeira pessoa para descrições ("Tenho experiência em...", "I have experience in...")
+10. Priorize competências que agregam valor em entrevistas (com track record demonstrável)
+
+**Formato de resposta (JSON):**
+{
+  "nome": "Nome da competência (ex: React Development, Leadership, Problem Solving)",
+  "categoria": "technical|soft_skills|leadership",
+  "nivel": "basic|intermediate|advanced|expert",
+  "descricao": {
+    "pt": "Descrição em português (2-3 sentenças, primeira pessoa, impactante)...",
+    "en": "Description in English (2-3 sentences, first person, impactful)..."
+  },
+  "ferramentas": ["ferramenta1", "ferramenta2", "ferramenta3"],
+  "evidencias": ["evidencia1 baseada no contexto", "evidencia2"],
+  "trackRecord": [
+    {
+      "projeto": "Nome do projeto do contexto",
+      "resultado": "Impacto e resultados quantificáveis baseados no contexto",
+      "ano": 2024
+    }
+  ]
+}
+
+Responda APENAS com o JSON válido, sem markdown ou texto adicional.
+`;
+  }
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+
+    // Parse do JSON (removendo markdown se houver)
+    const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+    return JSON.parse(jsonText);
+  } catch (error: any) {
+    console.error("Erro ao gerar Competência:", error);
+    throw new Error(
+      `Erro ao gerar Competência: ${error.message || "Erro desconhecido"}`
     );
   }
 }

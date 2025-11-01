@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CompetenciaAIButton } from "@/components/competencias/competencia-ai-button";
 
 // Schema para track record individual
 const trackRecordSchema = z.object({
@@ -261,6 +262,34 @@ export function CompetenciaForm({
                 </FormItem>
               )}
             />
+
+            {/* AI Button for rewriting/improving description */}
+            {form.watch("descricao.pt") && (
+              <CompetenciaAIButton
+                mode="rewrite"
+                existingCompetencia={{
+                  nome: form.watch("nome"),
+                  categoria: form.watch("categoria"),
+                  nivel: form.watch("nivel"),
+                  descricao: form.watch("descricao"),
+                  ferramentas: form.watch("ferramentas"),
+                  evidencias: form.watch("evidencias"),
+                  trackRecord: form.watch("trackRecord"),
+                }}
+                onGenerated={(competencia) => {
+                  form.setValue("descricao", competencia.descricao);
+                  if (competencia.ferramentas.length > 0) {
+                    form.setValue("ferramentas", competencia.ferramentas);
+                  }
+                  if (competencia.evidencias.length > 0) {
+                    form.setValue("evidencias", competencia.evidencias);
+                  }
+                  if (competencia.trackRecord.length > 0) {
+                    form.setValue("trackRecord", competencia.trackRecord);
+                  }
+                }}
+              />
+            )}
           </div>
         </Card>
 
@@ -449,6 +478,22 @@ export function CompetenciaForm({
             </div>
           )}
         </Card>
+
+        {/* AI Generation for new competência */}
+        {!defaultValues && (
+          <CompetenciaAIButton
+            mode="create"
+            onGenerated={(competencia) => {
+              form.setValue("nome", competencia.nome);
+              form.setValue("categoria", competencia.categoria);
+              form.setValue("nivel", competencia.nivel);
+              form.setValue("descricao", competencia.descricao);
+              form.setValue("ferramentas", competencia.ferramentas);
+              form.setValue("evidencias", competencia.evidencias);
+              form.setValue("trackRecord", competencia.trackRecord);
+            }}
+          />
+        )}
 
         {/* Botões de ação */}
         <div className="flex gap-4">

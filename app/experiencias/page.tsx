@@ -7,11 +7,56 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
 import { useRouter } from "next/navigation";
-import { Plus, ArrowLeft, Play } from "lucide-react";
+import { Plus, ArrowLeft, Play, Download } from "lucide-react";
+import { SearchBar, SearchFilters } from "@/components/ui/search-bar";
+import { useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { exportExperiencias, downloadMarkdown } from "@/lib/export/markdown";
+import { toast } from "sonner";
 
 export default function ExperienciasPage() {
   const router = useRouter();
   const { data: experiencias = [], isLoading } = trpc.experiencias.list.useQuery();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
+
+  const filteredExperiencias = useMemo(() => {
+    let filtered = [...experiencias];
+
+    // Text search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (exp) =>
+          exp.empresa.toLowerCase().includes(query) ||
+          exp.cargo.toLowerCase().includes(query) ||
+          exp.tecnologias?.some((tech) => tech.toLowerCase().includes(query))
+      );
+    }
+
+    // Sort
+    if (searchFilters.sortBy === "alphabetical") {
+      filtered.sort((a, b) => a.empresa.localeCompare(b.empresa));
+    } else if (searchFilters.sortBy === "starCases") {
+      filtered.sort((a, b) => b.starCases.length - a.starCases.length);
+    }
+    // Default is already by createdAt desc from the query
+
+    return filtered;
+  }, [experiencias, searchQuery, searchFilters]);
+
+  const handleExport = () => {
+    if (experiencias.length === 0) {
+      toast.error("Não há experiências para exportar");
+      return;
+    }
+
+    const markdown = exportExperiencias(experiencias);
+    const filename = `experiencias-${new Date().toISOString().split("T")[0]}`;
+    downloadMarkdown(markdown, filename);
+    toast.success("Experiências exportadas com sucesso!");
+  };
 
   if (isLoading) {
     return (
@@ -22,8 +67,22 @@ export default function ExperienciasPage() {
           icon: BriefcaseIcon,
         }}
       >
-        <div className="flex items-center justify-center py-12">
-          <p className="text-muted-foreground">Carregando experiências...</p>
+        <div className="space-y-8">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="p-6">
+              <Skeleton className="h-8 w-48 mb-4" />
+              <Skeleton className="h-4 w-32 mb-4" />
+              <div className="flex gap-2 mb-4">
+                <Skeleton className="h-6 w-16" />
+                <Skeleton className="h-6 w-20" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <div className="flex gap-2 pt-4 border-t">
+                <Skeleton className="h-9 w-24" />
+                <Skeleton className="h-9 w-16" />
+              </div>
+            </Card>
+          ))}
         </div>
       </DashboardPageLayout>
     );
@@ -36,14 +95,41 @@ export default function ExperienciasPage() {
         description: "Your professional journey",
         icon: BriefcaseIcon,
         action: (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/dashboard")}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              disabled={experiencias.length === 0}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/dashboard")}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar
+            </Button>
+          </div>
+        ),
+        search: (
+          <SearchBar
+            placeholder="Buscar por empresa, cargo ou tecnologia..."
+            onSearch={(query, filters) => {
+              setSearchQuery(query);
+              setSearchFilters(filters);
+            }}
+            filterOptions={{
+              sortOptions: [
+                { value: "recent", label: "Mais recentes" },
+                { value: "alphabetical", label: "Alfabética (A-Z)" },
+                { value: "starCases", label: "Mais STAR Cases" },
+              ],
+            }}
+          />
         ),
       }}
     >
@@ -52,7 +138,7 @@ export default function ExperienciasPage() {
         <div className="absolute left-6 top-0 bottom-0 w-px bg-border hidden md:block" />
 
         <div className="space-y-8">
-          {experiencias.map((exp) => (
+          {filteredExperiencias.map((exp) => (
             <div key={exp.id} className="relative">
               {/* Timeline dot */}
               <div className="absolute left-6 top-6 size-3 rounded-full bg-primary border-4 border-background hidden md:block -translate-x-1/2" />
@@ -123,6 +209,11 @@ export default function ExperienciasPage() {
             </div>
           ))}
 
+          {filteredExperiencias.length === 0 && experiencias.length > 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              <p className="uppercase">Nenhuma experiência encontrada com os filtros aplicados</p>
+            </div>
+          )}
           {experiencias.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <p className="uppercase">Nenhuma experiência cadastrada ainda</p>

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { generateCompetencia } from "@/lib/ai/gemini";
 
 // Schema para track record individual
 const trackRecordSchema = z.object({
@@ -98,5 +99,48 @@ export const competenciasRouter = createTRPCRouter({
       return ctx.prisma.competencia.delete({
         where: { id: input.id },
       });
+    }),
+
+  generateCompetenciaWithAI: publicProcedure
+    .input(
+      z.object({
+        mode: z.enum(["auto", "guided", "rewrite"]),
+        // Guided mode
+        nome: z.string().optional(),
+        categoria: z.enum(["technical", "soft_skills", "leadership"]).optional(),
+        nivel: z.enum(["basic", "intermediate", "advanced", "expert"]).optional(),
+        contexto: z.string().optional(),
+        // Rewrite mode
+        existingCompetencia: z
+          .object({
+            nome: z.string(),
+            categoria: z.enum(["technical", "soft_skills", "leadership"]),
+            nivel: z.enum(["basic", "intermediate", "advanced", "expert"]),
+            descricao: z.object({
+              pt: z.string(),
+              en: z.string(),
+            }),
+            ferramentas: z.array(z.string()),
+            evidencias: z.array(z.string()),
+            trackRecord: z.array(trackRecordSchema),
+          })
+          .optional(),
+        rewriteInstructions: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return generateCompetencia(
+        input.mode,
+        input.nome && input.categoria && input.nivel
+          ? {
+              nome: input.nome,
+              categoria: input.categoria,
+              nivel: input.nivel,
+              contexto: input.contexto,
+            }
+          : undefined,
+        input.existingCompetencia,
+        input.rewriteInstructions
+      );
     }),
 });

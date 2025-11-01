@@ -134,9 +134,11 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
         width: "220px",
         cursor: isDragging ? "grabbing" : "default",
       }}
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-      onMouseUp={(e) => e.stopPropagation()}
+      onClickCapture={(e) => { e.stopPropagation(); e.preventDefault(); }}
+      onMouseDownCapture={(e) => { e.stopPropagation(); }}
+      onMouseUpCapture={(e) => { e.stopPropagation(); }}
+      onPointerDownCapture={(e) => { e.stopPropagation(); }}
+      onPointerUpCapture={(e) => { e.stopPropagation(); }}
     >
       {/* Header com drag handle */}
       <div

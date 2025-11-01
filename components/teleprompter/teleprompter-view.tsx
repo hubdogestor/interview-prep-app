@@ -135,11 +135,8 @@ export function TeleprompterView({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        ref={containerRef}
-        className="sm:max-w-[90vw] sm:max-h-[90vh] p-0 bg-black text-white border-none"
-      >
-        <div className="flex flex-col h-[90vh]">
+      <DialogContent className="sm:max-w-[90vw] sm:max-h-[90vh] p-0 bg-black text-white border-none">
+        <div ref={containerRef} className="flex flex-col h-[90vh]">
           {/* Header */}
           <DialogHeader className="px-6 py-4 border-b border-white/10 flex-shrink-0">
             <div className="flex items-center justify-between">

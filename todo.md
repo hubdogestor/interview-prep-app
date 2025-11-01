@@ -20,7 +20,28 @@
 5. ✅ Múltiplas tags já funcionam (separar por vírgula no formulário)
 6. ✅ Export funcional em Icebreakers, Speeches e Questions
 
-## 🎯 Próximos Passos (Sessão 4)
+**Implementações autônomas (Sessões B → C → A):**
+### OPÇÃO B - CRUD Restante ✅
+1. ✅ Questions CRUD já estava completo (favoritar já funcionava)
+2. ⏸️ Experiências e Competências postergados (muito complexo, prioridade menor)
+
+### OPÇÃO C - Dashboard Funcional ✅
+1. ✅ Dashboard com métricas reais (Icebreakers, Speeches, Questions, Experiências)
+2. ✅ Componente "Atividades Recentes" mostrando últimas 10 atualizações
+3. ✅ Componente "Favoritos" mostrando items favoritados
+4. ✅ Backend expandido com `recentItems` e `favoriteItems`
+5. ✅ Links clicáveis para cada item com ícones por tipo
+
+### OPÇÃO A - Bugs Modo Prática ✅
+1. ✅ Timer corrigido - não fecha mais o modal (usou `onClickCapture` + `stopPropagation`)
+2. ✅ Fullscreen corrigido - moveu ref para div interna (fora de DialogContent)
+
+### Build Status ✅
+1. ✅ Dev server funciona perfeitamente (localhost:3000)
+2. ✅ Build completa com warnings de SSG esperados (client components em server pages)
+3. ℹ️ Warnings de prerendering são comportamento normal do Next.js 14 - não impedem funcionalidade
+
+## 🎯 Próximos Passos (Sessão 5)
 
 **Opções de continuação:**
 

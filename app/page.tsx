@@ -1,17 +1,15 @@
 import DashboardChart from "@/components/dashboard/chart";
 import DashboardPageLayout from "@/components/dashboard/layout";
-import RebelsRanking from "@/components/dashboard/rebels-ranking";
-import SecurityStatus from "@/components/dashboard/security-status";
+import { RecentItems } from "@/components/dashboard/recent-items";
+import { FavoritesList } from "@/components/dashboard/favorites-list";
 import DashboardStat from "@/components/dashboard/stat";
 import BracketsIcon from "@/components/icons/brackets";
 import GearIcon from "@/components/icons/gear";
 import ProcessorIcon from "@/components/icons/proccesor";
 import StarIcon from "@/components/icons/star";
+import MicrophoneIcon from "@/components/icons/microphone";
+import MessageIcon from "@/components/icons/message";
 import { api } from "@/lib/trpc/server";
-import mockDataJson from "@/mock.json";
-import type { MockData } from "@/types/dashboard";
-
-const mockData = mockDataJson as MockData;
 
 export default async function DashboardOverview() {
   const caller = await api();
@@ -25,27 +23,34 @@ export default async function DashboardOverview() {
         icon: BracketsIcon,
       }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <DashboardStat
-          label="COMPETÊNCIAS"
-          value={String(dashboard.totals.competencias)}
-          description="SKILLS IN YOUR ARSENAL"
-          icon={GearIcon}
+          label="ICEBREAKERS"
+          value={String(dashboard.totals.icebreakers)}
+          description="YOUR INTRODUCTIONS"
+          icon={MicrophoneIcon}
           intent="positive"
+        />
+        <DashboardStat
+          label="SPEECHES"
+          value={String(dashboard.totals.speeches)}
+          description="COMPLETE NARRATIVES"
+          icon={MessageIcon}
+          intent="positive"
+        />
+        <DashboardStat
+          label="QUESTIONS"
+          value={String(dashboard.totals.questions)}
+          description="FOR INTERVIEWERS"
+          icon={StarIcon}
+          intent="neutral"
         />
         <DashboardStat
           label="EXPERIÊNCIAS"
           value={String(dashboard.totals.experiencias)}
-          description="PROFESSIONAL EXPERIENCES"
+          description="PROFESSIONAL JOURNEY"
           icon={ProcessorIcon}
           intent="positive"
-        />
-        <DashboardStat
-          label="QUESTIONS READY"
-          value={String(dashboard.totals.questions)}
-          description="PREPARED ANSWERS"
-          icon={StarIcon}
-          intent="neutral"
         />
       </div>
 
@@ -55,8 +60,8 @@ export default async function DashboardOverview() {
 
       {/* Main 2-column grid section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <RebelsRanking rebels={mockData.rebelsRanking} />
-        <SecurityStatus statuses={mockData.securityStatus} />
+        <RecentItems items={dashboard.recentItems} />
+        <FavoritesList items={dashboard.favoriteItems} />
       </div>
     </DashboardPageLayout>
   );

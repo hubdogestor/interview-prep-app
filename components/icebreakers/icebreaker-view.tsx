@@ -12,8 +12,8 @@ import { FloatingTimer } from "@/components/practice/floating-timer";
 import { ExportButton } from "@/components/export/export-button";
 import { Monitor, Timer, Mic } from "lucide-react";
 
-interface SpeechViewProps {
-  speech: {
+interface IcebreakerViewProps {
+  icebreaker: {
     id: string;
     titulo: string;
     tipoVaga: string;
@@ -26,12 +26,12 @@ interface SpeechViewProps {
   };
 }
 
-export function SpeechView({ speech }: SpeechViewProps) {
+export function IcebreakerView({ icebreaker }: IcebreakerViewProps) {
   const [teleprompterOpen, setTeleprompterOpen] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
 
-  const conteudo = speech.conteudo.pt;
-  const targetSeconds = speech.duracaoEstimada * 60;
+  const conteudo = icebreaker.conteudo.pt;
+  const targetSeconds = icebreaker.duracaoEstimada;
 
   return (
     <>
@@ -39,30 +39,30 @@ export function SpeechView({ speech }: SpeechViewProps) {
         <Card className="p-6">
           <div className="flex items-center gap-3 mb-6 flex-wrap">
             <Badge variant="outline" className="uppercase">
-              v{speech.versao}
+              v{icebreaker.versao}
             </Badge>
             <Badge variant="secondary" className="uppercase">
-              {speech.duracaoEstimada}min
+              {icebreaker.duracaoEstimada}s
             </Badge>
-            {speech.favorite && (
+            {icebreaker.favorite && (
               <Badge variant="default" className="uppercase bg-yellow-600">
                 ⭐ Favorito
               </Badge>
             )}
-            {speech.archived && (
+            {icebreaker.archived && (
               <Badge variant="secondary" className="uppercase">
                 📦 Arquivado
               </Badge>
             )}
           </div>
 
-          {speech.foco && speech.foco.length > 0 && (
+          {icebreaker.foco && icebreaker.foco.length > 0 && (
             <div className="mb-6">
               <h3 className="text-sm font-display uppercase mb-3">
                 Áreas de Foco
               </h3>
               <div className="flex flex-wrap gap-2">
-                {speech.foco.map((item) => (
+                {icebreaker.foco.map((item) => (
                   <Badge key={item} variant="secondary" className="text-xs">
                     #{item}
                   </Badge>
@@ -90,7 +90,7 @@ export function SpeechView({ speech }: SpeechViewProps) {
           <div className="flex items-center gap-2 pt-6 mt-6 border-t border-border flex-wrap">
             <CopyButton
               text={conteudo}
-              successMessage="Speech copiado!"
+              successMessage="Icebreaker copiado!"
               size="sm"
             />
             <Button
@@ -109,7 +109,7 @@ export function SpeechView({ speech }: SpeechViewProps) {
               <Timer className="mr-1 h-3 w-3" />
               Timer
             </Button>
-            <Link href={`/speeches/${speech.id}/practice`}>
+            <Link href={`/icebreakers/${icebreaker.id}/practice`}>
               <Button variant="default" size="sm">
                 <Mic className="mr-1 h-3 w-3" />
                 Practice
@@ -118,29 +118,29 @@ export function SpeechView({ speech }: SpeechViewProps) {
             <ExportButton
               items={[
                 {
-                  title: speech.titulo,
+                  title: icebreaker.titulo,
                   content: conteudo,
                   metadata: {
-                    "Tipo de Vaga": speech.tipoVaga,
-                    Versão: speech.versao,
-                    "Duração Estimada": `${speech.duracaoEstimada} minutos`,
-                    "Áreas de Foco": speech.foco.join(", "),
+                    "Tipo de Vaga": icebreaker.tipoVaga,
+                    Versão: icebreaker.versao,
+                    "Duração Estimada": `${icebreaker.duracaoEstimada} segundos`,
+                    "Áreas de Foco": icebreaker.foco.join(", "),
                   },
                 },
               ]}
-              filename={`speech-${speech.titulo.toLowerCase().replace(/\s+/g, "-")}`}
+              filename={`icebreaker-${icebreaker.titulo.toLowerCase().replace(/\s+/g, "-")}`}
               size="sm"
             />
           </div>
         </Card>
 
         <div className="flex gap-4">
-          <Link href={`/speeches/${speech.id}/editar`} className="flex-1">
+          <Link href={`/icebreakers/${icebreaker.id}/editar`} className="flex-1">
             <Button variant="default" className="w-full">
-              Editar Speech
+              Editar Icebreaker
             </Button>
           </Link>
-          <Link href="/speeches">
+          <Link href="/icebreakers">
             <Button variant="outline">Voltar</Button>
           </Link>
         </div>
@@ -149,7 +149,7 @@ export function SpeechView({ speech }: SpeechViewProps) {
       <TeleprompterView
         open={teleprompterOpen}
         onOpenChange={setTeleprompterOpen}
-        title={speech.titulo}
+        title={icebreaker.titulo}
         content={conteudo}
       />
 

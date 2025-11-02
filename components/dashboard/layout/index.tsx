@@ -1,4 +1,5 @@
 import React from "react";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 interface DashboardPageLayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ export default function DashboardPageLayout({
         {header.search && <div className="w-full">{header.search}</div>}
       </div>
       <div className="min-h-full flex-1 flex flex-col gap-8 md:gap-14 px-3 lg:px-6 py-6 md:py-10 ring-2 ring-pop bg-background">
+        <Breadcrumbs />
         {children}
       </div>
     </div>

@@ -12,6 +12,8 @@ import Widget from "@/components/dashboard/widget";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TRPCProvider } from "@/lib/trpc/react";
 import { V0Provider } from "@/lib/v0-context";
+import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
+import { CommandPalette } from "@/components/command-palette";
 import mockDataJson from "@/mock.json";
 import type { MockData } from "@/types/dashboard";
 
@@ -68,7 +70,8 @@ export default function RootLayout({
       >
         <TRPCProvider>
           <V0Provider isV0={isV0}>
-            <SidebarProvider>
+            <KeyboardShortcutsProvider>
+              <SidebarProvider>
               {/* Mobile Header - only visible on mobile */}
               <MobileHeader mockData={mockData} />
 
@@ -91,7 +94,11 @@ export default function RootLayout({
 
               {/* Mobile Chat - floating CTA with drawer */}
               <MobileChat />
-            </SidebarProvider>
+              </SidebarProvider>
+
+              {/* Command Palette - Global (Ctrl+K) */}
+              <CommandPalette />
+            </KeyboardShortcutsProvider>
           </V0Provider>
         </TRPCProvider>
       </body>

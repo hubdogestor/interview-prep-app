@@ -7,10 +7,11 @@ import BriefcaseIcon from "@/components/icons/briefcase";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play, Timer } from "lucide-react";
+import { ArrowLeft, Play, Timer, Mic } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
 import { StarCaseTeleprompter } from "@/components/experiencias/star-case-teleprompter";
 import { PracticeTimer } from "@/components/practice/practice-timer";
+import { AudioPractice } from "@/components/practice/audio-practice";
 
 interface StarCase {
   titulo: string;
@@ -29,6 +30,7 @@ export default function PracticeExperienciaPage() {
   const [selectedStarCase, setSelectedStarCase] = useState<StarCase | null>(null);
   const [showTeleprompter, setShowTeleprompter] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
+  const [showAudioPractice, setShowAudioPractice] = useState(false);
 
   const { data: experiencia, isLoading } = trpc.experiencias.getById.useQuery({
     id,
@@ -78,6 +80,11 @@ export default function PracticeExperienciaPage() {
   const handlePracticeTimer = (starCase: StarCase) => {
     setSelectedStarCase(starCase);
     setShowTimer(true);
+  };
+
+  const handlePracticeAudio = (starCase: StarCase) => {
+    setSelectedStarCase(starCase);
+    setShowAudioPractice(true);
   };
 
   return (
@@ -142,6 +149,14 @@ export default function PracticeExperienciaPage() {
                   <Button
                     variant="default"
                     size="sm"
+                    onClick={() => handlePracticeAudio(starCase)}
+                  >
+                    <Mic className="h-4 w-4 mr-2" />
+                    AI PRACTICE
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => handlePracticeTeleprompter(starCase)}
                   >
                     <Play className="h-4 w-4 mr-2" />
@@ -192,6 +207,42 @@ export default function PracticeExperienciaPage() {
           targetDuration={180} // 3 minutes default for STAR cases
           description={`Practice: ${selectedStarCase.titulo}`}
         />
+      )}
+
+      {/* Audio Practice with AI */}
+      {selectedStarCase && showAudioPractice && (
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="relative w-full max-w-3xl">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAudioPractice(false)}
+                  className="absolute top-0 right-0 z-10"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Voltar
+                </Button>
+                <div className="mt-12">
+                  <h2 className="text-2xl font-display uppercase mb-2">
+                    {selectedStarCase.titulo}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Grave seu STAR Case e receba feedback automatizado
+                  </p>
+                  <AudioPractice
+                    tipo="star_case"
+                    itemId={id}
+                    itemTitle={selectedStarCase.titulo}
+                    conteudoOriginal={`${selectedStarCase.situation}\n\n${selectedStarCase.task}\n\n${selectedStarCase.action}\n\n${selectedStarCase.result}`}
+                    onComplete={() => setShowAudioPractice(false)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </DashboardPageLayout>
   );

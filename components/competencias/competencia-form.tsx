@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CompetenciaAIButton } from "@/components/competencias/competencia-ai-button";
+import { TrackRecordAIButton } from "@/components/competencias/track-record-ai-button";
 
 // Schema para track record individual
 const trackRecordSchema = z.object({
@@ -392,15 +393,26 @@ export function CompetenciaForm({
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-display uppercase">Track Record</h3>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => append({ projeto: "", resultado: "", ano: new Date().getFullYear() })}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Adicionar
-            </Button>
+            <div className="flex gap-2">
+              {form.watch("nome") && (
+                <TrackRecordAIButton
+                  competenciaNome={form.watch("nome")}
+                  competenciaCategoria={form.watch("categoria")}
+                  onGenerated={(trackRecord) => {
+                    append(trackRecord);
+                  }}
+                />
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => append({ projeto: "", resultado: "", ano: new Date().getFullYear() })}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar
+              </Button>
+            </div>
           </div>
 
           {fields.length === 0 ? (
@@ -462,6 +474,20 @@ export function CompetenciaForm({
                           </FormItem>
                         )}
                       />
+
+                      {/* AI Button to improve this track record */}
+                      {form.watch(`trackRecord.${index}.projeto`) && (
+                        <div className="flex justify-end">
+                          <TrackRecordAIButton
+                            competenciaNome={form.watch("nome")}
+                            competenciaCategoria={form.watch("categoria")}
+                            existingTrackRecord={form.watch(`trackRecord.${index}`)}
+                            onGenerated={(trackRecord) => {
+                              form.setValue(`trackRecord.${index}`, trackRecord);
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
 
                     <Button

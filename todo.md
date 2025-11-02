@@ -434,99 +434,106 @@
   3. Verificar se funciona apenas com Profile básico
   4. Restaurar context-files
 
-## 🎯 Próximos Passos (Sessão 6)
+## 🎯 Próximos Passos (Sessão 7)
 
-**Status atual:** Fase 2 100% completa! Todas as seções têm CRUD funcional + IA integrada.
+**Status atual:**
+- ✅ Fase 2 100% completa (CRUD funcional para todas as seções)
+- ✅ Fase 3 (IA) 80% completa (Icebreakers, Speeches, STAR Cases, Questions)
+- ✅ Modo Prática Avançado implementado (gravação + análise + histórico)
+- ✅ Export & Sharing (Icebreakers, Speeches, Questions - parcial)
+- ✅ UX Polish (animações, loading states, tooltips - parcial)
+- ✅ Busca & Filtros (implementado)
 
 **Opções de continuação:**
 
-### Opção A: Geração IA para Competências 🤖
-**O que falta:**
+### Opção A: Geração IA para Competências 🤖 [RECOMENDADO]
+**O que implementar:**
 
-- [ ] Gerar Competência com IA (baseado em cv.md e competencias.md)
+- [ ] Botão "Gerar Competência com IA" (baseado em cv.md e competencias.md)
+- [ ] Modo automático: sugere competência baseada no perfil
+- [ ] Modo guiado: usuário escolhe categoria + nível + tech stack
 - [ ] Sugerir Track Record para competência existente
-- [ ] Gerar descrições bilíngues (PT/EN)
-- [ ] Sugerir evidências baseadas em experiências cadastradas
+- [ ] Gerar descrições bilíngues (PT/EN) automaticamente
+- [ ] Sugerir evidências baseadas em experiências já cadastradas
 - [ ] Integração com context-files
 
 **Complexidade:** Média | **Impacto:** Alto | **Tempo estimado:** 2-3h
+**Motivo:** Completa paridade de IA em todas as seções principais
 
-### Opção B: Melhorias no Dashboard 📊
-**O que falta:**
+### Opção B: Integrar AudioPractice em Páginas Existentes 🎤
+**O que implementar:**
 
-- [ ] Gráfico de progresso (quantos items por seção)
-- [ ] Widget "Próximas revisões" (STAR Cases sem prática há X dias)
-- [ ] Estatísticas de uso da IA (quantas gerações por semana)
-- [ ] Quick actions (botões para criar novo item de cada tipo)
-- [ ] Últimos 5 items editados (atualmente mostra 10)
-- [ ] Filtro de favoritos no dashboard
+- [ ] Adicionar componente AudioPractice em `/icebreakers/[id]/practice`
+- [ ] Adicionar componente AudioPractice em `/speeches/[id]/practice`
+- [ ] Usar AudioPractice no modo prática de STAR Cases
+- [ ] Substituir mock de transcrição por Speech-to-Text API real (Google Cloud Speech-to-Text)
+- [ ] Implementar upload de áudio para cloud storage (S3/Cloudinary)
+- [ ] Análise real com IA comparando transcrição vs conteúdo original
 
-**Complexidade:** Baixa-Média | **Impacto:** Médio | **Tempo estimado:** 1-2h
+**Complexidade:** Alta | **Impacto:** Alto | **Tempo estimado:** 3-4h
+**Motivo:** Ativa feature completa de prática com feedback real
 
-### Opção C: Export & Sharing 📤
-**O que falta:**
+### Opção C: Export Completo de Portfólio 📤
+**O que implementar:**
 
-- [ ] Export de Experiências (PDF/Markdown) - similar aos já implementados
-- [ ] Export de Competências (PDF/Markdown)
-- [ ] Export consolidado: "Meu Portfólio Completo" (todas as seções)
+- [ ] Export de Experiências individuais (Markdown + PDF)
+- [ ] Export de Competências individuais (Markdown + PDF)
+- [ ] Botão "Export Portfólio Completo" no Dashboard
+  - Todas as experiências com STAR Cases
+  - Todas as competências com Track Records
+  - Índice navegável
+  - Estatísticas de carreira
+- [ ] Formatação customizada (incluir/excluir drafts, versões, favoritos only)
 - [ ] Preview antes do export
-- [ ] Formatação customizada (com/sem versões, com/sem drafts)
 
-**Complexidade:** Baixa | **Impacto:** Médio | **Tempo estimado:** 1-2h
+**Complexidade:** Baixa-Média | **Impacto:** Médio | **Tempo estimado:** 2h
 
-### Opção D: Modo Prática Avançado 🎯
-**O que falta:**
+### Opção D: Dashboard Enriquecido 📊
+**O que implementar:**
 
-- [ ] Gravação de áudio durante prática
-- [ ] Análise de performance (tempo, pausas, velocidade de fala)
-- [ ] Histórico de práticas (quantas vezes praticou cada item)
-- [ ] Feedback visual após prática (score, sugestões)
-- [ ] Modo "Entrevista simulada" (perguntas aleatórias + timer)
+- [ ] Widget "Próximas Revisões" (STAR Cases sem prática há >7 dias)
+- [ ] Widget "Estatísticas IA" (quantas gerações por semana/mês)
+- [ ] Gráfico de evolução de práticas (chart.js/recharts)
+- [ ] Heatmap de dias praticados (estilo GitHub contributions)
+- [ ] Sugestões inteligentes baseadas em padrões de uso
 
-**Complexidade:** Alta | **Impacto:** Alto | **Tempo estimado:** 4-5h
+**Complexidade:** Média | **Impacto:** Médio-Alto | **Tempo estimado:** 3h
 
-### Opção E: UX Polish & Refinamentos 🎨
-**O que falta:**
+### Opção E: Melhorias UX Finais 🎨
+**O que implementar:**
 
-- [ ] Loading skeletons em vez de texto "Carregando..."
-- [ ] Animações de transição entre páginas
-- [ ] Tooltips explicativos em formulários
-- [ ] Mensagens de estado vazio mais amigáveis
-- [ ] Atalhos de teclado (criar novo, buscar, etc)
-- [ ] Breadcrumbs de navegação
-- [ ] Dark mode refinements (se necessário)
+- [ ] Breadcrumbs de navegação em todas as páginas
+- [ ] Atalhos de teclado (Ctrl+N para criar, Ctrl+K para buscar, etc)
+- [ ] Animações de transição entre páginas (page transitions)
+- [ ] Mensagens de estado vazio mais amigáveis e visuais
+- [ ] Confirmação antes de sair de formulário com mudanças não salvas
+- [ ] Drag & drop para reordenar STAR Cases / Track Records
 
 **Complexidade:** Baixa-Média | **Impacto:** Médio | **Tempo estimado:** 2-3h
 
-### Opção F: Busca & Filtros 🔍
-**O que falta:**
-
-- [ ] Busca global (search bar no header)
-- [ ] Busca por seção (filtrar icebreakers, speeches, etc)
-- [ ] Filtros avançados (favoritos, arquivados, por tag, por data)
-- [ ] Ordenação customizada (alfabética, data, mais praticados)
-- [ ] Paginação ou scroll infinito (se muitos items)
-
-**Complexidade:** Média | **Impacto:** Alto (melhora muito UX) | **Tempo estimado:** 2-3h
-
 ---
 
-### 💡 Recomendação
+### 💡 Recomendação de Ordem
 
-**Prioridade 1 (Essencial):** Opção A - Geração IA para Competências
-- Completa a paridade de features de IA entre todas as seções
-- Competências é a única seção sem IA ainda
-- Aproveita context-files já configurados
+**1º - Opção A (Geração IA para Competências)**
+- Completa a paridade de features de IA
+- Competências é a última seção principal sem IA
+- Rápido de implementar (já temos padrão estabelecido)
 
-**Prioridade 2 (Alta):** Opção F - Busca & Filtros
-- Fundamental quando houver muitos items cadastrados
-- Melhora muito a usabilidade
-- Relativamente rápido de implementar
-
-**Prioridade 3 (Média):** Opção B - Melhorias no Dashboard
-- Dashboard é a primeira tela que o usuário vê
-- Mostra progresso e motiva uso contínuo
+**2º - Opção C (Export Completo)**
+- Funcionalidade de alto valor para entrevistas
+- Permite ter portfólio offline em PDF/Markdown
 - Rápido de implementar
+
+**3º - Opção B (Integrar AudioPractice)**
+- Torna feature de prática 100% funcional
+- Requer integração com APIs externas (Speech-to-Text)
+- Maior complexidade mas alto impacto
+
+**Próximas sessões (opcionais):**
+- Opção D: Dashboard enriquecido
+- Opção E: UX polish final
+- Deploy em produção (Vercel)
 
 ---
 

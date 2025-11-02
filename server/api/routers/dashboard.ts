@@ -75,4 +75,134 @@ export const dashboardRouter = createTRPCRouter({
       },
     };
   }),
+
+  // Get items that need review (no practice in 7+ days)
+  needsReview: publicProcedure.query(async ({ ctx }) => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    // Get all STAR Cases from experiences
+    const experiencias = await ctx.prisma.experiencia.findMany({
+      include: {
+        starCases: true,
+      },
+    });
+
+    const starCases = experiencias.flatMap((exp) =>
+      exp.starCases.map((starCase: any) => ({
+        id: starCase.id,
+        experienciaId: exp.id,
+        titulo: starCase.titulo,
+        competencia: starCase.competencia,
+        createdAt: starCase.createdAt || exp.createdAt,
+      }))
+    );
+
+    // Get recent practice sessions
+    const practiceSessions = await ctx.prisma.practiceSession.findMany({
+      where: {
+        createdAt: {
+          gte: sevenDaysAgo,
+        },
+      },
+      select: {
+        itemId: true,
+        tipo: true,
+        createdAt: true,
+      },
+    });
+
+    // Get all icebreakers and speeches
+    const [icebreakers, speeches] = await Promise.all([
+      ctx.prisma.icebreaker.findMany({
+        select: { id: true, titulo: true, createdAt: true },
+      }),
+      ctx.prisma.speech.findMany({
+        select: { id: true, titulo: true, createdAt: true },
+      }),
+    ]);
+
+    // Create a map of recently practiced items
+    const recentlyPracticed = new Set(
+      practiceSessions.map((session) => `${session.tipo}-${session.itemId}`)
+    );
+
+    // Filter items that haven't been practiced in 7 days
+    const needsReview = [];
+
+    // Check icebreakers
+    for (const icebreaker of icebreakers) {
+      const key = `icebreaker-${icebreaker.id}`;
+      if (!recentlyPracticed.has(key)) {
+        needsReview.push({
+          id: icebreaker.id,
+          tipo: "icebreaker" as const,
+          titulo: icebreaker.titulo,
+          diasSemPraticar: Math.floor(
+            (Date.now() - icebreaker.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+          ),
+        });
+      }
+    }
+
+    // Check speeches
+    for (const speech of speeches) {
+      const key = `speech-${speech.id}`;
+      if (!recentlyPracticed.has(key)) {
+        needsReview.push({
+          id: speech.id,
+          tipo: "speech" as const,
+          titulo: speech.titulo,
+          diasSemPraticar: Math.floor(
+            (Date.now() - speech.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+          ),
+        });
+      }
+    }
+
+    // Check STAR Cases
+    for (const starCase of starCases) {
+      const key = `star_case-${starCase.id}`;
+      if (!recentlyPracticed.has(key)) {
+        needsReview.push({
+          id: starCase.id,
+          experienciaId: starCase.experienciaId,
+          tipo: "star_case" as const,
+          titulo: starCase.titulo,
+          competencia: starCase.competencia,
+          diasSemPraticar: Math.floor(
+            (Date.now() - starCase.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+          ),
+        });
+      }
+    }
+
+    // Filter only items with 7+ days without practice and sort by days
+    return needsReview
+      .filter((item) => item.diasSemPraticar >= 7)
+      .sort((a, b) => b.diasSemPraticar - a.diasSemPraticar)
+      .slice(0, 10);
+  }),
+
+  // Get AI usage statistics
+  aiStats: publicProcedure.query(async ({ ctx }) => {
+    // For now, return mock data since we don't track AI usage in DB yet
+    // In production, you'd add an AIGenerationLog table to track this
+    const now = new Date();
+    const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thisMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    return {
+      thisWeek: 0,
+      thisMonth: 0,
+      total: 0,
+      byType: {
+        competencias: 0,
+        experiencias: 0,
+        starCases: 0,
+        icebreakers: 0,
+        speeches: 0,
+      },
+    };
+  }),
 });

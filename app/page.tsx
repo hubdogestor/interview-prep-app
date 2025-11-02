@@ -13,6 +13,11 @@ import BriefcaseIcon from "@/components/icons/briefcase";
 import { api } from "@/lib/trpc/server";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { ExportPortfolioButton } from "@/components/dashboard/export-portfolio-button";
+import { NeedsReviewWidget } from "@/components/dashboard/needs-review-widget";
+import { AIStatsWidget } from "@/components/dashboard/ai-stats-widget";
+import { PracticeEvolutionChart } from "@/components/dashboard/practice-evolution-chart";
+import { PracticeHeatmap } from "@/components/dashboard/practice-heatmap";
+import { SmartSuggestions } from "@/components/dashboard/smart-suggestions";
 
 export default async function DashboardOverview() {
   const caller = await api();
@@ -79,8 +84,21 @@ export default async function DashboardOverview() {
         <ExportPortfolioButton />
       </div>
 
-      {/* Main 2-column grid section */}
+      {/* Enhanced Widgets Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <NeedsReviewWidget />
+        <AIStatsWidget />
+      </div>
+
+      {/* Practice Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <PracticeEvolutionChart />
+        <PracticeHeatmap />
+      </div>
+
+      {/* Smart Suggestions + Recent/Favorites */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <SmartSuggestions />
         <RecentItems items={dashboard.recentItems} />
         <FavoritesList items={dashboard.favoriteItems} />
       </div>

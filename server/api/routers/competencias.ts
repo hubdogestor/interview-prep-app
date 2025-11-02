@@ -143,4 +143,30 @@ export const competenciasRouter = createTRPCRouter({
         input.rewriteInstructions
       );
     }),
+
+  // Generate or improve a single Track Record with AI
+  generateTrackRecordWithAI: publicProcedure
+    .input(
+      z.object({
+        competenciaNome: z.string(),
+        competenciaCategoria: z.enum(["technical", "soft_skills", "leadership"]),
+        existingTrackRecord: z
+          .object({
+            projeto: z.string(),
+            resultado: z.string(),
+            ano: z.number(),
+          })
+          .optional(),
+        instructions: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { generateTrackRecord } = await import("@/lib/ai/gemini");
+      return generateTrackRecord(
+        input.competenciaNome,
+        input.competenciaCategoria,
+        input.existingTrackRecord,
+        input.instructions
+      );
+    }),
 });

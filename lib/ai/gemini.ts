@@ -1009,6 +1009,130 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
 }
 
 /**
+ * Gera ou aprimora um Track Record para uma competência
+ */
+export async function generateTrackRecord(
+  competenciaNome: string,
+  competenciaCategoria: "technical" | "soft_skills" | "leadership",
+  existingTrackRecord?: {
+    projeto: string;
+    resultado: string;
+    ano: number;
+  },
+  instructions?: string,
+  userId: string = "default"
+): Promise<{ projeto: string; resultado: string; ano: number }> {
+  // Rate limiting
+  if (!checkRateLimit(`track-record-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Aguarde 1 minuto antes de tentar novamente."
+    );
+  }
+
+  const model = getModel();
+  const contextFiles = await loadContextFiles();
+
+  const categoriaLabels = {
+    technical: "Técnica",
+    soft_skills: "Soft Skills",
+    leadership: "Liderança",
+  };
+
+  let prompt = "";
+
+  if (existingTrackRecord) {
+    // Modo: Aprimorar track record existente
+    prompt = `Você é um especialista em preparação para entrevistas e construção de portfólio profissional.
+
+CONTEXTO DO USUÁRIO:
+${contextFiles.cv ? `CV:\n${contextFiles.cv}\n\n` : ""}
+${contextFiles.competencias ? `Competências cadastradas:\n${contextFiles.competencias}\n\n` : ""}
+${contextFiles.experiencias ? `Experiências profissionais:\n${contextFiles.experiencias}\n\n` : ""}
+
+COMPETÊNCIA: ${competenciaNome}
+CATEGORIA: ${categoriaLabels[competenciaCategoria]}
+
+TRACK RECORD ATUAL:
+- Projeto: ${existingTrackRecord.projeto}
+- Resultado: ${existingTrackRecord.resultado}
+- Ano: ${existingTrackRecord.ano}
+
+${instructions ? `INSTRUÇÕES ADICIONAIS: ${instructions}\n\n` : ""}
+
+TAREFA:
+Aprimore este track record, tornando-o mais impactante e mensurável. Siga estas diretrizes:
+
+1. **Projeto**: Seja específico sobre o contexto e tecnologias usadas
+2. **Resultado**: Use métricas quantificáveis sempre que possível (%, valores, tempo economizado, etc.)
+3. **Ano**: Mantenha ou ajuste se necessário baseado no contexto do CV
+4. **Clareza**: Use verbos de ação fortes (liderou, desenvolveu, implementou, otimizou)
+5. **Impacto**: Foque em resultados de negócio, não apenas entregas técnicas
+
+FORMATO DE RESPOSTA (JSON):
+{
+  "projeto": "Nome específico do projeto e contexto",
+  "resultado": "Resultado mensurável com métricas e impacto",
+  "ano": 2024
+}
+
+Retorne APENAS o JSON, sem explicações adicionais.`;
+  } else {
+    // Modo: Gerar novo track record
+    prompt = `Você é um especialista em preparação para entrevistas e construção de portfólio profissional.
+
+CONTEXTO DO USUÁRIO:
+${contextFiles.cv ? `CV:\n${contextFiles.cv}\n\n` : ""}
+${contextFiles.competencias ? `Competências cadastradas:\n${contextFiles.competencias}\n\n` : ""}
+${contextFiles.experiencias ? `Experiências profissionais:\n${contextFiles.experiencias}\n\n` : ""}
+
+COMPETÊNCIA: ${competenciaNome}
+CATEGORIA: ${categoriaLabels[competenciaCategoria]}
+
+${instructions ? `INSTRUÇÕES ADICIONAIS: ${instructions}\n\n` : ""}
+
+TAREFA:
+Sugira um projeto relevante que demonstre esta competência. Baseie-se nas experiências do CV quando possível.
+
+Diretrizes:
+1. **Projeto**: Nome específico e contexto (empresa, produto, ou tipo de projeto)
+2. **Resultado**: Métricas quantificáveis de impacto (%, valores, melhorias mensuráveis)
+3. **Ano**: Baseado no histórico do CV (últimos 3-5 anos)
+4. **Relevância**: Conecte com experiências reais quando possível
+5. **Credibilidade**: Use contextos plausíveis baseados no perfil
+
+FORMATO DE RESPOSTA (JSON):
+{
+  "projeto": "Nome do projeto e contexto específico",
+  "resultado": "Resultado mensurável com métricas claras",
+  "ano": 2024
+}
+
+Retorne APENAS o JSON, sem explicações adicionais.`;
+  }
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    // Parse do JSON (removendo markdown se houver)
+    const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+    const trackRecord = JSON.parse(jsonText);
+
+    // Validação básica
+    if (!trackRecord.projeto || !trackRecord.resultado || !trackRecord.ano) {
+      throw new Error("Resposta da IA incompleta");
+    }
+
+    return trackRecord;
+  } catch (error: any) {
+    console.error("Erro ao gerar Track Record:", error);
+    throw new Error(
+      `Erro ao gerar Track Record: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
  * Interface para avaliação de performance
  */
 export interface PerformanceEvaluation {

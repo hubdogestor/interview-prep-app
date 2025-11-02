@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,10 +17,11 @@ import {
   HelpCircle,
   Briefcase,
   Star,
-  Target,
+  Target as TargetIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { buttonHover, buttonTap } from "@/lib/animations";
+import { JobFitAnalyzer } from "@/components/dashboard/job-fit-analyzer";
 
 const quickActions = [
   {
@@ -60,29 +62,71 @@ const quickActions = [
   {
     label: "Histórico de Práticas",
     href: "/practice",
-    icon: Target,
+    icon: TargetIcon,
     color: "text-chart-4",
     tooltip: "Veja seu histórico e estatísticas de práticas",
   },
 ];
 
-export function QuickActions() {
-  return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-display uppercase">Quick Actions</h2>
-        <Plus className="h-5 w-5 text-muted-foreground" />
-      </div>
+const specialActions = [
+  {
+    label: "Analisar Fit com Vaga",
+    action: "job-fit",
+    icon: TargetIcon,
+    color: "text-chart-2",
+    tooltip: "Analise seu fit com uma vaga específica usando IA",
+  },
+];
 
-      <TooltipProvider>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {quickActions.map((action) => (
-            <Tooltip key={action.href}>
-              <TooltipTrigger asChild>
-                <motion.div whileHover={buttonHover} whileTap={buttonTap}>
-                  <Link href={action.href}>
+export function QuickActions() {
+  const [jobFitOpen, setJobFitOpen] = useState(false);
+
+  const handleSpecialAction = (action: string) => {
+    if (action === "job-fit") {
+      setJobFitOpen(true);
+    }
+  };
+
+  return (
+    <>
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-display uppercase">Quick Actions</h2>
+          <Plus className="h-5 w-5 text-muted-foreground" />
+        </div>
+
+        <TooltipProvider>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
+            {quickActions.map((action) => (
+              <Tooltip key={action.href}>
+                <TooltipTrigger asChild>
+                  <motion.div whileHover={buttonHover} whileTap={buttonTap}>
+                    <Link href={action.href}>
+                      <Button
+                        variant="outline"
+                        className="w-full h-auto flex flex-col items-center gap-2 py-4 hover:bg-accent/50 hover:border-primary transition-colors"
+                      >
+                        <action.icon className={`h-6 w-6 ${action.color}`} />
+                        <span className="text-xs font-medium text-center">
+                          {action.label}
+                        </span>
+                      </Button>
+                    </Link>
+                  </motion.div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{action.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+
+            {specialActions.map((action) => (
+              <Tooltip key={action.action}>
+                <TooltipTrigger asChild>
+                  <motion.div whileHover={buttonHover} whileTap={buttonTap}>
                     <Button
                       variant="outline"
+                      onClick={() => handleSpecialAction(action.action)}
                       className="w-full h-auto flex flex-col items-center gap-2 py-4 hover:bg-accent/50 hover:border-primary transition-colors"
                     >
                       <action.icon className={`h-6 w-6 ${action.color}`} />
@@ -90,16 +134,18 @@ export function QuickActions() {
                         {action.label}
                       </span>
                     </Button>
-                  </Link>
-                </motion.div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{action.tooltip}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-      </TooltipProvider>
-    </Card>
+                  </motion.div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{action.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        </TooltipProvider>
+      </Card>
+
+      <JobFitAnalyzer open={jobFitOpen} onOpenChange={setJobFitOpen} />
+    </>
   );
 }

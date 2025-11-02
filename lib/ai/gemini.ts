@@ -1226,3 +1226,282 @@ Retorne APENAS um JSON válido no seguinte formato:
     );
   }
 }
+
+/**
+ * Interface para análise de fit com vaga
+ */
+export interface JobFitAnalysis {
+  matchScore: number; // 0-100
+  forteAlinhamento: string[]; // Pontos fortes que alinham com a vaga
+  gaps: string[]; // Gaps identificados
+  competenciasDestaque: string[]; // Competências que devem ser destacadas
+  sugestoesPreparacao: string[]; // Sugestões de preparação
+  starCasesRecomendados: string[]; // STAR Cases que devem ser usados
+  feedback: string; // Feedback geral
+}
+
+/**
+ * Analisa fit do perfil com uma descrição de vaga
+ */
+export async function analyzeJobFit(
+  jobDescription: string,
+  userId: string = "default"
+): Promise<JobFitAnalysis> {
+  // Rate limiting
+  if (!checkRateLimit(`job-fit-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Aguarde 1 minuto antes de tentar novamente."
+    );
+  }
+
+  const model = getModel();
+  const contextData = loadContextFiles();
+
+  const prompt = `Você é um especialista em recrutamento e preparação para entrevistas técnicas.
+
+**PERFIL DO CANDIDATO:**
+${contextData || "Perfil não disponível - use informações gerais"}
+
+**DESCRIÇÃO DA VAGA:**
+${jobDescription}
+
+**TAREFA:**
+Analise o fit entre o perfil do candidato e a descrição da vaga. Forneça uma análise detalhada e acionável.
+
+**CRITÉRIOS DE AVALIAÇÃO:**
+
+1. **Match Score (0-100):**
+   - 90-100: Excelente fit, candidato ideal
+   - 70-89: Bom fit, atende maioria dos requisitos
+   - 50-69: Fit moderado, alguns gaps importantes
+   - 0-49: Fit baixo, muitos gaps críticos
+
+2. **Pontos Fortes de Alinhamento:**
+   - Liste 3-5 pontos específicos onde o candidato se destaca
+   - Use evidências do perfil (projetos, tecnologias, experiências)
+   - Seja específico e concreto
+
+3. **Gaps Identificados:**
+   - Liste 2-4 gaps mais relevantes
+   - Seja honesto mas construtivo
+   - Sugira como mitigar cada gap
+
+4. **Competências a Destacar:**
+   - 3-5 competências do perfil que são mais relevantes para a vaga
+   - Priorize competências com track record demonstrável
+
+5. **STAR Cases Recomendados:**
+   - Liste 2-3 STAR Cases do perfil que são mais relevantes
+   - Explique brevemente por que cada um é relevante
+
+6. **Sugestões de Preparação:**
+   - 3-5 ações concretas que o candidato deve tomar
+   - Foque em preparação para entrevista, não em desenvolvimento de skills
+
+**FORMATO DE RESPOSTA (JSON):**
+{
+  "matchScore": 85,
+  "forteAlinhamento": [
+    "8+ anos de experiência em React e Next.js, exatamente o que a vaga busca",
+    "Histórico comprovado de liderança técnica em times ágeis",
+    "Experiência específica com arquitetura de microservices mencionada na vaga"
+  ],
+  "gaps": [
+    "Vaga menciona Kubernetes, não encontrado no perfil",
+    "Experiência com GraphQL parece limitada comparado aos requisitos"
+  ],
+  "competenciasDestaque": [
+    "React Development (Expert) - competência core da vaga",
+    "Technical Leadership - essencial para a posição sênior",
+    "System Architecture - diferencial importante"
+  ],
+  "starCasesRecomendados": [
+    "Migração de sistema legacy para Next.js - demonstra expertise técnica",
+    "Liderança de time distribuído - alinha com responsabilidades da vaga"
+  ],
+  "sugestoesPreparacao": [
+    "Prepare respostas sobre experiência com Kubernetes ou tecnologias similares",
+    "Estude a stack específica da empresa (mencione tecnologias do job description)",
+    "Prepare exemplos quantificáveis de impacto em performance e escalabilidade",
+    "Revise STAR Cases sobre liderança técnica e tomada de decisões arquiteturais"
+  ],
+  "feedback": "Você tem um fit muito forte para esta vaga, especialmente considerando sua experiência sólida em React/Next.js e histórico de liderança técnica. O match score de 85% reflete que você atende a maioria dos requisitos principais. Os principais gaps identificados (Kubernetes, GraphQL) são secundários e podem ser abordados na entrevista demonstrando experiência com tecnologias similares e capacidade de aprendizado rápido. Foque em destacar seus STAR Cases sobre arquitetura e liderança, que são os maiores diferenciais para esta posição."
+}
+
+Retorne APENAS o JSON válido, sem markdown ou texto adicional.`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().trim();
+
+    // Parse do JSON (removendo markdown se houver)
+    const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
+    return JSON.parse(jsonText);
+  } catch (error: any) {
+    console.error("Erro ao analisar job fit:", error);
+    throw new Error(
+      `Erro ao analisar job fit: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * Traduz conteúdo entre PT-BR e EN
+ */
+export async function translateContent(
+  content: string,
+  from: "pt" | "en",
+  to: "pt" | "en",
+  context?: string,
+  userId: string = "default"
+): Promise<string> {
+  // Rate limiting
+  if (!checkRateLimit(`translate-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Aguarde 1 minuto antes de tentar novamente."
+    );
+  }
+
+  const model = getModel();
+
+  const langLabels = {
+    pt: "Português Brasileiro",
+    en: "Inglês",
+  };
+
+  const prompt = `Você é um tradutor profissional especializado em conteúdo de preparação para entrevistas e documentos de carreira.
+
+**TAREFA:** Traduza o seguinte conteúdo de ${langLabels[from]} para ${langLabels[to]}.
+
+${context ? `**CONTEXTO:** ${context}\n\n` : ""}
+
+**CONTEÚDO ORIGINAL:**
+${content}
+
+**INSTRUÇÕES CRÍTICAS:**
+1. Mantenha o tom profissional e a estrutura do texto original
+2. Preserve formatações, números e métricas
+3. Adapte expressões idiomáticas quando necessário (não traduza literalmente)
+4. Para termos técnicos, use a terminologia padrão da indústria
+5. Mantenha a primeira pessoa se o original usa primeira pessoa
+6. Preserve quebras de linha e estrutura de parágrafos
+7. Não adicione explicações ou notas - apenas a tradução
+
+**FORMATO DE RESPOSTA:**
+Retorne APENAS o texto traduzido, sem aspas, sem markdown, sem explicações adicionais.`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    return result.response.text().trim();
+  } catch (error: any) {
+    console.error("Erro ao traduzir conteúdo:", error);
+    throw new Error(
+      `Erro ao traduzir conteúdo: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}
+
+/**
+ * AI-powered proactive suggestions based on user's portfolio
+ */
+export interface ProactiveSuggestion {
+  id: string;
+  type: "improvement" | "gap" | "opportunity" | "best_practice";
+  priority: "high" | "medium" | "low";
+  title: string;
+  description: string;
+  actionable: string;
+  targetSection: "competencias" | "experiencias" | "icebreakers" | "speeches" | "general";
+}
+
+export async function generateProactiveSuggestions(
+  portfolioData: {
+    competenciasCount: number;
+    experienciasCount: number;
+    icebreakersCount: number;
+    speechesCount: number;
+    hasStarCases: boolean;
+    lastPracticeDays?: number;
+  },
+  userId: string = "default"
+): Promise<ProactiveSuggestion[]> {
+  // Rate limiting check
+  if (!checkRateLimit(`proactive-suggestions-${userId}`)) {
+    throw new Error(
+      "Limite de requisições excedido. Tente novamente em alguns minutos."
+    );
+  }
+
+  const model = getModel();
+  const contextData = loadContextFiles();
+
+  const prompt = `Você é um coach de preparação para entrevistas técnicas altamente experiente.
+
+**PERFIL DO CANDIDATO:**
+${contextData || "Perfil não disponível"}
+
+**ESTATÍSTICAS ATUAIS DO PORTFÓLIO:**
+- Competências documentadas: ${portfolioData.competenciasCount}
+- Experiências profissionais: ${portfolioData.experienciasCount}
+- Icebreakers preparados: ${portfolioData.icebreakersCount}
+- Speeches/Narrativas: ${portfolioData.speechesCount}
+- Possui STAR Cases: ${portfolioData.hasStarCases ? "Sim" : "Não"}
+${portfolioData.lastPracticeDays ? `- Última prática: há ${portfolioData.lastPracticeDays} dias` : ""}
+
+**TAREFA:**
+Analise o portfólio do candidato e forneça **4-6 sugestões proativas** para melhorar sua preparação para entrevistas.
+
+**TIPOS DE SUGESTÕES:**
+1. **improvement** - Melhorias em conteúdo existente
+2. **gap** - Lacunas importantes a preencher
+3. **opportunity** - Oportunidades de destacar pontos fortes
+4. **best_practice** - Boas práticas a adotar
+
+**CRITÉRIOS:**
+- Seja específico e acionável
+- Priorize pelo impacto (high/medium/low)
+- Considere o contexto profissional do candidato
+- Sugira tanto melhorias técnicas quanto comportamentais
+- Foque em preparação para entrevistas de alto nível
+
+**FORMATO DE RESPOSTA (JSON array):**
+[
+  {
+    "id": "unique-id",
+    "type": "improvement",
+    "priority": "high",
+    "title": "Título curto da sugestão",
+    "description": "Descrição detalhada do por quê isso é importante",
+    "actionable": "Ação específica que o candidato deve tomar",
+    "targetSection": "competencias"
+  },
+  ...
+]
+
+**IMPORTANTE:** Retorne APENAS o array JSON, sem markdown, sem explicações adicionais.`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().trim();
+
+    // Remove markdown code blocks if present
+    const jsonText = text
+      .replace(/```json\n?/g, "")
+      .replace(/```\n?/g, "")
+      .trim();
+
+    const suggestions = JSON.parse(jsonText);
+
+    // Validate structure
+    if (!Array.isArray(suggestions)) {
+      throw new Error("Invalid response format");
+    }
+
+    return suggestions;
+  } catch (error: any) {
+    console.error("Error generating proactive suggestions:", error);
+    throw new Error(
+      `Erro ao gerar sugestões: ${error.message || "Erro desconhecido"}`
+    );
+  }
+}

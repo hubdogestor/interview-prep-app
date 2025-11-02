@@ -1,4 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { z } from "zod";
+import { analyzeJobFit } from "@/lib/ai/gemini";
 
 export const dashboardRouter = createTRPCRouter({
   overview: publicProcedure.query(async ({ ctx }) => {
@@ -205,4 +207,16 @@ export const dashboardRouter = createTRPCRouter({
       },
     };
   }),
+
+  // Analyze job fit with AI
+  analyzeJobFit: publicProcedure
+    .input(
+      z.object({
+        jobDescription: z.string().min(50, "Descrição da vaga muito curta"),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const result = await analyzeJobFit(input.jobDescription);
+      return result;
+    }),
 });

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { SessionProvider } from "next-auth/react";
 
 import Chat from "@/components/chat";
 import { MobileChat } from "@/components/chat/mobile-chat";
@@ -68,39 +69,41 @@ export default function RootLayout({
       <body
         className={`${rebelGrotesk.variable} ${robotoMono.variable} antialiased`}
       >
-        <TRPCProvider>
-          <V0Provider isV0={isV0}>
-            <KeyboardShortcutsProvider>
-              <SidebarProvider>
-              {/* Mobile Header - only visible on mobile */}
-              <MobileHeader mockData={mockData} />
+        <SessionProvider>
+          <TRPCProvider>
+            <V0Provider isV0={isV0}>
+              <KeyboardShortcutsProvider>
+                <SidebarProvider>
+                {/* Mobile Header - only visible on mobile */}
+                <MobileHeader mockData={mockData} />
 
-              {/* Desktop Layout */}
-              <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-gap lg:px-sides">
-                <div className="hidden lg:block col-span-2 top-0 relative">
-                  <DashboardSidebar />
-                </div>
-                <div className="col-span-1 lg:col-span-7">{children}</div>
-                <div className="col-span-3 hidden lg:block">
-                  <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
-                    <Widget widgetData={mockData.widgetData} />
-                    <Notifications
-                      initialNotifications={mockData.notifications}
-                    />
-                    <Chat />
+                {/* Desktop Layout */}
+                <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-gap lg:px-sides">
+                  <div className="hidden lg:block col-span-2 top-0 relative">
+                    <DashboardSidebar />
+                  </div>
+                  <div className="col-span-1 lg:col-span-7">{children}</div>
+                  <div className="col-span-3 hidden lg:block">
+                    <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
+                      <Widget widgetData={mockData.widgetData} />
+                      <Notifications
+                        initialNotifications={mockData.notifications}
+                      />
+                      <Chat />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Mobile Chat - floating CTA with drawer */}
-              <MobileChat />
-              </SidebarProvider>
+                {/* Mobile Chat - floating CTA with drawer */}
+                <MobileChat />
+                </SidebarProvider>
 
-              {/* Command Palette - Global (Ctrl+K) */}
-              <CommandPalette />
-            </KeyboardShortcutsProvider>
-          </V0Provider>
-        </TRPCProvider>
+                {/* Command Palette - Global (Ctrl+K) */}
+                <CommandPalette />
+              </KeyboardShortcutsProvider>
+            </V0Provider>
+          </TRPCProvider>
+        </SessionProvider>
       </body>
     </html>
   );

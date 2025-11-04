@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { analyzeJobFit } from "@/lib/ai/gemini";
 import { sanitizeForAIPrompt } from "@/lib/security/input-sanitizer";
@@ -7,12 +7,15 @@ export const dashboardRouter = createTRPCRouter({
   /**
    * Overview otimizado - usa counts e select para minimizar dados transferidos
    */
-  overview: publicProcedure.query(async ({ ctx }) => {
+  overview: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
     // Buscar perfil e counts em paralelo
     const [profile, totals, recentIcebreakers, recentSpeeches, recentQuestions] =
       await Promise.all([
         // Perfil com campos selecionados
         ctx.prisma.profile.findFirst({
+          where: { userId },
           select: {
             id: true,
             nome: true,
@@ -25,18 +28,18 @@ export const dashboardRouter = createTRPCRouter({
 
         // Counts em paralelo
         ctx.prisma.$transaction([
-          ctx.prisma.competencia.count(),
-          ctx.prisma.experiencia.count(),
-          ctx.prisma.speech.count(),
-          ctx.prisma.question.count(),
-          ctx.prisma.icebreaker.count(),
-          ctx.prisma.practiceSession.count(),
+          ctx.prisma.competencia.count({ where: { userId } }),
+          ctx.prisma.experiencia.count({ where: { userId } }),
+          ctx.prisma.speech.count({ where: { userId } }),
+          ctx.prisma.question.count({ where: { userId } }),
+          ctx.prisma.icebreaker.count({ where: { userId } }),
+          ctx.prisma.practiceSession.count({ where: { userId } }),
         ]),
 
         // Buscar apenas campos necessários para items recentes
         ctx.prisma.icebreaker.findMany({
           take: 10,
-          where: { archived: false },
+          where: { archived: false, userId },
           select: {
             id: true,
             titulo: true,
@@ -49,7 +52,7 @@ export const dashboardRouter = createTRPCRouter({
 
         ctx.prisma.speech.findMany({
           take: 10,
-          where: { archived: false },
+          where: { archived: false, userId },
           select: {
             id: true,
             titulo: true,
@@ -62,6 +65,7 @@ export const dashboardRouter = createTRPCRouter({
 
         ctx.prisma.question.findMany({
           take: 10,
+          where: { userId },
           select: {
             id: true,
             pergunta: true,
@@ -142,7 +146,8 @@ export const dashboardRouter = createTRPCRouter({
   /**
    * Items que precisam de revisão (não praticados há 7+ dias)
    */
-  needsReview: publicProcedure.query(async ({ ctx }) => {
+  needsReview: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -150,6 +155,7 @@ export const dashboardRouter = createTRPCRouter({
     const recentPracticeSessions = await ctx.prisma.practiceSession.findMany({
       where: {
         createdAt: { gte: sevenDaysAgo },
+        userId,
       },
       select: {
         itemId: true,
@@ -165,11 +171,11 @@ export const dashboardRouter = createTRPCRouter({
     // Buscar todos os items (apenas campos necessários)
     const [icebreakers, speeches] = await Promise.all([
       ctx.prisma.icebreaker.findMany({
-        where: { archived: false },
+        where: { archived: false, userId },
         select: { id: true, titulo: true, createdAt: true },
       }),
       ctx.prisma.speech.findMany({
-        where: { archived: false },
+        where: { archived: false, userId },
         select: { id: true, titulo: true, createdAt: true },
       }),
     ]);
@@ -219,28 +225,30 @@ export const dashboardRouter = createTRPCRouter({
   /**
    * Estatísticas de práticas
    */
-  practiceStats: publicProcedure.query(async ({ ctx }) => {
+  practiceStats: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
     const now = new Date();
     const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     const [totalSessions, weekSessions, monthSessions, avgScore] = await Promise.all([
-      ctx.prisma.practiceSession.count(),
+      ctx.prisma.practiceSession.count({ where: { userId } }),
       ctx.prisma.practiceSession.count({
-        where: { createdAt: { gte: lastWeek } },
+        where: { createdAt: { gte: lastWeek }, userId },
       }),
       ctx.prisma.practiceSession.count({
-        where: { createdAt: { gte: lastMonth } },
+        where: { createdAt: { gte: lastMonth }, userId },
       }),
       ctx.prisma.practiceSession.aggregate({
         _avg: { score: true },
-        where: { score: { not: null } },
+        where: { score: { not: null }, userId },
       }),
     ]);
 
     // Buscar distribuição por tipo
     const sessionsByType = await ctx.prisma.practiceSession.groupBy({
       by: ["tipo"],
+      where: { userId },
       _count: { tipo: true },
     });
 
@@ -262,7 +270,8 @@ export const dashboardRouter = createTRPCRouter({
   /**
    * AI Statistics (placeholder - requires AI usage logging table)
    */
-  aiStats: publicProcedure.query(async () => {
+  aiStats: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
     // TODO: Implementar tabela de logs de AI para rastrear uso real
     // Por enquanto, retorna dados zerados
     return {
@@ -283,7 +292,7 @@ export const dashboardRouter = createTRPCRouter({
   /**
    * Analisar fit com vaga usando IA
    */
-  analyzeJobFit: publicProcedure
+  analyzeJobFit: protectedProcedure
     .input(
       z.object({
         jobDescription: z.string().min(50, "Descrição da vaga muito curta").max(10000),
@@ -291,7 +300,8 @@ export const dashboardRouter = createTRPCRouter({
         company: z.string().max(200).optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       // Sanitizar input
       const descricaoSanitizada = sanitizeForAIPrompt(input.jobDescription, 10000);
 

@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { BilingualContentSchema } from "@/types/prisma-json";
 import { sanitizeText, sanitizeUrl, sanitizeEmail } from "@/lib/security/input-sanitizer";
@@ -21,8 +21,12 @@ const updateProfileSchema = profileSchema.partial().extend({
 });
 
 export const profileRouter = createTRPCRouter({
-  get: publicProcedure.query(async ({ ctx }) => {
-    const profile = await ctx.prisma.profile.findFirst();
+  get: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const profile = await ctx.prisma.profile.findUnique({
+      where: { userId },
+    });
 
     if (!profile) {
       return null;
@@ -31,11 +35,15 @@ export const profileRouter = createTRPCRouter({
     return profile;
   }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(profileSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
       // Verificar se já existe um perfil
-      const existingProfile = await ctx.prisma.profile.findFirst();
+      const existingProfile = await ctx.prisma.profile.findUnique({
+        where: { userId },
+      });
       if (existingProfile) {
         throw new Error("Perfil já existe. Use 'update' para modificá-lo.");
       }
@@ -45,10 +53,14 @@ export const profileRouter = createTRPCRouter({
       const tituloSanitizado = sanitizeText(input.titulo, 200);
 
       const data: Prisma.ProfileCreateInput = {
+        userId,
         nome: nomeSanitizado,
         titulo: tituloSanitizado,
         resumo: input.resumo as unknown as Prisma.InputJsonValue,
         anosExperiencia: input.anosExperiencia,
+        user: {
+          connect: { id: userId },
+        },
       };
 
       // Sanitizar URLs e email opcionais
@@ -84,14 +96,15 @@ export const profileRouter = createTRPCRouter({
       return ctx.prisma.profile.create({ data });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateProfileSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
-      // Verificar se perfil existe
+      // Verificar se perfil existe e pertence ao usuário
       const existing = await ctx.prisma.profile.findUnique({
-        where: { id },
+        where: { userId },
       });
 
       if (!existing) {
@@ -164,16 +177,18 @@ export const profileRouter = createTRPCRouter({
       }
 
       return ctx.prisma.profile.update({
-        where: { id },
+        where: { userId },
         data: updateData,
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
       const existing = await ctx.prisma.profile.findUnique({
-        where: { id: input.id },
+        where: { userId },
       });
 
       if (!existing) {
@@ -181,7 +196,7 @@ export const profileRouter = createTRPCRouter({
       }
 
       return ctx.prisma.profile.delete({
-        where: { id: input.id },
+        where: { userId },
       });
     }),
 });

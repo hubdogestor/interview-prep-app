@@ -1,8 +1,9 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { suggestQuestions } from "@/lib/ai/gemini";
 import { BilingualContentSchema } from "@/types/prisma-json";
 import { sanitizeText, sanitizeForAIPrompt } from "@/lib/security/input-sanitizer";
+import { assertOwnership } from "@/lib/auth/authorization";
 import type { Prisma } from "@prisma/client";
 
 const createQuestionSchema = z.object({
@@ -21,7 +22,7 @@ const updateQuestionSchema = z.object({
 });
 
 export const questionsRouter = createTRPCRouter({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
       z
         .object({
@@ -33,9 +34,12 @@ export const questionsRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { limit = 50, cursor, categoria = "all", onlyFavorites = false } = input ?? {};
 
-      const where: Prisma.QuestionWhereInput = {};
+      const where: Prisma.QuestionWhereInput = {
+        userId,
+      };
       if (categoria !== "all") {
         where.categoria = categoria;
       }
@@ -66,31 +70,40 @@ export const questionsRouter = createTRPCRouter({
       };
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.question.findUnique({
-        where: { id: input.id },
+      const userId = ctx.session.user.id;
+      return ctx.prisma.question.findFirst({
+        where: {
+          id: input.id,
+          userId,
+        },
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createQuestionSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       return ctx.prisma.question.create({
         data: {
           categoria: input.categoria,
           pergunta: input.pergunta as unknown as Prisma.InputJsonValue,
           contexto: input.contexto ? sanitizeText(input.contexto, 1000) : undefined,
           prioridade: input.prioridade,
+          userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateQuestionSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { id, ...data } = input;
+
+      await assertOwnership("question", id, userId);
 
       const existing = await ctx.prisma.question.findUnique({
         where: { id },
@@ -121,9 +134,13 @@ export const questionsRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      await assertOwnership("question", input.id, userId);
+
       const existing = await ctx.prisma.question.findUnique({
         where: { id: input.id },
       });
@@ -137,9 +154,13 @@ export const questionsRouter = createTRPCRouter({
       });
     }),
 
-  toggleFavorite: publicProcedure
+  toggleFavorite: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      await assertOwnership("question", input.id, userId);
+
       const question = await ctx.prisma.question.findUnique({
         where: { id: input.id },
       });
@@ -154,7 +175,7 @@ export const questionsRouter = createTRPCRouter({
       });
     }),
 
-  suggestWithAI: publicProcedure
+  suggestWithAI: protectedProcedure
     .input(
       z.object({
         tipoVaga: z.string().max(200).optional(),
@@ -162,7 +183,10 @@ export const questionsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const profile = await ctx.prisma.profile.findFirst();
+      const userId = ctx.session.user.id;
+      const profile = await ctx.prisma.profile.findFirst({
+        where: { userId },
+      });
 
       if (!profile) {
         throw new Error(

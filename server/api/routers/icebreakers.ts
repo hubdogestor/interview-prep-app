@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { generateIcebreaker, editIcebreaker } from "@/lib/ai/gemini";
 import { IcebreakerVersionSchema } from "@/types/prisma-json";
 import { sanitizeForAIPrompt, sanitizeText } from "@/lib/security/input-sanitizer";
+import { assertOwnership } from "@/lib/auth/authorization";
 import type { Prisma } from "@prisma/client";
 
 // Schema para versão individual de icebreaker
@@ -32,7 +33,7 @@ const updateIcebrekerSchema = z.object({
 });
 
 export const icebreakersRouter = createTRPCRouter({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
       z
         .object({
@@ -43,10 +44,14 @@ export const icebreakersRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { limit = 20, cursor, filter = "all" } = input ?? {};
 
-      // Construir filtro
-      const where: Prisma.IcebreakerWhereInput = {};
+      // Construir filtro com userId
+      const where: Prisma.IcebreakerWhereInput = {
+        userId, // ⭐ Filtrar por usuário autenticado
+      };
+
       if (filter === "favorites") {
         where.favorite = true;
         where.archived = false;
@@ -77,17 +82,25 @@ export const icebreakersRouter = createTRPCRouter({
       };
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.icebreaker.findUnique({
-        where: { id: input.id },
+      const userId = ctx.session.user.id;
+
+      // Buscar apenas icebreakers do usuário autenticado
+      return ctx.prisma.icebreaker.findFirst({
+        where: {
+          id: input.id,
+          userId, // ⭐ Garantir que pertence ao usuário
+        },
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createIcebrekerSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
       // Sanitizar título
       const tituloSanitizado = sanitizeText(input.titulo, 200);
 
@@ -102,6 +115,7 @@ export const icebreakersRouter = createTRPCRouter({
 
       return ctx.prisma.icebreaker.create({
         data: {
+          userId, // ⭐ Associar ao usuário autenticado
           tipo: input.tipo,
           titulo: tituloSanitizado,
           versoes: versoesValidadas as unknown as Prisma.InputJsonValue,
@@ -109,19 +123,14 @@ export const icebreakersRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateIcebrekerSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
-      // Verificar se icebreaker existe
-      const existing = await ctx.prisma.icebreaker.findUnique({
-        where: { id },
-      });
-
-      if (!existing) {
-        throw new Error("Icebreaker não encontrado");
-      }
+      // ⭐ Verificar ownership
+      await assertOwnership("icebreaker", id, userId);
 
       // Preparar dados atualizados
       const updateData: Prisma.IcebreakerUpdateInput = {};
@@ -152,26 +161,27 @@ export const icebreakersRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // Verificar se existe antes de deletar
-      const existing = await ctx.prisma.icebreaker.findUnique({
-        where: { id: input.id },
-      });
+      const userId = ctx.session.user.id;
 
-      if (!existing) {
-        throw new Error("Icebreaker não encontrado");
-      }
+      // ⭐ Verificar ownership antes de deletar
+      await assertOwnership("icebreaker", input.id, userId);
 
       return ctx.prisma.icebreaker.delete({
         where: { id: input.id },
       });
     }),
 
-  toggleFavorite: publicProcedure
+  toggleFavorite: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      // ⭐ Verificar ownership
+      await assertOwnership("icebreaker", input.id, userId);
+
       const icebreaker = await ctx.prisma.icebreaker.findUnique({
         where: { id: input.id },
       });
@@ -186,9 +196,14 @@ export const icebreakersRouter = createTRPCRouter({
       });
     }),
 
-  toggleArchive: publicProcedure
+  toggleArchive: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      // ⭐ Verificar ownership
+      await assertOwnership("icebreaker", input.id, userId);
+
       const icebreaker = await ctx.prisma.icebreaker.findUnique({
         where: { id: input.id },
       });
@@ -203,7 +218,7 @@ export const icebreakersRouter = createTRPCRouter({
       });
     }),
 
-  generateWithAI: publicProcedure
+  generateWithAI: protectedProcedure
     .input(
       z.object({
         tipo: z.enum(["elevator_pitch", "quick_intro", "personal_story"]),
@@ -212,8 +227,12 @@ export const icebreakersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Busca o perfil do usuário
-      const profile = await ctx.prisma.profile.findFirst();
+      const userId = ctx.session.user.id;
+
+      // ⭐ Busca o perfil do usuário autenticado
+      const profile = await ctx.prisma.profile.findUnique({
+        where: { userId },
+      });
 
       if (!profile) {
         throw new Error(
@@ -239,7 +258,7 @@ export const icebreakersRouter = createTRPCRouter({
           anosExperiencia: profile.anosExperiencia,
         },
         input.tipo,
-        profile.id,
+        userId,
         categoriaSanitizada,
         orientacoesSanitizadas
       );
@@ -247,7 +266,7 @@ export const icebreakersRouter = createTRPCRouter({
       return { versoes };
     }),
 
-  editWithAI: publicProcedure
+  editWithAI: protectedProcedure
     .input(
       z.object({
         conteudoAtual: z.string().min(1, "Conteúdo atual é obrigatório").max(5000),
@@ -255,9 +274,7 @@ export const icebreakersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Busca o perfil do usuário para usar como userId
-      const profile = await ctx.prisma.profile.findFirst();
-      const userId = profile?.id || "default";
+      const userId = ctx.session.user.id;
 
       // Sanitizar inputs para prevenir prompt injection
       const conteudoSanitizado = sanitizeForAIPrompt(input.conteudoAtual, 5000);

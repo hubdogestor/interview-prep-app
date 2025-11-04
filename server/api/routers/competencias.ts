@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { generateCompetencia } from "@/lib/ai/gemini";
+import { assertOwnership } from "@/lib/auth/authorization";
 import {
   BilingualContentSchema,
   TrackRecordItemSchema,
@@ -32,7 +33,7 @@ const updateCompetenciaSchema = z.object({
 });
 
 export const competenciasRouter = createTRPCRouter({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
       z
         .object({
@@ -43,9 +44,12 @@ export const competenciasRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { limit = 50, cursor, categoria = "all" } = input ?? {};
 
-      const where: Prisma.CompetenciaWhereInput = {};
+      const where: Prisma.CompetenciaWhereInput = {
+        userId,
+      };
       if (categoria !== "all") {
         where.categoria = categoria;
       }
@@ -69,17 +73,22 @@ export const competenciasRouter = createTRPCRouter({
       };
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       return ctx.prisma.competencia.findUnique({
-        where: { id: input.id },
+        where: {
+          id: input.id,
+          userId,
+        },
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createCompetenciaSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const nomeSanitizado = sanitizeText(input.nome, 200);
 
       return ctx.prisma.competencia.create({
@@ -91,14 +100,18 @@ export const competenciasRouter = createTRPCRouter({
           ferramentas: input.ferramentas,
           evidencias: input.evidencias,
           trackRecord: input.trackRecord as unknown as Prisma.InputJsonValue,
+          userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateCompetenciaSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { id, ...data } = input;
+
+      await assertOwnership("competencia", id, userId);
 
       const existing = await ctx.prisma.competencia.findUnique({
         where: { id },
@@ -138,9 +151,13 @@ export const competenciasRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      await assertOwnership("competencia", input.id, userId);
+
       const existing = await ctx.prisma.competencia.findUnique({
         where: { id: input.id },
       });
@@ -154,7 +171,7 @@ export const competenciasRouter = createTRPCRouter({
       });
     }),
 
-  generateCompetenciaWithAI: publicProcedure
+  generateCompetenciaWithAI: protectedProcedure
     .input(
       z.object({
         mode: z.enum(["auto", "guided", "rewrite"]),
@@ -178,7 +195,8 @@ export const competenciasRouter = createTRPCRouter({
         rewriteInstructions: z.string().max(1000).optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       // Sanitizar inputs
       const contextoSanitizado = input.contexto
         ? sanitizeForAIPrompt(input.contexto, 2000)
@@ -202,7 +220,7 @@ export const competenciasRouter = createTRPCRouter({
       );
     }),
 
-  generateTrackRecordWithAI: publicProcedure
+  generateTrackRecordWithAI: protectedProcedure
     .input(
       z.object({
         competenciaNome: z.string().max(200),
@@ -211,7 +229,8 @@ export const competenciasRouter = createTRPCRouter({
         instructions: z.string().max(1000).optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { generateTrackRecord } = await import("@/lib/ai/gemini");
 
       const competenciaNomeSanitizado = sanitizeText(input.competenciaNome, 200);

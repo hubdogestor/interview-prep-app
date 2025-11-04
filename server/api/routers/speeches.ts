@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { generateSpeech, editSpeech } from "@/lib/ai/gemini";
 import { BilingualContentSchema } from "@/types/prisma-json";
 import { sanitizeForAIPrompt, sanitizeText } from "@/lib/security/input-sanitizer";
+import { assertOwnership } from "@/lib/auth/authorization";
 import type { Prisma } from "@prisma/client";
 
 // Schema para criar speech
@@ -27,7 +28,7 @@ const updateSpeechSchema = z.object({
 });
 
 export const speechesRouter = createTRPCRouter({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
       z
         .object({
@@ -38,9 +39,13 @@ export const speechesRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { limit = 20, cursor, filter = "all" } = input ?? {};
 
-      const where: Prisma.SpeechWhereInput = {};
+      const where: Prisma.SpeechWhereInput = {
+        userId, // ⭐ Filtrar por usuário
+      };
+
       if (filter === "favorites") {
         where.favorite = true;
         where.archived = false;
@@ -69,22 +74,29 @@ export const speechesRouter = createTRPCRouter({
       };
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.speech.findUnique({
-        where: { id: input.id },
+      const userId = ctx.session.user.id;
+
+      return ctx.prisma.speech.findFirst({
+        where: {
+          id: input.id,
+          userId, // ⭐ Garantir que pertence ao usuário
+        },
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createSpeechSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const tipoVagaSanitizado = sanitizeText(input.tipoVaga, 100);
       const tituloSanitizado = sanitizeText(input.titulo, 200);
 
       return ctx.prisma.speech.create({
         data: {
+          userId, // ⭐ Associar ao usuário
           tipoVaga: tipoVagaSanitizado,
           titulo: tituloSanitizado,
           versao: input.versao,
@@ -95,18 +107,14 @@ export const speechesRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateSpeechSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
-      const existing = await ctx.prisma.speech.findUnique({
-        where: { id },
-      });
-
-      if (!existing) {
-        throw new Error("Speech não encontrado");
-      }
+      // ⭐ Verificar ownership
+      await assertOwnership("speech", id, userId);
 
       const updateData: Prisma.SpeechUpdateInput = {};
 
@@ -135,25 +143,27 @@ export const speechesRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const existing = await ctx.prisma.speech.findUnique({
-        where: { id: input.id },
-      });
+      const userId = ctx.session.user.id;
 
-      if (!existing) {
-        throw new Error("Speech não encontrado");
-      }
+      // ⭐ Verificar ownership
+      await assertOwnership("speech", input.id, userId);
 
       return ctx.prisma.speech.delete({
         where: { id: input.id },
       });
     }),
 
-  toggleFavorite: publicProcedure
+  toggleFavorite: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      // ⭐ Verificar ownership
+      await assertOwnership("speech", input.id, userId);
+
       const speech = await ctx.prisma.speech.findUnique({
         where: { id: input.id },
       });
@@ -168,9 +178,14 @@ export const speechesRouter = createTRPCRouter({
       });
     }),
 
-  toggleArchive: publicProcedure
+  toggleArchive: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      // ⭐ Verificar ownership
+      await assertOwnership("speech", input.id, userId);
+
       const speech = await ctx.prisma.speech.findUnique({
         where: { id: input.id },
       });
@@ -185,7 +200,7 @@ export const speechesRouter = createTRPCRouter({
       });
     }),
 
-  generateWithAI: publicProcedure
+  generateWithAI: protectedProcedure
     .input(
       z.object({
         tipoVaga: z.string().min(1, "Tipo de vaga é obrigatório").max(100),
@@ -196,7 +211,11 @@ export const speechesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const profile = await ctx.prisma.profile.findFirst();
+      const userId = ctx.session.user.id;
+
+      const profile = await ctx.prisma.profile.findUnique({
+        where: { userId },
+      });
 
       if (!profile) {
         throw new Error(
@@ -223,7 +242,7 @@ export const speechesRouter = createTRPCRouter({
         tipoVagaSanitizado,
         input.foco,
         input.duracaoDesejada,
-        profile.id,
+        userId,
         nomeEmpresaSanitizado,
         descricaoVagaSanitizada
       );
@@ -234,7 +253,7 @@ export const speechesRouter = createTRPCRouter({
       };
     }),
 
-  editWithAI: publicProcedure
+  editWithAI: protectedProcedure
     .input(
       z.object({
         conteudoAtual: z.string().min(1, "Conteúdo atual é obrigatório").max(10000),
@@ -242,8 +261,7 @@ export const speechesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const profile = await ctx.prisma.profile.findFirst();
-      const userId = profile?.id || "default";
+      const userId = ctx.session.user.id;
 
       const conteudoSanitizado = sanitizeForAIPrompt(input.conteudoAtual, 10000);
       const instrucoesSanitizadas = sanitizeForAIPrompt(input.instrucoes, 1000);

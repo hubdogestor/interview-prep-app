@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { generateStarCase } from "@/lib/ai/gemini";
+import { assertOwnership } from "@/lib/auth/authorization";
 import {
   StarCaseSchema,
   BilingualContentSchema,
@@ -33,7 +34,7 @@ const updateExperienciaSchema = z.object({
 });
 
 export const experienciasRouter = createTRPCRouter({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
       z
         .object({
@@ -43,9 +44,11 @@ export const experienciasRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { limit = 20, cursor } = input ?? {};
 
       const items = await ctx.prisma.experiencia.findMany({
+        where: { userId },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { createdAt: "desc" },
@@ -63,17 +66,19 @@ export const experienciasRouter = createTRPCRouter({
       };
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.experiencia.findUnique({
-        where: { id: input.id },
+      const userId = ctx.session.user.id;
+      return ctx.prisma.experiencia.findFirst({
+        where: { id: input.id, userId },
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createExperienciaSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const empresaSanitizada = sanitizeText(input.empresa, 200);
       const cargoSanitizado = sanitizeText(input.cargo, 200);
 
@@ -86,14 +91,18 @@ export const experienciasRouter = createTRPCRouter({
           speechCompleto: input.speechCompleto as unknown as Prisma.InputJsonValue,
           starCases: input.starCases as unknown as Prisma.InputJsonValue,
           tecnologias: input.tecnologias,
+          userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateExperienciaSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       const { id, ...data } = input;
+
+      await assertOwnership("experiencia", id, userId);
 
       const existing = await ctx.prisma.experiencia.findUnique({
         where: { id },
@@ -133,9 +142,13 @@ export const experienciasRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      await assertOwnership("experiencia", input.id, userId);
+
       const existing = await ctx.prisma.experiencia.findUnique({
         where: { id: input.id },
       });
@@ -149,7 +162,7 @@ export const experienciasRouter = createTRPCRouter({
       });
     }),
 
-  generateStarCaseWithAI: publicProcedure
+  generateStarCaseWithAI: protectedProcedure
     .input(
       z.object({
         mode: z.enum(["auto", "guided", "rewrite"]),
@@ -166,7 +179,8 @@ export const experienciasRouter = createTRPCRouter({
         rewriteInstructions: z.string().max(1000).optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
       // Sanitizar inputs
       const empresaNomeSanitizada = input.empresaNome
         ? sanitizeText(input.empresaNome, 200)

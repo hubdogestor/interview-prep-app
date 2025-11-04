@@ -10,6 +10,10 @@
  * npx tsx scripts/migrate-to-multiuser.ts
  */
 
+// Carregar variáveis de ambiente do .env.local
+import { config } from 'dotenv';
+config({ path: '.env.local' });
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

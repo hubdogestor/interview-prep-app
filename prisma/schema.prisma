@@ -99,7 +99,6 @@ model Profile {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
   @@map("profile")
 }
 
@@ -287,7 +286,6 @@ model SharedItem {
 
   @@index([ownerId])
   @@index([itemType, itemId])
-  @@index([shareToken])
   @@index([ownerId, itemType])
   @@map("shared_items")
 }

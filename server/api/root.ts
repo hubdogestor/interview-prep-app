@@ -8,6 +8,7 @@ import { speechesRouter } from "@/server/api/routers/speeches";
 import { questionsRouter } from "@/server/api/routers/questions";
 import { practiceRouter } from "@/server/api/routers/practice";
 import { aiRouter } from "@/server/api/routers/ai";
+import { collaborationRouter } from "@/server/api/routers/collaboration";
 
 /**
  * Root router - combina todos os routers por domínio
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   questions: questionsRouter,
   practice: practiceRouter,
   ai: aiRouter,
+  collaboration: collaborationRouter,
 });
 
 // Export type definition of API

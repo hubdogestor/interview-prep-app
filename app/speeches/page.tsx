@@ -9,7 +9,7 @@ import { api } from "@/lib/trpc/server";
 
 export default async function SpeechesPage() {
   const caller = await api();
-  const speeches = await caller.speeches.list();
+  const { items: speeches } = await caller.speeches.list();
 
   // Prepare export data
   const exportItems = speeches.map((speech) => ({

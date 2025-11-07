@@ -24,8 +24,8 @@ const categoryColors: Record<string, string> = {
 
 export default function CompetenciasPage() {
   const router = useRouter();
-  const { data: competencias = [], isLoading } =
-    trpc.competencias.list.useQuery();
+  const { data, isLoading } = trpc.competencias.list.useQuery();
+  const competencias = data?.items ?? [];
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({});

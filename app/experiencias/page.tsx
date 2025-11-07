@@ -18,7 +18,8 @@ import { staggerContainer, fadeInUp, buttonHover, buttonTap } from "@/lib/animat
 
 export default function ExperienciasPage() {
   const router = useRouter();
-  const { data: experiencias = [], isLoading } = trpc.experiencias.list.useQuery();
+  const { data, isLoading } = trpc.experiencias.list.useQuery();
+  const experiencias = data?.items ?? [];
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({});

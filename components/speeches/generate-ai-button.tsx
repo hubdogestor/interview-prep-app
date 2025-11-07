@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUIStore } from "@/lib/stores/ui-store";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,7 +30,11 @@ interface GeneratedSpeech {
 }
 
 export function GenerateAIButton() {
-  const [open, setOpen] = useState(false);
+  // UI state from Zustand store
+  const { modals, openModal, closeModal } = useUIStore();
+  const open = modals.has('ai-generate-speech');
+
+  // Local form state (component-specific)
   const [tipoVaga, setTipoVaga] = useState("");
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [descricaoVaga, setDescricaoVaga] = useState("");
@@ -56,7 +61,7 @@ export function GenerateAIButton() {
     onSuccess: (data) => {
       utils.speeches.list.invalidate();
       toast.success("Speech salvo com sucesso!");
-      setOpen(false);
+      closeModal('ai-generate-speech');
       setShowPreview(false);
       setGeneratedSpeech(null);
       router.push(`/speeches/${data.id}/editar`);
@@ -112,7 +117,12 @@ export function GenerateAIButton() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) =>
+        isOpen ? openModal('ai-generate-speech') : closeModal('ai-generate-speech')
+      }
+    >
       <DialogTrigger asChild>
         <Button
           variant="outline"

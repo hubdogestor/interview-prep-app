@@ -6,7 +6,7 @@ import { api } from "@/lib/trpc/server";
 
 export default async function QuestionsPage() {
   const caller = await api();
-  const allQuestions = await caller.questions.list();
+  const { items: allQuestions } = await caller.questions.list();
 
   const questionsData = allQuestions.map((q) => ({
     ...q,

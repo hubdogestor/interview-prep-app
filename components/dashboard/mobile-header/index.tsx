@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { UserMenu } from "@/components/auth/UserMenu";
 import type { MockData } from "@/types/dashboard";
 
 interface MobileHeaderProps {
@@ -31,9 +32,13 @@ export function MobileHeader({ mockData }: MobileHeaderProps) {
           </div>
         </div>
 
-        <Sheet>
-          {/* Right: Notifications Menu */}
-          <SheetTrigger asChild>
+        {/* Right: User Menu + Notifications */}
+        <div className="flex items-center gap-2">
+          <UserMenu />
+
+          <Sheet>
+            {/* Notifications Menu */}
+            <SheetTrigger asChild>
             <Button variant="secondary" size="icon" className="relative">
               {unreadCount > 0 && (
                 <Badge className="absolute border-2 border-background -top-1 -left-2 h-5 w-5 text-xs p-0 flex items-center justify-center">
@@ -54,7 +59,8 @@ export function MobileHeader({ mockData }: MobileHeaderProps) {
               initialNotifications={mockData.notifications}
             />
           </SheetContent>
-        </Sheet>
+          </Sheet>
+        </div>
       </div>
     </div>
   );

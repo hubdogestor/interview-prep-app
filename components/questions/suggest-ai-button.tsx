@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUIStore } from "@/lib/stores/ui-store";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -45,7 +46,11 @@ const categoryIcons: Record<string, string> = {
 };
 
 export function SuggestAIButton() {
-  const [isOpen, setIsOpen] = useState(false);
+  // UI state from Zustand store
+  const { modals, openModal, closeModal } = useUIStore();
+  const isOpen = modals.has('ai-suggest-questions');
+
+  // Local form state (component-specific)
   const [showPreview, setShowPreview] = useState(false);
   const [tipoVaga, setTipoVaga] = useState("");
   const [empresaAlvo, setEmpresaAlvo] = useState("");
@@ -117,7 +122,7 @@ export function SuggestAIButton() {
   };
 
   const handleClose = () => {
-    setIsOpen(false);
+    closeModal('ai-suggest-questions');
     setShowPreview(false);
     setTipoVaga("");
     setEmpresaAlvo("");
@@ -144,13 +149,18 @@ export function SuggestAIButton() {
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => openModal('ai-suggest-questions')}
         className="p-4 border border-dashed border-border hover:border-chart-1 hover:bg-chart-1/10 rounded-lg transition-colors uppercase text-sm font-display text-chart-1"
       >
         ✨ SUGGEST QUESTIONS WITH AI
       </button>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) =>
+          open ? openModal('ai-suggest-questions') : closeModal('ai-suggest-questions')
+        }
+      >
         <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col overflow-hidden">
           <DialogHeader>
             <DialogTitle className="uppercase font-display flex items-center gap-2">

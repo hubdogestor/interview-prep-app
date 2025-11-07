@@ -9,7 +9,7 @@ import { api } from "@/lib/trpc/server";
 
 export default async function IcebreakersPage() {
   const caller = await api();
-  const icebreakers = await caller.icebreakers.list();
+  const { items: icebreakers } = await caller.icebreakers.list();
 
   // Prepare export data
   const exportItems = icebreakers.flatMap((icebreaker) =>

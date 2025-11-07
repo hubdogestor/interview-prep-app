@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUIStore } from "@/lib/stores/ui-store";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -53,7 +54,11 @@ export function CompetenciaAIButton({
   existingCompetencia,
   onGenerated,
 }: CompetenciaAIButtonProps) {
-  const [open, setOpen] = useState(false);
+  // UI state from Zustand store
+  const { modals, openModal, closeModal } = useUIStore();
+  const open = modals.has('ai-generate-competencia');
+
+  // Local form state (component-specific)
   const [generationMode, setGenerationMode] = useState<"auto" | "guided">("auto");
 
   // Guided mode inputs
@@ -77,7 +82,7 @@ export function CompetenciaAIButton({
   });
 
   const handleClose = () => {
-    setOpen(false);
+    closeModal('ai-generate-competencia');
     setGenerationMode("auto");
     setNomeInput("");
     setCategoriaInput("technical");
@@ -116,7 +121,12 @@ export function CompetenciaAIButton({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) =>
+        isOpen ? openModal('ai-generate-competencia') : closeModal('ai-generate-competencia')
+      }
+    >
       <DialogTrigger asChild>
         {mode === "create" ? (
           <Button

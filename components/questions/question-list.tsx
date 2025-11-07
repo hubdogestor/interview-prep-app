@@ -42,10 +42,10 @@ export function QuestionList({ initialQuestions }: { initialQuestions: Question[
   const router = useRouter();
   const utils = trpc.useUtils();
 
-  const { data: questionsRaw } = trpc.questions.list.useQuery();
+  const { data } = trpc.questions.list.useQuery();
 
-  const questions = questionsRaw
-    ? questionsRaw.map((q) => ({
+  const questions = data?.items
+    ? data.items.map((q) => ({
         ...q,
         pergunta: q.pergunta as { pt: string; en: string },
       }))

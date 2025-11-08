@@ -37,21 +37,48 @@ export function SpeechCard({ speech }: SpeechCardProps) {
   const utils = trpc.useUtils();
 
   const deleteMutation = trpc.speeches.delete.useMutation({
-    onSuccess: () => {
-      toast.success("Speech removido com sucesso!");
-      utils.speeches.list.invalidate();
-    },
     onError: (error: { message: string }) => {
       toast.error("Erro ao remover speech: " + error.message);
+      // Refresh on error to restore correct state
+      utils.speeches.list.invalidate();
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      utils.speeches.list.invalidate();
     },
   });
 
   const toggleFavoriteMutation = trpc.speeches.toggleFavorite.useMutation({
-    onSuccess: () => {
-      utils.speeches.list.invalidate();
+    onMutate: async ({ id }) => {
+      // Cancel outgoing refetches
+      await utils.speeches.list.cancel();
+
+      // Snapshot the previous value
+      const previousData = utils.speeches.list.getData();
+
+      // Optimistically update the cache
+      utils.speeches.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          items: old.items.map((item) =>
+            item.id === id ? { ...item, favorite: !item.favorite } : item
+          ),
+        };
+      });
+
+      return { previousData };
     },
-    onError: (error: { message: string }) => {
+    onError: (error: { message: string }, _variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        utils.speeches.list.setData(undefined, context.previousData);
+      }
       toast.error("Erro ao favoritar: " + error.message);
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      utils.speeches.list.invalidate();
     },
   });
 
@@ -76,7 +103,40 @@ export function SpeechCard({ speech }: SpeechCardProps) {
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate({ id: speech.id });
+    // Optimistically remove and show undo toast
+    const previousData = utils.speeches.list.getData();
+
+    // Immediately update UI
+    utils.speeches.list.setData(undefined, (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        items: old.items.filter((item) => item.id !== speech.id),
+      };
+    });
+
+    // Show toast with undo
+    let timeoutId: NodeJS.Timeout;
+    toast.success("Speech removido", {
+      description: "Clique em 'Desfazer' para restaurar",
+      duration: 5000,
+      action: {
+        label: "Desfazer",
+        onClick: () => {
+          // Restore the item
+          if (previousData) {
+            utils.speeches.list.setData(undefined, previousData);
+          }
+          clearTimeout(timeoutId);
+          toast.info("Remoção cancelada");
+        },
+      },
+    });
+
+    // Execute actual delete after delay
+    timeoutId = setTimeout(() => {
+      deleteMutation.mutate({ id: speech.id });
+    }, 5000);
   };
 
   const handleToggleFavorite = () => {

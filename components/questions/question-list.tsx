@@ -52,22 +52,51 @@ export function QuestionList({ initialQuestions }: { initialQuestions: Question[
     : initialQuestions;
 
   const toggleFavoriteMutation = trpc.questions.toggleFavorite.useMutation({
+    onMutate: async ({ id }) => {
+      // Cancel outgoing refetches
+      await utils.questions.list.cancel();
+
+      // Snapshot the previous value
+      const previousData = utils.questions.list.getData();
+
+      // Optimistically update the cache
+      utils.questions.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          items: old.items.map((item) =>
+            item.id === id ? { ...item, favorite: !item.favorite } : item
+          ),
+        };
+      });
+
+      return { previousData };
+    },
     onSuccess: () => {
-      utils.questions.list.invalidate();
       toast.success("Favorito atualizado!");
     },
-    onError: (error) => {
+    onError: (error, _variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        utils.questions.list.setData(undefined, context.previousData);
+      }
       toast.error(`Erro: ${error.message}`);
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      utils.questions.list.invalidate();
     },
   });
 
   const deleteMutation = trpc.questions.delete.useMutation({
-    onSuccess: () => {
-      utils.questions.list.invalidate();
-      toast.success("Pergunta removida com sucesso!");
-    },
     onError: (error) => {
       toast.error(`Erro ao remover: ${error.message}`);
+      // Refresh on error to restore correct state
+      utils.questions.list.invalidate();
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      utils.questions.list.invalidate();
     },
   });
 
@@ -76,13 +105,40 @@ export function QuestionList({ initialQuestions }: { initialQuestions: Question[
   }
 
   function handleDelete(id: string) {
-    if (
-      confirm(
-        "Tem certeza que deseja remover esta pergunta? Esta ação não pode ser desfeita."
-      )
-    ) {
+    // Optimistically remove and show undo toast
+    const previousData = utils.questions.list.getData();
+
+    // Immediately update UI
+    utils.questions.list.setData(undefined, (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        items: old.items.filter((item) => item.id !== id),
+      };
+    });
+
+    // Show toast with undo
+    let timeoutId: NodeJS.Timeout;
+    toast.success("Pergunta removida", {
+      description: "Clique em 'Desfazer' para restaurar",
+      duration: 5000,
+      action: {
+        label: "Desfazer",
+        onClick: () => {
+          // Restore the item
+          if (previousData) {
+            utils.questions.list.setData(undefined, previousData);
+          }
+          clearTimeout(timeoutId);
+          toast.info("Remoção cancelada");
+        },
+      },
+    });
+
+    // Execute actual delete after delay
+    timeoutId = setTimeout(() => {
       deleteMutation.mutate({ id });
-    }
+    }, 5000);
   }
 
   function handleEdit(id: string) {

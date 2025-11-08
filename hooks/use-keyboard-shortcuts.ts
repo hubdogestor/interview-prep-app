@@ -70,51 +70,44 @@ export function useKeyboardShortcuts(
  * Hook to register global app keyboard shortcuts
  * Automatically registers common shortcuts for navigation
  */
-export function useGlobalShortcuts() {
+export function useGlobalShortcuts(options?: { onShowHelp?: () => void }) {
   const router = useRouter();
 
   const shortcuts: KeyboardShortcut[] = [
+    // Help
+    {
+      key: "?",
+      action: () => options?.onShowHelp?.(),
+      description: "Show keyboard shortcuts",
+    },
     // Navigation
     {
       key: "h",
       ctrl: true,
-      action: () => router.push("/"),
+      action: () => router.push("/dashboard"),
       description: "Go to Dashboard",
     },
-    // New items
     {
-      key: "n",
+      key: "i",
       ctrl: true,
-      shift: true,
-      action: () => {
-        // Show quick create menu (could be implemented as a modal)
-        // For now, just go to icebreaker creation as default
-        router.push("/icebreakers/novo");
-      },
-      description: "Quick create",
+      alt: true,
+      action: () => router.push("/icebreakers"),
+      description: "Go to Icebreakers",
     },
-    // Search (Ctrl+K is a common pattern)
     {
-      key: "k",
+      key: "s",
       ctrl: true,
-      action: () => {
-        // This would open a command palette/search modal
-        // For now, we'll just focus the first input if available
-        const firstInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
-      },
-      description: "Focus search",
+      alt: true,
+      action: () => router.push("/speeches"),
+      description: "Go to Speeches",
     },
-    // Practice
     {
-      key: "p",
+      key: "q",
       ctrl: true,
-      action: () => router.push("/practice"),
-      description: "Go to Practice",
+      alt: true,
+      action: () => router.push("/questions"),
+      description: "Go to Questions",
     },
-    // Competências
     {
       key: "c",
       ctrl: true,
@@ -122,13 +115,38 @@ export function useGlobalShortcuts() {
       action: () => router.push("/competencias"),
       description: "Go to Competências",
     },
-    // Experiências
     {
       key: "e",
       ctrl: true,
       alt: true,
       action: () => router.push("/experiencias"),
       description: "Go to Experiências",
+    },
+    {
+      key: "p",
+      ctrl: true,
+      action: () => router.push("/practice"),
+      description: "Go to Practice",
+    },
+    // New items
+    {
+      key: "n",
+      ctrl: true,
+      shift: true,
+      action: () => router.push("/icebreakers/novo"),
+      description: "New Icebreaker",
+    },
+    // Search (Ctrl+K is a common pattern)
+    {
+      key: "k",
+      ctrl: true,
+      action: () => {
+        const firstInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+        if (firstInput) {
+          firstInput.focus();
+        }
+      },
+      description: "Focus search",
     },
   ];
 

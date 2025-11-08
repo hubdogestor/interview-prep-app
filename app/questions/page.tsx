@@ -1,12 +1,15 @@
+"use client";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import QuestionIcon from "@/components/icons/question";
 import { QuestionList } from "@/components/questions/question-list";
 import { ExportButton } from "@/components/export/export-button";
-import { api } from "@/lib/trpc/server";
+import { SkeletonGrid } from "@/components/ui/skeleton-cards";
+import { trpc } from "@/lib/trpc/client";
 
-export default async function QuestionsPage() {
-  const caller = await api();
-  const { items: allQuestions } = await caller.questions.list();
+export default function QuestionsPage() {
+  const { data, isLoading } = trpc.questions.list.useQuery();
+  const allQuestions = data?.items ?? [];
 
   const questionsData = allQuestions.map((q) => ({
     ...q,
@@ -33,7 +36,11 @@ export default async function QuestionsPage() {
         action: <ExportButton items={exportItems} filename="questions" />,
       }}
     >
-      <QuestionList initialQuestions={questionsData} />
+      {isLoading ? (
+        <SkeletonGrid type="question" count={6} columns="1" />
+      ) : (
+        <QuestionList initialQuestions={questionsData} />
+      )}
     </DashboardPageLayout>
   );
 }

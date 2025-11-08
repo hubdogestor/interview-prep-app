@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Plus, ArrowLeft, Download } from "lucide-react";
 import { SearchBar, SearchFilters } from "@/components/ui/search-bar";
 import { useMemo, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonGrid } from "@/components/ui/skeleton-cards";
 import { exportCompetencias, downloadMarkdown } from "@/lib/export/markdown";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -87,27 +87,7 @@ export default function CompetenciasPage() {
           icon: StarIcon,
         }}
       >
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Card key={i} className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <Skeleton className="h-7 w-56 mb-3" />
-                  <div className="flex gap-2 mb-3">
-                    <Skeleton className="h-5 w-16" />
-                    <Skeleton className="h-5 w-20" />
-                    <Skeleton className="h-5 w-18" />
-                  </div>
-                </div>
-              </div>
-              <Skeleton className="h-4 w-32 mb-4" />
-              <div className="flex gap-2 pt-4 border-t">
-                <Skeleton className="h-9 w-32" />
-                <Skeleton className="h-9 w-16" />
-              </div>
-            </Card>
-          ))}
-        </div>
+        <SkeletonGrid type="competencia" count={3} columns="1" />
       </DashboardPageLayout>
     );
   }

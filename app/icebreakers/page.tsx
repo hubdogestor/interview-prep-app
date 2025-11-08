@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import MicrophoneIcon from "@/components/icons/microphone";
@@ -5,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { IcebreakerCard } from "@/components/icebreakers/icebreaker-card";
 import { GenerateAIButton } from "@/components/icebreakers/generate-ai-button";
 import { ExportButton } from "@/components/export/export-button";
-import { api } from "@/lib/trpc/server";
+import { SkeletonGrid } from "@/components/ui/skeleton-cards";
+import { trpc } from "@/lib/trpc/client";
 
-export default async function IcebreakersPage() {
-  const caller = await api();
-  const { items: icebreakers } = await caller.icebreakers.list();
+export default function IcebreakersPage() {
+  const { data, isLoading } = trpc.icebreakers.list.useQuery();
+  const icebreakers = data?.items ?? [];
 
   // Prepare export data
   const exportItems = icebreakers.flatMap((icebreaker) =>
@@ -33,17 +36,21 @@ export default async function IcebreakersPage() {
         action: <ExportButton items={exportItems} filename="icebreakers" />,
       }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {icebreakers.map((icebreaker) => (
-          <IcebreakerCard key={icebreaker.id} icebreaker={icebreaker} />
-        ))}
+      {isLoading ? (
+        <SkeletonGrid type="icebreaker" count={4} columns="2" />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {icebreakers.map((icebreaker) => (
+            <IcebreakerCard key={icebreaker.id} icebreaker={icebreaker} />
+          ))}
 
-        {icebreakers.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <p className="uppercase">Nenhum icebreaker cadastrado ainda</p>
-          </div>
-        )}
-      </div>
+          {icebreakers.length === 0 && (
+            <div className="col-span-full text-center py-12 text-muted-foreground">
+              <p className="uppercase">Nenhum icebreaker cadastrado ainda</p>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link href="/icebreakers/novo">

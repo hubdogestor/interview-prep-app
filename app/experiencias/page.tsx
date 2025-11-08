@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Plus, ArrowLeft, Play, Download } from "lucide-react";
 import { SearchBar, SearchFilters } from "@/components/ui/search-bar";
 import { useMemo, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonGrid } from "@/components/ui/skeleton-cards";
 import { exportExperiencias, downloadMarkdown } from "@/lib/export/markdown";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -70,23 +70,7 @@ export default function ExperienciasPage() {
           icon: BriefcaseIcon,
         }}
       >
-        <div className="space-y-8">
-          {[1, 2, 3].map((i) => (
-            <Card key={i} className="p-6">
-              <Skeleton className="h-8 w-48 mb-4" />
-              <Skeleton className="h-4 w-32 mb-4" />
-              <div className="flex gap-2 mb-4">
-                <Skeleton className="h-6 w-16" />
-                <Skeleton className="h-6 w-20" />
-                <Skeleton className="h-6 w-24" />
-              </div>
-              <div className="flex gap-2 pt-4 border-t">
-                <Skeleton className="h-9 w-24" />
-                <Skeleton className="h-9 w-16" />
-              </div>
-            </Card>
-          ))}
-        </div>
+        <SkeletonGrid type="experiencia" count={3} columns="1" />
       </DashboardPageLayout>
     );
   }

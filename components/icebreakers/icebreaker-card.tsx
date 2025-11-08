@@ -36,21 +36,48 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
   const utils = trpc.useUtils();
 
   const deleteMutation = trpc.icebreakers.delete.useMutation({
-    onSuccess: () => {
-      toast.success("Icebreaker removido com sucesso!");
-      utils.icebreakers.list.invalidate();
-    },
     onError: (error: { message: string }) => {
       toast.error("Erro ao remover icebreaker: " + error.message);
+      // Refresh on error to restore correct state
+      utils.icebreakers.list.invalidate();
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      utils.icebreakers.list.invalidate();
     },
   });
 
   const toggleFavoriteMutation = trpc.icebreakers.toggleFavorite.useMutation({
-    onSuccess: () => {
-      utils.icebreakers.list.invalidate();
+    onMutate: async ({ id }) => {
+      // Cancel outgoing refetches
+      await utils.icebreakers.list.cancel();
+
+      // Snapshot the previous value
+      const previousData = utils.icebreakers.list.getData();
+
+      // Optimistically update the cache
+      utils.icebreakers.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          items: old.items.map((item) =>
+            item.id === id ? { ...item, favorite: !item.favorite } : item
+          ),
+        };
+      });
+
+      return { previousData };
     },
-    onError: (error: { message: string }) => {
+    onError: (error: { message: string }, _variables, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        utils.icebreakers.list.setData(undefined, context.previousData);
+      }
       toast.error("Erro ao favoritar: " + error.message);
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      utils.icebreakers.list.invalidate();
     },
   });
 
@@ -73,7 +100,40 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate({ id: icebreaker.id });
+    // Optimistically remove and show undo toast
+    const previousData = utils.icebreakers.list.getData();
+
+    // Immediately update UI
+    utils.icebreakers.list.setData(undefined, (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        items: old.items.filter((item) => item.id !== icebreaker.id),
+      };
+    });
+
+    // Show toast with undo
+    let timeoutId: NodeJS.Timeout;
+    toast.success("Icebreaker removido", {
+      description: "Clique em 'Desfazer' para restaurar",
+      duration: 5000,
+      action: {
+        label: "Desfazer",
+        onClick: () => {
+          // Restore the item
+          if (previousData) {
+            utils.icebreakers.list.setData(undefined, previousData);
+          }
+          clearTimeout(timeoutId);
+          toast.info("Remoção cancelada");
+        },
+      },
+    });
+
+    // Execute actual delete after delay
+    timeoutId = setTimeout(() => {
+      deleteMutation.mutate({ id: icebreaker.id });
+    }, 5000);
   };
 
   const handleToggleFavorite = () => {

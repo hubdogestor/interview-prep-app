@@ -18,10 +18,23 @@ import { AIStatsWidget } from "@/components/dashboard/ai-stats-widget";
 import { PracticeEvolutionChart } from "@/components/dashboard/practice-evolution-chart";
 import { PracticeHeatmap } from "@/components/dashboard/practice-heatmap";
 import { SmartSuggestions } from "@/components/dashboard/smart-suggestions";
+import {
+  dashboardOverviewFallback,
+  type DashboardOverviewData,
+} from "@/data/dashboard-overview-fallback";
 
 export default async function DashboardOverview() {
-  const caller = await api();
-  const dashboard = await caller.dashboard.overview();
+  let dashboard: DashboardOverviewData = dashboardOverviewFallback;
+
+  try {
+    const caller = await api();
+    dashboard = await caller.dashboard.overview();
+  } catch (error) {
+    console.error(
+      "[dashboard] Failed to load data from Prisma. Using fallback dataset instead.",
+      error,
+    );
+  }
 
   return (
     <DashboardPageLayout

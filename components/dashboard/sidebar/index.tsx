@@ -49,6 +49,36 @@ const data = {
           isActive: true,
         },
         {
+          title: "OKRs 2026",
+          url: "/okrs-2026",
+          icon: StarIcon,
+          isActive: false,
+        },
+        {
+          title: "Kanban - LEO",
+          url: "/kanban-leo",
+          icon: ProcessorIcon,
+          isActive: false,
+        },
+        {
+          title: "Kanban - AMZ",
+          url: "/kanban-amz",
+          icon: AtomIcon,
+          isActive: false,
+        },
+        {
+          title: "Kanban - OLB",
+          url: "/kanban-olb",
+          icon: BriefcaseIcon,
+          isActive: false,
+        },
+        {
+          title: "Kanban - HDG",
+          url: "/kanban-hdg",
+          icon: CuteRobotIcon,
+          isActive: false,
+        },
+        {
           title: "Laboratory",
           url: "/laboratory",
           icon: AtomIcon,
@@ -122,8 +152,8 @@ const data = {
     status: "online",
   },
   user: {
-    name: "KRIMSON",
-    email: "krimson@joyco.studio",
+    name: "Leonardo Menezes",
+    email: "leon4rdo@gmail.com",
     avatar: "/avatars/user_krimson.png",
   },
 }
@@ -138,8 +168,8 @@ export function DashboardSidebar({ className, ...props }: React.ComponentProps<t
           <MonkeyIcon className="size-10 group-hover:scale-[1.7] origin-top-left transition-transform" />
         </div>
         <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="text-2xl font-display">M.O.N.K.Y.</span>
-          <span className="text-xs uppercase">The OS for Rebels</span>
+          <span className="text-2xl font-display">LEOMDS</span>
+          <span className="text-xs uppercase">All in one App</span>
         </div>
       </SidebarHeader>
 

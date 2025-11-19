@@ -3,8 +3,6 @@ import { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
-import Chat from "@/components/chat";
-import { MobileChat } from "@/components/chat/mobile-chat";
 import { MobileHeader } from "@/components/dashboard/mobile-header";
 import Notifications from "@/components/dashboard/notifications";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
@@ -87,13 +85,10 @@ export default function RootLayout({
                     <Notifications
                       initialNotifications={mockData.notifications}
                     />
-                    <Chat />
                   </div>
                 </div>
               </div>
 
-              {/* Mobile Chat - floating CTA with drawer */}
-              <MobileChat />
               </SidebarProvider>
 
               {/* Command Palette - Global (Ctrl+K) */}

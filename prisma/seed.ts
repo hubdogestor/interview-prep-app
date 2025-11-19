@@ -3,12 +3,22 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.profile.deleteMany();
-  await prisma.icebreaker.deleteMany();
-  await prisma.competencia.deleteMany();
-  await prisma.experiencia.deleteMany();
-  await prisma.speech.deleteMany();
+  await prisma.practiceSession.deleteMany();
   await prisma.question.deleteMany();
+  await prisma.speech.deleteMany();
+  await prisma.experiencia.deleteMany();
+  await prisma.competencia.deleteMany();
+  await prisma.icebreaker.deleteMany();
+  await prisma.profile.deleteMany();
+  await prisma.user.deleteMany();
+
+  const defaultUser = await prisma.user.create({
+    data: {
+      email: "default@interview-prep.local",
+      name: "Usuário Default",
+      emailVerified: new Date(),
+    },
+  });
 
   await prisma.profile.create({
     data: {
@@ -24,6 +34,7 @@ async function main() {
         en: "Software engineer focused on digital products, collaborating with high performance teams.",
       },
       anosExperiencia: 10,
+      userId: defaultUser.id,
     },
   });
 
@@ -43,6 +54,7 @@ async function main() {
             tags: ["full-stack", "leadership"],
           },
         ],
+        userId: defaultUser.id,
       },
       {
         tipo: "personal_story",
@@ -58,6 +70,7 @@ async function main() {
             tags: ["leadership", "career"],
           },
         ],
+        userId: defaultUser.id,
       },
     ],
   });
@@ -81,6 +94,7 @@ async function main() {
             ano: 2023,
           },
         ],
+        userId: defaultUser.id,
       },
       {
         nome: "Comunicação com Stakeholders",
@@ -99,6 +113,7 @@ async function main() {
             ano: 2022,
           },
         ],
+        userId: defaultUser.id,
       },
     ],
   });
@@ -128,6 +143,7 @@ async function main() {
           },
         ],
         tecnologias: ["React", "Node.js", "AWS", "PostgreSQL"],
+        userId: defaultUser.id,
       },
       {
         empresa: "Neon",
@@ -152,6 +168,7 @@ async function main() {
           },
         ],
         tecnologias: ["TypeScript", "React", "GraphQL", "MongoDB"],
+        userId: defaultUser.id,
       },
     ],
   });
@@ -160,18 +177,19 @@ async function main() {
     data: [
       {
         tipoVaga: "tech_lead",
-        titulo: "Visao tecnica orientada a produto",
+        titulo: "Visão técnica orientada a produto",
         versao: "v1",
         conteudo: {
-          pt: "Discurso estruturado em abertura, diagnostico, proposta e fechamento.",
+          pt: "Discurso estruturado em abertura, diagnóstico, proposta e fechamento.",
           en: "Structured speech covering opening, diagnosis, proposal and closing.",
         },
         duracaoEstimada: 6,
         foco: ["produto", "lideranca"],
+        userId: defaultUser.id,
       },
       {
         tipoVaga: "engineering_manager",
-        titulo: "Estrategia para escalar time",
+        titulo: "Estratégia para escalar time",
         versao: "v1",
         conteudo: {
           pt: "Como construir time de alta performance com foco em autonomia.",
@@ -179,6 +197,7 @@ async function main() {
         },
         duracaoEstimada: 8,
         foco: ["people", "process"],
+        userId: defaultUser.id,
       },
     ],
   });
@@ -193,6 +212,7 @@ async function main() {
         },
         contexto: "Perguntar ao manager no final da entrevista tecnica.",
         prioridade: "alta",
+        userId: defaultUser.id,
       },
       {
         categoria: "produto",
@@ -202,6 +222,7 @@ async function main() {
         },
         contexto: "Ideal para entrevistas com product managers.",
         prioridade: "media",
+        userId: defaultUser.id,
       },
     ],
   });

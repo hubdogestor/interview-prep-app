@@ -8,6 +8,27 @@ datasource db {
 }
 
 // ========================================
+// USER - identidade basica para multiuser
+// ========================================
+model User {
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  email            String            @unique
+  name             String?
+  emailVerified    DateTime?
+  profiles         Profile[]
+  icebreakers      Icebreaker[]
+  competencias     Competencia[]
+  experiencias     Experiencia[]
+  speeches         Speech[]
+  questions        Question[]
+  practiceSessions PracticeSession[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@map("users")
+}
+
+// ========================================
 // PROFILE - dados principais do usuario
 // ========================================
 model Profile {
@@ -19,10 +40,12 @@ model Profile {
   telefone        String?
   linkedin        String?
   github          String?
-  resumo          Json     // { pt: string, en: string }
+  resumo          Json
   anosExperiencia Int
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  userId          String?  @db.ObjectId
+  user            User?    @relation(fields: [userId], references: [id])
 
   @@map("profile")
 }
@@ -32,13 +55,15 @@ model Profile {
 // ========================================
 model Icebreaker {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  tipo      String   // elevator_pitch | quick_intro | personal_story
+  tipo      String
   titulo    String
-  versoes   Json[]   // [{ nome: string, conteudo: { pt: string, en: string }, duracao: number, tags: string[] }]
+  versoes   Json[]
   favorite  Boolean  @default(false)
   archived  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String?  @db.ObjectId
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("icebreakers")
 }
@@ -49,14 +74,16 @@ model Icebreaker {
 model Competencia {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   nome        String
-  categoria   String   // technical | soft_skills | leadership
-  nivel       String   // basic | intermediate | advanced | expert
-  descricao   Json     // { pt: string, en: string }
+  categoria   String
+  nivel       String
+  descricao   Json
   ferramentas String[]
   evidencias  String[]
-  trackRecord Json[]   // [{ projeto: string, resultado: string, ano: number }]
+  trackRecord Json[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  userId      String?  @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id])
 
   @@map("competencias")
 }
@@ -68,13 +95,15 @@ model Experiencia {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   empresa        String
   cargo          String
-  periodo        Json     // { inicio: string, fim: string | null }
-  pitchElevator  Json     // { pt: string, en: string }
-  speechCompleto Json     // { pt: string, en: string }
-  starCases      Json[]   // [{ titulo: string, situation: string, task: string, action: string, result: string, idioma: "pt" | "en" }]
+  periodo        Json
+  pitchElevator  Json
+  speechCompleto Json
+  starCases      Json[]
   tecnologias    String[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  userId         String?  @db.ObjectId
+  user           User?    @relation(fields: [userId], references: [id])
 
   @@map("experiencias")
 }
@@ -87,13 +116,15 @@ model Speech {
   tipoVaga        String
   titulo          String
   versao          String
-  conteudo        Json     // { pt: string, en: string }
-  duracaoEstimada Int      // minutos
+  conteudo        Json
+  duracaoEstimada Int
   foco            String[]
   favorite        Boolean  @default(false)
   archived        Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  userId          String?  @db.ObjectId
+  user            User?    @relation(fields: [userId], references: [id])
 
   @@map("speeches")
 }
@@ -103,33 +134,37 @@ model Speech {
 // ========================================
 model Question {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  categoria  String   // tecnica | comportamental | cultura | carreira
-  pergunta   Json     // { pt: string, en: string }
+  categoria  String
+  pergunta   Json
   contexto   String?
-  prioridade String   // alta | media | baixa
+  prioridade String
   favorite   Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  userId     String?  @db.ObjectId
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@map("questions")
 }
 
 // ========================================
-// PRACTICE SESSION - histórico de práticas
+// PRACTICE SESSION - historico de praticas
 // ========================================
 model PracticeSession {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  tipo            String   // icebreaker | speech | star_case
-  itemId          String   // ID do item praticado (Icebreaker, Speech, ou Experiencia)
-  itemTitle       String   // Título do item para referência rápida
-  duracao         Int      // Duração da prática em segundos
-  transcricao     String?  // Transcrição do áudio (se disponível)
-  audioUrl        String?  // URL do áudio (se armazenado)
-  avaliacaoIA     Json?    // { clareza: number, fluencia: number, completude: number, pontosFortesw: string[], areasAMelhorar: string[], feedback: string }
-  notas           String?  // Notas pessoais do usuário
-  score           Int?     // Score geral (0-100)
+  tipo            String
+  itemId          String
+  itemTitle       String
+  duracao         Int
+  transcricao     String?
+  audioUrl        String?
+  avaliacaoIA     Json?
+  notas           String?
+  score           Int?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  userId          String?  @db.ObjectId
+  user            User?    @relation(fields: [userId], references: [id])
 
   @@map("practice_sessions")
 }

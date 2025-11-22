@@ -138,3 +138,111 @@ export const bounceIn: Variants = {
     },
   },
 };
+
+/**
+ * Micro-interactions adicionais
+ */
+
+// Hover para cards
+export const cardHover = {
+  y: -4,
+  boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.2)",
+  transition: {
+    duration: 0.2,
+    ease: "easeOut" as const,
+  },
+};
+
+// Tap para cards
+export const cardTap = {
+  scale: 0.98,
+};
+
+// Hover para ícones
+export const iconHover = {
+  scale: 1.15,
+  rotate: [0, -10, 10, 0],
+  transition: {
+    duration: 0.3,
+  },
+};
+
+// Pulse animation
+export const pulse: Variants = {
+  initial: {
+    scale: 1,
+  },
+  animate: {
+    scale: [1, 1.05, 1],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
+
+// Shake animation (para erros)
+export const shake: Variants = {
+  shake: {
+    x: [-10, 10, -10, 10, 0],
+    transition: {
+      duration: 0.4,
+    },
+  },
+};
+
+// Slide up from bottom (para modals/sheets)
+export const slideUpFromBottom: Variants = {
+  hidden: {
+    y: "100%",
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      damping: 25,
+      stiffness: 300,
+    },
+  },
+  exit: {
+    y: "100%",
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
+// Fade and blur (para backgrounds)
+export const fadeBlur: Variants = {
+  hidden: {
+    opacity: 0,
+    backdropFilter: "blur(0px)",
+  },
+  visible: {
+    opacity: 1,
+    backdropFilter: "blur(8px)",
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+
+// Stagger with fade for list items
+export const listItemStagger: Variants = {
+  hidden: {
+    opacity: 0,
+    x: -20,
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+

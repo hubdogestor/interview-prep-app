@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { ViewVersionsModal } from "@/components/icebreakers/view-versions-modal";
 import MicrophoneIcon from "@/components/icons/microphone";
@@ -19,7 +20,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { InlineEdit } from "@/components/ui/inline-edit";
 import { trpc } from "@/lib/trpc/react";
+import { cardHover, cardTap, iconHover } from "@/lib/animations";
 
 interface IcebreakerCardProps {
   icebreaker: {
@@ -40,6 +43,16 @@ interface IcebreakerCardProps {
 export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
   const router = useRouter();
   const utils = trpc.useUtils();
+
+  const updateMutation = trpc.icebreakers.update.useMutation({
+    onSuccess: () => {
+      utils.icebreakers.list.invalidate();
+      toast.success("Icebreaker atualizado!");
+    },
+    onError: (error: { message: string }) => {
+      toast.error("Erro ao atualizar: " + error.message);
+    },
+  });
 
   const deleteMutation = trpc.icebreakers.delete.useMutation({
     onSuccess: () => {
@@ -124,22 +137,43 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
     toggleArchiveMutation.mutate({ id: icebreaker.id });
   };
 
-  return (
-    <Card className="p-6 hover:bg-accent/50 transition-colors group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-xl font-display mb-2 uppercase">
-            {icebreaker.titulo}
-          </h3>
-          <p className="text-sm text-muted-foreground uppercase">
-            {icebreaker.tipo}
-          </p>
-        </div>
-        <MicrophoneIcon className="size-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
-      </div>
+  const handleTitleUpdate = async (newTitle: string) => {
+    await updateMutation.mutateAsync({
+      id: icebreaker.id,
+      titulo: newTitle,
+    });
+  };
 
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <ViewVersionsModal
+  return (
+    <motion.div
+      whileHover={cardHover}
+      whileTap={cardTap}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card className="p-6 hover:bg-accent/50 transition-colors group cursor-pointer">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <InlineEdit
+              value={icebreaker.titulo}
+              onSave={handleTitleUpdate}
+              className="text-xl font-display mb-2 uppercase"
+              inputClassName="text-xl font-display uppercase"
+              placeholder="Título do icebreaker"
+              maxLength={100}
+            />
+            <p className="text-sm text-muted-foreground uppercase">
+              {icebreaker.tipo}
+            </p>
+          </div>
+          <motion.div whileHover={iconHover}>
+            <MicrophoneIcon className="size-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
+          </motion.div>
+        </div>
+
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
+          <ViewVersionsModal
           versions={icebreaker.versoes as any}
           titulo={icebreaker.titulo}
         />
@@ -213,5 +247,6 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
         </AlertDialog>
       </div>
     </Card>
+    </motion.div>
   );
 }

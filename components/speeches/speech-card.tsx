@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 import { toastMessages } from "@/lib/toast-messages";
 import MessageIcon from "@/components/icons/message";
@@ -18,7 +19,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { InlineEdit } from "@/components/ui/inline-edit";
 import { trpc } from "@/lib/trpc/react";
+import { cardHover, cardTap, iconHover } from "@/lib/animations";
 
 interface SpeechCardProps {
   speech: {
@@ -36,6 +39,16 @@ interface SpeechCardProps {
 export function SpeechCard({ speech }: SpeechCardProps) {
   const router = useRouter();
   const utils = trpc.useUtils();
+
+  const updateMutation = trpc.speeches.update.useMutation({
+    onSuccess: () => {
+      utils.speeches.list.invalidate();
+      toastMessages.speech.updated();
+    },
+    onError: () => {
+      toastMessages.speech.error.update();
+    },
+  });
 
   const deleteMutation = trpc.speeches.delete.useMutation({
     onSuccess: () => {
@@ -124,19 +137,40 @@ export function SpeechCard({ speech }: SpeechCardProps) {
     toggleArchiveMutation.mutate({ id: speech.id });
   };
 
+  const handleTitleUpdate = async (newTitle: string) => {
+    await updateMutation.mutateAsync({
+      id: speech.id,
+      titulo: newTitle,
+    });
+  };
+
   return (
-    <Card className="p-6 hover:bg-accent/50 transition-colors group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-xl font-display mb-2 uppercase">
-            {speech.titulo}
-          </h3>
-          <p className="text-sm text-muted-foreground uppercase mb-2">
-            {speech.tipoVaga}
-          </p>
+    <motion.div
+      whileHover={cardHover}
+      whileTap={cardTap}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card className="p-6 hover:bg-accent/50 transition-colors group cursor-pointer">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <InlineEdit
+              value={speech.titulo}
+              onSave={handleTitleUpdate}
+              className="text-xl font-display mb-2 uppercase"
+              inputClassName="text-xl font-display uppercase"
+              placeholder="Título do speech"
+              maxLength={100}
+            />
+            <p className="text-sm text-muted-foreground uppercase mb-2">
+              {speech.tipoVaga}
+            </p>
+          </div>
+          <motion.div whileHover={iconHover}>
+            <MessageIcon className="size-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
+          </motion.div>
         </div>
-        <MessageIcon className="size-8 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
-      </div>
 
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <Badge variant="outline" className="uppercase">
@@ -230,5 +264,6 @@ export function SpeechCard({ speech }: SpeechCardProps) {
         </AlertDialog>
       </div>
     </Card>
+    </motion.div>
   );
 }

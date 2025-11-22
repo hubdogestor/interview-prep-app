@@ -52,8 +52,17 @@ type DraftState = Record<
   {
     title: string
     description: string
+    owner: string
+    dueDate: string
+    metric: string
+    items: KrEntry[]
   }
 >
+
+type KrEntry = {
+  description: string
+  metric: string
+}
 
 type CardFormState = {
   title: string
@@ -61,7 +70,11 @@ type CardFormState = {
   owner: string
   dueDate: string
   metric: string
+  krs: KrEntry[]
 }
+
+const KR_PRESET_COUNT = 3
+const KR_MAX_COUNT = 6
 
 export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", className }: TrelloBoardProps) {
   const [columns, setColumns] = useState<BoardColumn[]>(() => cloneColumns(initialColumns))
@@ -135,12 +148,20 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
 
   const handleDragCancel = () => setActiveCard(null)
 
-  const handleDraftChange = (columnId: string, field: "title" | "description", value: string) => {
+  const handleDraftChange = (
+    columnId: string,
+    field: "title" | "description" | "owner" | "dueDate" | "metric",
+    value: string,
+  ) => {
     setDrafts((prev) => ({
       ...prev,
       [columnId]: {
         title: field === "title" ? value : prev[columnId]?.title ?? "",
         description: field === "description" ? value : prev[columnId]?.description ?? "",
+        owner: field === "owner" ? value : prev[columnId]?.owner ?? "",
+        dueDate: field === "dueDate" ? value : prev[columnId]?.dueDate ?? "",
+        metric: field === "metric" ? value : prev[columnId]?.metric ?? "",
+        items: prev[columnId]?.items ?? createEmptyKrEntries(),
       },
     }))
   }
@@ -151,19 +172,83 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
       [columnId]: {
         title: "",
         description: "",
+        owner: "",
+        dueDate: "",
+        metric: "",
+        items: createEmptyKrEntries(),
       },
     }))
+  }
+
+  const handleDraftKrChange = (
+    columnId: string,
+    index: number,
+    field: "description" | "metric",
+    value: string,
+  ) => {
+    setDrafts((prev) => {
+      const current = prev[columnId] ?? {
+        title: "",
+        description: "",
+        owner: "",
+        dueDate: "",
+        metric: "",
+        items: createEmptyKrEntries(),
+      }
+
+      const items = ensureKrSlots(current.items)
+      const nextItems = items.map((item, i) =>
+        i === index ? { ...item, [field]: value } : item,
+      )
+
+      return {
+        ...prev,
+        [columnId]: {
+          ...current,
+          items: nextItems,
+        },
+      }
+    })
+  }
+
+  const addDraftKrRow = (columnId: string) => {
+    setDrafts((prev) => {
+      const current = prev[columnId]
+      const base: KrEntry[] = current?.items ?? createEmptyKrEntries()
+      if (base.length >= KR_MAX_COUNT) return prev
+      return {
+        ...prev,
+        [columnId]: {
+          ...(current ?? {
+            title: "",
+            description: "",
+            owner: "",
+            dueDate: "",
+            metric: "",
+          }),
+          items: [...ensureKrSlots(base), { description: "", metric: "" }],
+        },
+      }
+    })
   }
 
   const handleCreateCard = (columnId: string) => {
     const draft = drafts[columnId]
     if (!draft?.title?.trim()) return
+    const normalizedItems = normalizeKrs(ensureKrSlots(draft.items))
 
     const newCard: BoardCard = {
       id: generateCardId(),
       title: draft.title.trim(),
       description: draft.description?.trim(),
-      chips: [{ label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" }],
+      owner: draft.owner.trim() || undefined,
+      dueDate: draft.dueDate.trim() || undefined,
+      metric: draft.metric.trim() || undefined,
+      items: normalizedItems.length ? normalizedItems : undefined,
+      chips: [
+        { label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" },
+        { label: "OKR", colorClass: "bg-amber-500/15 text-amber-100 border-transparent" },
+      ],
       meta: new Date().toLocaleDateString("pt-BR"),
     }
 
@@ -187,6 +272,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
         owner: card.owner ?? "",
         dueDate: card.dueDate ?? "",
         metric: card.metric ?? "",
+        krs: ensureKrSlots(parseItemsToKrs(card.items ?? [])),
       },
     })
   }
@@ -195,8 +281,26 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     setEditingCard((prev) => (prev ? { ...prev, form: { ...prev.form, [field]: value } } : prev))
   }
 
+  const handleEditKrChange = (index: number, field: "description" | "metric", value: string) => {
+    setEditingCard((prev) => {
+      if (!prev) return prev
+      const updated = prev.form.krs.map((kr, i) => (i === index ? { ...kr, [field]: value } : kr))
+      return { ...prev, form: { ...prev.form, krs: updated } }
+    })
+  }
+
+  const addEditKrRow = () => {
+    setEditingCard((prev) => {
+      if (!prev) return prev
+      if (prev.form.krs.length >= KR_MAX_COUNT) return prev
+      return { ...prev, form: { ...prev.form, krs: [...prev.form.krs, { description: "", metric: "" }] } }
+    })
+  }
+
   const handleSaveEdit = () => {
     if (!editingCard) return
+
+    const normalizedKrs = normalizeKrs(editingCard.form.krs)
 
     setColumns((prev) =>
       prev.map((column) => {
@@ -212,6 +316,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                   owner: editingCard.form.owner || undefined,
                   dueDate: editingCard.form.dueDate || undefined,
                   metric: editingCard.form.metric || undefined,
+                  items: normalizedKrs.length ? normalizedKrs : undefined,
                 }
               : card,
           ),
@@ -246,8 +351,19 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                 resetDraft(column.id)
                 setComposerColumn(null)
               }}
-              draft={drafts[column.id] ?? { title: "", description: "" }}
+              draft={
+                drafts[column.id] ?? {
+                  title: "",
+                  description: "",
+                  owner: "",
+                  dueDate: "",
+                  metric: "",
+                  items: createEmptyKrEntries(),
+                }
+              }
               onDraftChange={handleDraftChange}
+              onDraftKrChange={handleDraftKrChange}
+              onAddDraftKr={() => addDraftKrRow(column.id)}
               onSaveCard={() => handleCreateCard(column.id)}
             >
               <SortableContext
@@ -293,7 +409,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
           <DialogHeader>
             <DialogTitle>Editar card</DialogTitle>
             <DialogDescription>
-              Ajuste título, descrição e responsáveis. As mudanças são locais para esta sessão.
+              Ajuste título, descrição, responsáveis e KRs. As mudanças são locais para esta sessão.
             </DialogDescription>
           </DialogHeader>
           {editingCard && (
@@ -341,6 +457,28 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                   onChange={(event) => handleEditChange("metric", event.target.value)}
                 />
               </div>
+              <div className="space-y-2">
+                <Label>KRs</Label>
+                {ensureKrSlots(editingCard.form.krs).map((kr, index) => (
+                  <div key={`edit-kr-${index}`} className="grid gap-2 md:grid-cols-2">
+                    <Input
+                      placeholder={`KR${index + 1} - descrição`}
+                      value={kr.description}
+                      onChange={(event) => handleEditKrChange(index, "description", event.target.value)}
+                    />
+                    <Input
+                      placeholder="Métrica/resultado"
+                      value={kr.metric}
+                      onChange={(event) => handleEditKrChange(index, "metric", event.target.value)}
+                    />
+                  </div>
+                ))}
+                {editingCard.form.krs.length < KR_MAX_COUNT && (
+                  <Button type="button" variant="secondary" size="sm" onClick={addEditKrRow}>
+                    Adicionar KR extra
+                  </Button>
+                )}
+              </div>
             </div>
           )}
           <DialogFooter>
@@ -365,8 +503,21 @@ interface BoardColumnCardProps {
   onOpenComposer: () => void
   onCloseComposer: () => void
   onSaveCard: () => void
-  draft: { title: string; description: string }
-  onDraftChange: (columnId: string, field: "title" | "description", value: string) => void
+  draft: {
+    title: string
+    description: string
+    owner: string
+    dueDate: string
+    metric: string
+    items: KrEntry[]
+  }
+  onDraftChange: (
+    columnId: string,
+    field: "title" | "description" | "owner" | "dueDate" | "metric",
+    value: string,
+  ) => void
+  onDraftKrChange: (columnId: string, index: number, field: "description" | "metric", value: string) => void
+  onAddDraftKr: () => void
 }
 
 function BoardColumnCard({
@@ -379,6 +530,8 @@ function BoardColumnCard({
   onSaveCard,
   draft,
   onDraftChange,
+  onDraftKrChange,
+  onAddDraftKr,
 }: BoardColumnCardProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
@@ -427,6 +580,49 @@ function BoardColumnCard({
               className="bg-background/40"
               rows={3}
             />
+            <div className="grid gap-2 md:grid-cols-2">
+              <Input
+                placeholder="Responsável"
+                value={draft.owner}
+                onChange={(event) => onDraftChange(column.id, "owner", event.target.value)}
+                className="bg-background/40"
+              />
+              <Input
+                placeholder="Entrega (ex: Mar/26)"
+                value={draft.dueDate}
+                onChange={(event) => onDraftChange(column.id, "dueDate", event.target.value)}
+                className="bg-background/40"
+              />
+            </div>
+            <Input
+              placeholder="Métrica/Meta (ex: +3 hubs)"
+              value={draft.metric}
+              onChange={(event) => onDraftChange(column.id, "metric", event.target.value)}
+              className="bg-background/40"
+            />
+            <div className="space-y-2">
+              {ensureKrSlots(draft.items).map((kr, index) => (
+                <div key={`${column.id}-kr-${index}`} className="grid gap-2 md:grid-cols-2">
+                  <Input
+                    placeholder={`KR${index + 1} - descrição`}
+                    value={kr.description}
+                    onChange={(event) => onDraftKrChange(column.id, index, "description", event.target.value)}
+                    className="bg-background/40"
+                  />
+                  <Input
+                    placeholder="Métrica/resultado"
+                    value={kr.metric}
+                    onChange={(event) => onDraftKrChange(column.id, index, "metric", event.target.value)}
+                    className="bg-background/40"
+                  />
+                </div>
+              ))}
+              {ensureKrSlots(draft.items).length < KR_MAX_COUNT && (
+                <Button type="button" variant="secondary" size="sm" onClick={onAddDraftKr}>
+                  Adicionar KR extra
+                </Button>
+              )}
+            </div>
             <div className="flex gap-2">
               <Button size="sm" onClick={onSaveCard}>
                 Salvar
@@ -541,6 +737,47 @@ function cloneColumns(columns: BoardColumn[]): BoardColumn[] {
     ...column,
     cards: column.cards.map((card) => ({ ...card })),
   }))
+}
+
+function createEmptyKrEntries(count = KR_PRESET_COUNT): KrEntry[] {
+  return Array.from({ length: count }, () => ({ description: "", metric: "" }))
+}
+
+function ensureKrSlots(items: KrEntry[] = [], count = KR_PRESET_COUNT): KrEntry[] {
+  if (items.length >= count) return items
+  return [...items, ...createEmptyKrEntries(count - items.length)]
+}
+
+function parseItemsToKrs(items: string[]): KrEntry[] {
+  if (!items.length) return []
+
+  return items.map((text) => {
+    const separators = [" — ", " - ", " – ", " | "]
+    for (const sep of separators) {
+      if (text.includes(sep)) {
+        const [description, metric] = text.split(sep)
+        return { description: description.trim(), metric: metric?.trim() ?? "" }
+      }
+    }
+
+    const match = text.match(/^(.*)\((.*)\)\s*$/)
+    if (match) {
+      return { description: match[1].trim(), metric: match[2].trim() }
+    }
+
+    return { description: text.trim(), metric: "" }
+  })
+}
+
+function normalizeKrs(items: KrEntry[]): string[] {
+  if (!items?.length) return []
+  return items
+    .map((item) => ({
+      description: item.description?.trim() ?? "",
+      metric: item.metric?.trim() ?? "",
+    }))
+    .filter((item) => item.description)
+    .map((item) => (item.metric ? `${item.description} — ${item.metric}` : item.description))
 }
 
 function reorderWithinColumn(

@@ -26,12 +26,14 @@ export function SortableItem({ id, children }: SortableItemProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative group">
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
-      >
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="relative group cursor-grab active:cursor-grabbing"
+    >
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
         <GripVertical className="h-5 w-5 text-muted-foreground" />
       </div>
       {children}

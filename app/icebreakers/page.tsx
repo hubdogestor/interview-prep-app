@@ -33,7 +33,6 @@ export default async function IcebreakersPage() {
       header={{
         title: "Icebreakers",
         description: "Your introduction arsenal",
-        icon: MicrophoneIcon,
         action: <ExportButton items={exportItems} filename="icebreakers" />,
       }}
     >

@@ -31,7 +31,6 @@ export default async function SpeechesPage() {
       header={{
         title: "Speeches",
         description: "Your complete narratives",
-        icon: MessageIcon,
         action: <ExportButton items={exportItems} filename="speeches" />,
       }}
     >

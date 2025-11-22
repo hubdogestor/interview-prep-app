@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Pega o token de sessão do NextAuth
-  const token = request.cookies.get("authjs.session-token") || 
+  const token = request.cookies.get("authjs.session-token") ||
                 request.cookies.get("__Secure-authjs.session-token");
-  
+
   const isLoggedIn = !!token;
   const isAuthPage = pathname.startsWith("/auth");
 
@@ -20,7 +20,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
 
-  return NextResponse.next();
+  // Adiciona o pathname aos headers para que o layout possa acessá-lo
+  const response = NextResponse.next();
+  response.headers.set("x-pathname", pathname);
+  return response;
 }
 
 export const config = {

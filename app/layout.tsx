@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
+import { headers } from "next/headers";
 
 import { CommandPalette } from "@/components/command-palette";
 import { ContextFilesSync } from "@/components/ai/context-files-sync";
@@ -49,11 +50,16 @@ export const metadata: Metadata = {
   generator: "v0.app",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  // Detectar se estamos em uma página de autenticação
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+  const isAuthPage = pathname.startsWith("/auth");
+
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
@@ -77,30 +83,35 @@ export default function RootLayout({
         <TRPCProvider>
           <V0Provider isV0={isV0}>
             <KeyboardShortcutsProvider>
-              <SidebarProvider>
-              {/* Mobile Header - only visible on mobile */}
-              <MobileHeader mockData={mockData} />
+              {isAuthPage ? (
+                // Layout simples para páginas de autenticação (sem sidebars)
+                children
+              ) : (
+                // Layout completo com sidebars para páginas normais
+                <SidebarProvider>
+                  {/* Mobile Header - only visible on mobile */}
+                  <MobileHeader mockData={mockData} />
 
-              {/* Desktop Layout com Painéis Redimensionáveis */}
-              <ResizableLayout
-                leftPanel={<DashboardSidebar />}
-                rightPanel={
-                  <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
-                    <Widget widgetData={mockData.widgetData} />
-                    <Notifications
-                      initialNotifications={mockData.notifications}
-                    />
-                  </div>
-                }
-              >
-                {children}
-              </ResizableLayout>
-
-              </SidebarProvider>
+                  {/* Desktop Layout com Painéis Redimensionáveis */}
+                  <ResizableLayout
+                    leftPanel={<DashboardSidebar />}
+                    rightPanel={
+                      <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
+                        <Widget widgetData={mockData.widgetData} />
+                        <Notifications
+                          initialNotifications={mockData.notifications}
+                        />
+                      </div>
+                    }
+                  >
+                    {children}
+                  </ResizableLayout>
+                </SidebarProvider>
+              )}
 
               {/* Command Palette - Global (Ctrl+K) */}
               <CommandPalette />
-              
+
               {/* Context Files Sync Notification */}
               <ContextFilesSync />
             </KeyboardShortcutsProvider>

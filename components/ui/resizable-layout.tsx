@@ -23,7 +23,7 @@ export function ResizableLayout({
   const leftPanelState = useResizablePanel({
     minWidth: 200,
     maxWidth: 400,
-    defaultWidth: 240, // Aproximadamente col-span-2 em grid de 12 colunas
+    defaultWidth: 240,
     localStorageKey: "interview-prep-left-panel-width",
   });
 
@@ -31,7 +31,7 @@ export function ResizableLayout({
   const rightPanelState = useResizablePanelRight({
     minWidth: 280,
     maxWidth: 600,
-    defaultWidth: 360, // Aproximadamente col-span-3 em grid de 12 colunas
+    defaultWidth: 360,
     localStorageKey: "interview-prep-right-panel-width",
   });
 
@@ -41,41 +41,44 @@ export function ResizableLayout({
       <div className="lg:hidden w-full">{children}</div>
 
       {/* Layout Desktop com Painéis Redimensionáveis */}
-      <div className="hidden lg:flex w-full">
-        {/* Painel Esquerdo (Sidebar) */}
+      <div className="hidden lg:flex w-full min-h-screen">
+        {/* Painel Esquerdo com Handle Integrado */}
         <div
-          className="relative flex-shrink-0 transition-none"
-          style={{ width: `${leftPanelState.width}px` }}
+          className="relative flex-shrink-0"
+          style={{ 
+            width: `${leftPanelState.width}px`,
+            ["--sidebar-width" as string]: `${leftPanelState.width}px`
+          }}
         >
-          <div className="sticky top-0 h-screen overflow-y-auto">
-            {leftPanel}
+          {leftPanel}
+          
+          {/* Handle overlay no lado direito */}
+          <div className="absolute top-0 right-0 bottom-0 w-1 z-50">
+            <ResizableHandle
+              onMouseDown={leftPanelState.handleMouseDown}
+              isResizing={leftPanelState.isResizing}
+              side="right"
+            />
           </div>
         </div>
 
-        {/* Handle de Redimensionamento do Painel Esquerdo */}
-        <ResizableHandle
-          onMouseDown={leftPanelState.handleMouseDown}
-          isResizing={leftPanelState.isResizing}
-          side="right"
-        />
+        {/* Conteúdo Principal */}
+        <div className="flex-1 min-w-0">{children}</div>
 
-        {/* Conteúdo Principal (Flexível) */}
-        <div className="flex-1 min-w-0 px-sides">
-          {children}
-        </div>
-
-        {/* Handle de Redimensionamento do Painel Direito */}
-        <ResizableHandle
-          onMouseDown={rightPanelState.handleMouseDown}
-          isResizing={rightPanelState.isResizing}
-          side="left"
-        />
-
-        {/* Painel Direito (Widget + Notifications) */}
+        {/* Painel Direito com Handle Integrado */}
         <div
-          className="relative flex-shrink-0 transition-none"
+          className="relative flex-shrink-0"
           style={{ width: `${rightPanelState.width}px` }}
         >
+          {/* Handle overlay no lado esquerdo */}
+          <div className="absolute top-0 left-0 bottom-0 w-1 z-50">
+            <ResizableHandle
+              onMouseDown={rightPanelState.handleMouseDown}
+              isResizing={rightPanelState.isResizing}
+              side="left"
+            />
+          </div>
+          
           {rightPanel}
         </div>
       </div>

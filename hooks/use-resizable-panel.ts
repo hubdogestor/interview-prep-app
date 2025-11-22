@@ -54,6 +54,7 @@ export function useResizablePanel({
     (e: MouseEvent) => {
       if (!isResizing) return;
 
+      // Para o painel esquerdo: arrasta para DIREITA aumenta largura
       const delta = e.clientX - startXRef.current;
       const newWidth = startWidthRef.current + delta;
 

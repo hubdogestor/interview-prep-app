@@ -22,37 +22,41 @@ export function ResizableHandle({
     <div
       onMouseDown={onMouseDown}
       className={cn(
-        "group relative flex items-center justify-center transition-colors z-50",
-        "hover:bg-primary/10",
-        isResizing && "bg-primary/20",
-        side === "right" ? "cursor-col-resize" : "cursor-col-resize",
-        // Área de clique maior para melhor usabilidade
-        "w-1 hover:w-2",
+        "group/handle relative h-full w-full flex items-center justify-center",
+        "cursor-col-resize select-none touch-none",
+        "hover:bg-primary/5 transition-colors",
+        isResizing && "bg-primary/10",
         className
       )}
       aria-label={`Redimensionar painel ${side === "left" ? "esquerdo" : "direito"}`}
       role="separator"
       aria-orientation="vertical"
     >
-      {/* Linha visual do handle */}
+      {/* Área de clique expandida (invisível) */}
+      <div className="absolute inset-y-0 -left-2 -right-2" />
+
+      {/* Linha indicadora sutil */}
       <div
         className={cn(
-          "absolute inset-y-0 w-[2px] transition-all",
-          "bg-border group-hover:bg-primary/50",
-          isResizing && "bg-primary",
-          side === "right" ? "left-0" : "right-0"
+          "absolute inset-y-0 left-1/2 -translate-x-1/2 w-px",
+          "bg-transparent transition-all duration-150",
+          "group-hover/handle:bg-border/40",
+          isResizing && "bg-primary w-[2px]"
         )}
       />
-      
+
       {/* Ícone de grip (aparece no hover) */}
       <div
         className={cn(
-          "absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity",
-          "bg-background border border-border rounded-sm p-0.5 shadow-sm",
-          isResizing && "opacity-100"
+          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+          "pointer-events-none",
+          "opacity-0 scale-90 transition-all duration-150",
+          "group-hover/handle:opacity-100 group-hover/handle:scale-100",
+          isResizing && "opacity-100 scale-100",
+          "bg-background/95 border border-border rounded-md p-1 shadow-sm"
         )}
       >
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <GripVertical className="h-3 w-3 text-muted-foreground" />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2,Sparkles } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -30,19 +30,10 @@ import { Label } from "@/components/ui/label";
 import { TextStats } from "@/components/ui/text-stats";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc/react";
+import { createSpeechSchema } from "@/lib/validation/schemas";
 
-// Schema para criar speech
-const formSchema = z.object({
-  tipoVaga: z.string().min(1, "Tipo de vaga é obrigatório"),
-  titulo: z.string().min(1, "Título é obrigatório"),
-  versao: z.string().default("1.0"),
-  conteudo: z.object({
-    pt: z.string().min(1, "Conteúdo em português é obrigatório"),
-    en: z.string().default(""),
-  }),
-  duracaoEstimada: z.number().positive("Duração deve ser maior que zero"),
-  foco: z.array(z.string()).default([]),
-});
+// Use schema centralizado para validação
+const formSchema = createSpeechSchema;
 
 type FormValues = z.infer<typeof formSchema>;
 

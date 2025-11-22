@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Edit2, Plus, Trash2, X } from "lucide-react";
 import { z } from "zod";
 
@@ -39,36 +39,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { TextStats } from "@/components/ui/text-stats";
 import { Textarea } from "@/components/ui/textarea";
+import { createExperienciaSchema, starCaseSchema } from "@/lib/validation/schemas";
 
-// Schema para STAR Case individual
-const starCaseSchema = z.object({
-  titulo: z.string().min(1, "Título do case é obrigatório"),
-  situation: z.string().min(1, "Situation é obrigatória"),
-  task: z.string().min(1, "Task é obrigatória"),
-  action: z.string().min(1, "Action é obrigatória"),
-  result: z.string().min(1, "Result é obrigatório"),
-  idioma: z.enum(["pt", "en"]),
-});
-
-// Schema para criar experiência
-const formSchema = z.object({
-  empresa: z.string().min(1, "Nome da empresa é obrigatório"),
-  cargo: z.string().min(1, "Cargo é obrigatório"),
-  periodo: z.object({
-    inicio: z.string().min(1, "Data de início é obrigatória"),
-    fim: z.string().nullable(),
-  }),
-  pitchElevator: z.object({
-    pt: z.string().min(1, "Pitch em português é obrigatório"),
-    en: z.string().default(""),
-  }),
-  speechCompleto: z.object({
-    pt: z.string().min(1, "Speech em português é obrigatório"),
-    en: z.string().default(""),
-  }),
-  starCases: z.array(starCaseSchema).default([]),
-  tecnologias: z.array(z.string()).default([]),
-});
+// Use schema centralizado para validação
+const formSchema = createExperienciaSchema;
 
 type FormValues = z.infer<typeof formSchema>;
 type StarCase = z.infer<typeof starCaseSchema>;

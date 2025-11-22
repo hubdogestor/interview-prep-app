@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2,Sparkles } from "lucide-react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -39,24 +39,10 @@ import { Separator } from "@/components/ui/separator";
 import { TextStats } from "@/components/ui/text-stats";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc/react";
+import { createIcebreakerSchema } from "@/lib/validation/schemas";
 
-// Schema para versão individual de icebreaker
-const versaoSchema = z.object({
-  nome: z.string().min(1, "Nome da versão é obrigatório"),
-  conteudo: z.object({
-    pt: z.string().min(1, "Conteúdo em português é obrigatório"),
-    en: z.string().default(""),
-  }),
-  duracao: z.number().positive("Duração deve ser maior que zero"),
-  tags: z.array(z.string()).default([]),
-});
-
-// Schema para criar icebreaker
-const formSchema = z.object({
-  tipo: z.enum(["elevator_pitch", "quick_intro", "personal_story"]),
-  titulo: z.string().min(1, "Título é obrigatório"),
-  versoes: z.array(versaoSchema).min(1, "Adicione pelo menos uma versão"),
-});
+// Use schema centralizado para validação
+const formSchema = createIcebreakerSchema;
 
 type FormValues = z.infer<typeof formSchema>;
 

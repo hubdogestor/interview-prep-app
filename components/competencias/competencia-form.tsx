@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Plus, Trash2, X } from "lucide-react";
 import { z } from "zod";
 
@@ -29,27 +29,10 @@ import {
 } from "@/components/ui/select";
 import { TextStats } from "@/components/ui/text-stats";
 import { Textarea } from "@/components/ui/textarea";
+import { createCompetenciaSchema } from "@/lib/validation/schemas";
 
-// Schema para track record individual
-const trackRecordSchema = z.object({
-  projeto: z.string().min(1, "Nome do projeto é obrigatório"),
-  resultado: z.string().min(1, "Resultado é obrigatório"),
-  ano: z.number().int().positive("Ano deve ser válido"),
-});
-
-// Schema para criar competência
-const formSchema = z.object({
-  nome: z.string().min(1, "Nome da competência é obrigatório"),
-  categoria: z.enum(["technical", "soft_skills", "leadership"]),
-  nivel: z.enum(["basic", "intermediate", "advanced", "expert"]),
-  descricao: z.object({
-    pt: z.string().min(1, "Descrição em português é obrigatória"),
-    en: z.string().default(""),
-  }),
-  ferramentas: z.array(z.string()).default([]),
-  evidencias: z.array(z.string()).default([]),
-  trackRecord: z.array(trackRecordSchema).default([]),
-});
+// Use schema centralizado para validação
+const formSchema = createCompetenciaSchema;
 
 type FormValues = z.infer<typeof formSchema>;
 

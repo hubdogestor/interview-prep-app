@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { type LucideIcon } from "lucide-react";
@@ -15,7 +13,6 @@ interface EmptyStateProps {
   action?: {
     label: string;
     href?: string;
-    onClick?: () => void;
   };
   illustration?: string;
   className?: string;
@@ -59,17 +56,11 @@ export function EmptyState({
         </div>
 
         {/* Action Button */}
-        {action && (
+        {action && action.href && (
           <div className="pt-4">
-            {action.href ? (
-              <Button asChild size="lg">
-                <Link href={action.href}>{action.label}</Link>
-              </Button>
-            ) : (
-              <Button onClick={action.onClick} size="lg">
-                {action.label}
-              </Button>
-            )}
+            <Button asChild size="lg">
+              <Link href={action.href}>{action.label}</Link>
+            </Button>
           </div>
         )}
       </div>

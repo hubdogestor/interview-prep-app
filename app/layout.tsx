@@ -3,17 +3,11 @@ import { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
-import { headers } from "next/headers";
 
 import { CommandPalette } from "@/components/command-palette";
 import { ContextFilesSync } from "@/components/ai/context-files-sync";
-import { MobileHeader } from "@/components/dashboard/mobile-header";
-import Notifications from "@/components/dashboard/notifications";
-import { DashboardSidebar } from "@/components/dashboard/sidebar";
-import Widget from "@/components/dashboard/widget";
+import { ConditionalLayout } from "@/components/conditional-layout";
 import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { ResizableLayout } from "@/components/ui/resizable-layout";
 import { getBaseUrl } from "@/lib/env";
 import { TRPCProvider } from "@/lib/trpc/react";
 import { V0Provider } from "@/lib/v0-context";
@@ -50,16 +44,11 @@ export const metadata: Metadata = {
   generator: "v0.app",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  // Detectar se estamos em uma página de autenticação
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
-  const isAuthPage = pathname.startsWith("/auth");
-
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
@@ -80,43 +69,22 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-        <TRPCProvider>
-          <V0Provider isV0={isV0}>
-            <KeyboardShortcutsProvider>
-              {isAuthPage ? (
-                // Layout simples para páginas de autenticação (sem sidebars)
-                children
-              ) : (
-                // Layout completo com sidebars para páginas normais
-                <SidebarProvider>
-                  {/* Mobile Header - only visible on mobile */}
-                  <MobileHeader mockData={mockData} />
+          <TRPCProvider>
+            <V0Provider isV0={isV0}>
+              <KeyboardShortcutsProvider>
+                {/* ConditionalLayout detecta automaticamente se é página de auth */}
+                <ConditionalLayout mockData={mockData}>
+                  {children}
+                </ConditionalLayout>
 
-                  {/* Desktop Layout com Painéis Redimensionáveis */}
-                  <ResizableLayout
-                    leftPanel={<DashboardSidebar />}
-                    rightPanel={
-                      <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
-                        <Widget widgetData={mockData.widgetData} />
-                        <Notifications
-                          initialNotifications={mockData.notifications}
-                        />
-                      </div>
-                    }
-                  >
-                    {children}
-                  </ResizableLayout>
-                </SidebarProvider>
-              )}
+                {/* Command Palette - Global (Ctrl+K) */}
+                <CommandPalette />
 
-              {/* Command Palette - Global (Ctrl+K) */}
-              <CommandPalette />
-
-              {/* Context Files Sync Notification */}
-              <ContextFilesSync />
-            </KeyboardShortcutsProvider>
-          </V0Provider>
-        </TRPCProvider>
+                {/* Context Files Sync Notification */}
+                <ContextFilesSync />
+              </KeyboardShortcutsProvider>
+            </V0Provider>
+          </TRPCProvider>
         </ThemeProvider>
       </body>
     </html>

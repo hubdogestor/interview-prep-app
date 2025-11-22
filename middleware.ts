@@ -20,10 +20,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
 
-  // Adiciona o pathname aos headers para que o layout possa acessá-lo
-  const response = NextResponse.next();
-  response.headers.set("x-pathname", pathname);
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

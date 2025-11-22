@@ -3,6 +3,7 @@
 import type * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { signOut } from "next-auth/react"
 
 import { ThemeToggle } from "@/components/theme-toggle"
 import AtomIcon from "@/components/icons/atom"
@@ -13,6 +14,7 @@ import DotsVerticalIcon from "@/components/icons/dots-vertical"
 import EmailIcon from "@/components/icons/email"
 import GearIcon from "@/components/icons/gear"
 import LockIcon from "@/components/icons/lock"
+import LogOutIcon from "@/components/icons/log-out"
 import MessageIcon from "@/components/icons/message"
 import MicrophoneIcon from "@/components/icons/microphone"
 import MonkeyIcon from "@/components/icons/monkey"
@@ -267,6 +269,15 @@ export function DashboardSidebar({ className, ...props }: React.ComponentProps<t
                       <div className="border-t px-4 py-2 flex items-center justify-between">
                         <span className="text-sm">Theme</span>
                         <ThemeToggle />
+                      </div>
+                      <div className="border-t">
+                        <button 
+                          onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+                          className="flex items-center w-full px-4 py-2 text-sm hover:bg-accent text-destructive"
+                        >
+                          <LogOutIcon className="mr-2 h-4 w-4" />
+                          Sair
+                        </button>
                       </div>
                     </div>
                   </PopoverContent>

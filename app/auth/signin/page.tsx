@@ -92,11 +92,6 @@ export default function SignInPage() {
               {loading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
-
-          <div className="text-xs text-center text-muted-foreground">
-            <p>Usuário padrão: admin@leon4rdo.dev</p>
-            <p>Senha: admin123</p>
-          </div>
         </div>
       </Card>
     </div>

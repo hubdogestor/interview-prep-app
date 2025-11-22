@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
+import type { IcebreakerVersion } from "@/types";
 import { ContextualLoading } from "@/components/ai/contextual-loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,13 +48,6 @@ const CATEGORIA_OPTIONS = [
   { value: "trabalho_equipe", label: "Como você trabalha em equipe?" },
 ] as const;
 
-interface GeneratedVersion {
-  nome: string;
-  conteudo: { pt: string; en: string };
-  duracao: number;
-  tags: string[];
-}
-
 export function GenerateAIButton() {
   const [open, setOpen] = useState(false);
   const [tipo, setTipo] = useState<
@@ -61,7 +55,7 @@ export function GenerateAIButton() {
   >("elevator_pitch");
   const [categoria, setCategoria] = useState<string>("");
   const [orientacoesCustomizadas, setOrientacoesCustomizadas] = useState("");
-  const [generatedVersions, setGeneratedVersions] = useState<GeneratedVersion[] | null>(null);
+  const [generatedVersions, setGeneratedVersions] = useState<IcebreakerVersion[] | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
   const router = useRouter();

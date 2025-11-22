@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Mic,Play, Timer } from "lucide-react";
 
+import type { StarCase } from "@/types";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { StarCaseTeleprompter } from "@/components/experiencias/star-case-teleprompter";
 import BriefcaseIcon from "@/components/icons/briefcase";
@@ -13,15 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
-
-interface StarCase {
-  titulo: string;
-  situation: string;
-  task: string;
-  action: string;
-  result: string;
-  idioma: "pt" | "en";
-}
 
 export default function PracticeExperienciaPage() {
   const params = useParams();
@@ -121,7 +113,7 @@ export default function PracticeExperienciaPage() {
         {/* STAR Cases */}
         {experiencia.starCases && experiencia.starCases.length > 0 ? (
           <div className="space-y-4">
-            {experiencia.starCases.map((starCase: StarCase, index: number) => (
+            {(experiencia.starCases as StarCase[]).map((starCase, index) => (
               <Card key={index} className="p-6">
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="flex-1">
@@ -204,9 +196,7 @@ export default function PracticeExperienciaPage() {
         <PracticeTimer
           open={showTimer}
           onOpenChange={setShowTimer}
-          title={selectedStarCase.titulo}
-          targetDuration={180} // 3 minutes default for STAR cases
-          description={`Practice: ${selectedStarCase.titulo}`}
+          targetDuration={180}
         />
       )}
 

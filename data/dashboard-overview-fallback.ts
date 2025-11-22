@@ -302,7 +302,8 @@ const favoriteItems: DashboardOverviewData["favoriteItems"] = [
       id: item.id,
       type: "icebreaker" as const,
       title: item.titulo,
-      description: "Apresentação rápida para networking em São Paulo",
+      updatedAt: item.updatedAt,
+      favorite: item.favorite,
     })),
   ...speeches
     .filter((item) => item.favorite)
@@ -310,18 +311,17 @@ const favoriteItems: DashboardOverviewData["favoriteItems"] = [
       id: item.id,
       type: "speech" as const,
       title: item.titulo,
-      description: "Discurso focado em resultados recentes no Brasil",
+      updatedAt: item.updatedAt,
+      favorite: item.favorite,
     })),
   ...questions
     .filter((item) => item.favorite)
     .map((item) => ({
       id: item.id,
       type: "question" as const,
-      title:
-        typeof item.pergunta === "string"
-          ? item.pergunta
-          : (item.pergunta as { pt?: string }).pt ?? "Pergunta",
-      description: "Pergunta marcada como favorita para entrevistas-chave",
+      title: (item.pergunta as { pt: string }).pt,
+      updatedAt: item.updatedAt,
+      favorite: item.favorite,
     })),
 ].slice(0, 10);
 

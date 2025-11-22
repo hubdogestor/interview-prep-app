@@ -9,7 +9,14 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { trpc } from "@/lib/trpc/react";
 
-const tipoConfig = {
+type HrefFunction = ((id: string) => string) | ((id: string, experienciaId: string) => string);
+
+const tipoConfig: Record<string, { 
+  icon: typeof Mic | typeof MessageSquare | typeof Briefcase;
+  label: string;
+  color: string;
+  href: HrefFunction;
+}> = {
   icebreaker: {
     icon: Mic,
     label: "Icebreaker",
@@ -26,7 +33,7 @@ const tipoConfig = {
     icon: Briefcase,
     label: "STAR Case",
     color: "text-chart-3",
-    href: (id: string, experienciaId?: string) =>
+    href: (id: string, experienciaId: string) =>
       `/experiencias/${experienciaId}`,
   },
 };
@@ -90,10 +97,18 @@ export function NeedsReviewWidget() {
         {items.slice(0, 5).map((item) => {
           const config = tipoConfig[item.tipo];
           const Icon = config.icon;
-          const href = config.href(
-            item.id,
-            "experienciaId" in item ? item.experienciaId : undefined
-          );
+          
+          // Determine href based on item type
+          const href = (() => {
+            if (item.tipo === 'star_case' && "experienciaId" in item) {
+              const expId = item.experienciaId;
+              if (!expId) return null;
+              return `/experiencias/${expId}`;
+            }
+            return (config.href as (id: string) => string)(item.id);
+          })();
+          
+          if (!href) return null;
 
           return (
             <Link key={`${item.tipo}-${item.id}`} href={href}>

@@ -78,9 +78,6 @@ export const experienciasRouter = createTRPCRouter({
         where: { id: input.id },
       });
       return experiencia ? prismaExperienciaToApp(experiencia) : null;
-      return ctx.prisma.experiencia.findUnique({
-        where: { id: input.id },
-      });
     }),
 
   create: publicProcedure

@@ -146,7 +146,7 @@ export async function generateIcebreaker(
   userId: string = "default",
   categoria?: string,
   orientacoesCustomizadas?: string
-): Promise<IcebreakerVersion[]> {
+): Promise<IcebreakerVersionType[]> {
   // Rate limiting
   if (!checkRateLimit(`icebreaker-${userId}`)) {
     throw new Error(
@@ -1034,9 +1034,7 @@ export async function generateTrackRecord(
     prompt = `Você é um especialista em preparação para entrevistas e construção de portfólio profissional.
 
 CONTEXTO DO USUÁRIO:
-${contextFiles.cv ? `CV:\n${contextFiles.cv}\n\n` : ""}
-${contextFiles.competencias ? `Competências cadastradas:\n${contextFiles.competencias}\n\n` : ""}
-${contextFiles.experiencias ? `Experiências profissionais:\n${contextFiles.experiencias}\n\n` : ""}
+${contextFiles}
 
 COMPETÊNCIA: ${competenciaNome}
 CATEGORIA: ${categoriaLabels[competenciaCategoria]}
@@ -1070,9 +1068,7 @@ Retorne APENAS o JSON, sem explicações adicionais.`;
     prompt = `Você é um especialista em preparação para entrevistas e construção de portfólio profissional.
 
 CONTEXTO DO USUÁRIO:
-${contextFiles.cv ? `CV:\n${contextFiles.cv}\n\n` : ""}
-${contextFiles.competencias ? `Competências cadastradas:\n${contextFiles.competencias}\n\n` : ""}
-${contextFiles.experiencias ? `Experiências profissionais:\n${contextFiles.experiencias}\n\n` : ""}
+${contextFiles}
 
 COMPETÊNCIA: ${competenciaNome}
 CATEGORIA: ${categoriaLabels[competenciaCategoria]}

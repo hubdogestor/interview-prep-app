@@ -1,5 +1,6 @@
 "use client";
 
+import type { Experiencia } from "@/types";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 
@@ -7,24 +8,8 @@ import { Button } from "@/components/ui/button";
 import { downloadMarkdown,exportExperiencias } from "@/lib/export/markdown";
 
 interface ExportButtonProps {
-  experiencia?: {
-    empresa: string;
-    cargo: string;
-    periodo: { inicio: string; fim: string | null };
-    starCases: Array<{
-      titulo: string;
-      situation: string;
-      task: string;
-      action: string;
-      result: string;
-    }>;
-  };
-  experiencias?: Array<{
-    empresa: string;
-    cargo: string;
-    periodo: { inicio: string; fim: string | null };
-    starCases: Array<Record<string, unknown>>;
-  }>;
+  experiencia?: Experiencia;
+  experiencias?: Experiencia[];
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
 }

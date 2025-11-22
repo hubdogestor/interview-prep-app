@@ -85,11 +85,7 @@ export const dashboardRouter = createTRPCRouter({
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     // Get all STAR Cases from experiences
-    const experiencias = await ctx.prisma.experiencia.findMany({
-      include: {
-        starCases: true,
-      },
-    });
+    const experiencias = await ctx.prisma.experiencia.findMany();
 
     const starCases = experiencias.flatMap((exp) =>
       (exp.starCases as Array<{ id?: string; titulo?: string; competencia?: string; createdAt?: Date }>).map((starCase) => ({

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Competencia } from "@prisma/client";
+import type { Competencia } from "@/types";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 

@@ -39,7 +39,7 @@ async function main() {
     console.log("\nINFO Testando conexao com MongoDB via Prisma...\n");
 
     const start = Date.now();
-    await prisma.$runCommandRaw<{ ok: number }>({ ping: 1 });
+    await prisma.$runCommandRaw({ ping: 1 });
     const elapsed = Date.now() - start;
     console.log(`OK   Ping respondido em ${elapsed}ms`);
 

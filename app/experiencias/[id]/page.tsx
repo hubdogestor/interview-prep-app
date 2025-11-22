@@ -27,9 +27,11 @@ export default function EditarExperienciaPage() {
   const utils = trpc.useUtils();
   const id = params.id as string;
 
-  const { data: experiencia, isLoading } = trpc.experiencias.getById.useQuery({
+  const { data: experienciaRaw, isLoading } = trpc.experiencias.getById.useQuery({
     id,
   });
+  
+  const experiencia = experienciaRaw;
 
   const updateMutation = trpc.experiencias.update.useMutation({
     onSuccess: () => {

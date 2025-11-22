@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit2, Plus, Trash2, X } from "lucide-react";
 import { z } from "zod";
 
+import type { Experiencia } from "@/types";
 import { StarCaseAIButton } from "@/components/experiencias/star-case-ai-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,7 @@ type FormValues = z.infer<typeof formSchema>;
 type StarCase = z.infer<typeof starCaseSchema>;
 
 interface ExperienciaFormProps {
-  defaultValues?: Partial<FormValues>;
+  defaultValues?: Experiencia;
   onSubmit: (data: FormValues) => void | Promise<void>;
   isSubmitting?: boolean;
 }

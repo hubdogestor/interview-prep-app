@@ -13,7 +13,7 @@ export const fadeInUp: Variants = {
     y: 0,
     transition: {
       duration: 0.4,
-      ease: [0.4, 0, 0.2, 1],
+      ease: [0.4, 0, 0.2, 1] as const,
     },
   },
 };
@@ -29,7 +29,7 @@ export const fadeIn: Variants = {
     opacity: 1,
     transition: {
       duration: 0.3,
-      ease: "easeOut",
+      ease: "easeOut" as const,
     },
   },
 };
@@ -79,7 +79,7 @@ export const slideInLeft: Variants = {
     x: 0,
     transition: {
       duration: 0.4,
-      ease: [0.4, 0, 0.2, 1],
+      ease: [0.4, 0, 0.2, 1] as const,
     },
   },
 };
@@ -97,7 +97,7 @@ export const slideInRight: Variants = {
     x: 0,
     transition: {
       duration: 0.4,
-      ease: [0.4, 0, 0.2, 1],
+      ease: [0.4, 0, 0.2, 1] as const,
     },
   },
 };
@@ -106,10 +106,10 @@ export const slideInRight: Variants = {
  * Propriedades de hover para botões
  */
 export const buttonHover = {
-  scale: 1.02,
+  scale: 1.05,
   transition: {
     duration: 0.2,
-    ease: "easeOut",
+    ease: "easeOut" as const,
   },
 };
 

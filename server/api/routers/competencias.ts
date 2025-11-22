@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { generateCompetencia } from "@/lib/ai/gemini";
+import { prismaCompetenciaToApp } from "@/lib/type-guards";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 // Schema para track record individual
@@ -47,17 +48,19 @@ const updateCompetenciaSchema = z.object({
 
 export const competenciasRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.competencia.findMany({
+    const competencias = await ctx.prisma.competencia.findMany({
       orderBy: [{ nivel: "desc" }, { createdAt: "desc" }],
     });
+    return competencias.map(prismaCompetenciaToApp);
   }),
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.competencia.findUnique({
+      const competencia = await ctx.prisma.competencia.findUnique({
         where: { id: input.id },
       });
+      return competencia ? prismaCompetenciaToApp(competencia) : null;
     }),
 
   create: publicProcedure

@@ -18,16 +18,30 @@ export default async function IcebreakerViewPage({
     notFound();
   }
 
+  // Pega a primeira versão como padrão
+  const primeiraVersao = icebreaker.versoes[0];
+  
+  if (!primeiraVersao) {
+    notFound();
+  }
+
   const icebreakerData = {
-    ...icebreaker,
-    conteudo: icebreaker.conteudo as { pt: string; en: string },
+    id: icebreaker.id,
+    titulo: icebreaker.titulo,
+    tipoVaga: icebreaker.tipoVaga || icebreaker.tipo,
+    versao: primeiraVersao.nome,
+    conteudo: primeiraVersao.conteudo,
+    duracaoEstimada: primeiraVersao.duracao,
+    foco: primeiraVersao.tags || [],
+    favorite: icebreaker.favorite,
+    archived: icebreaker.archived,
   };
 
   return (
     <DashboardPageLayout
       header={{
         title: icebreaker.titulo,
-        description: icebreaker.tipoVaga,
+        description: icebreakerData.tipoVaga,
         icon: MicIcon,
       }}
     >

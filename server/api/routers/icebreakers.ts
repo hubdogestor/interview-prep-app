@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { editIcebreaker,generateIcebreaker } from "@/lib/ai/gemini";
+import { prismaIcebreakerToApp } from "@/lib/type-guards";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 // Schema para versão individual de icebreaker
@@ -31,19 +32,21 @@ const updateIcebrekerSchema = z.object({
 
 export const icebreakersRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.icebreaker.findMany({
+    const icebreakers = await ctx.prisma.icebreaker.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
+    return icebreakers.map(prismaIcebreakerToApp);
   }),
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.icebreaker.findUnique({
+      const icebreaker = await ctx.prisma.icebreaker.findUnique({
         where: { id: input.id },
       });
+      return icebreaker ? prismaIcebreakerToApp(icebreaker) : null;
     }),
 
   create: publicProcedure

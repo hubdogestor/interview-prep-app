@@ -2,6 +2,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
 
+import type { IcebreakerVersion as IcebreakerVersionType } from "@/types";
+
 // Configuração do cliente Gemini
 const apiKey = process.env.GOOGLE_AI_API_KEY;
 
@@ -78,16 +80,6 @@ export const getModel = (modelName: string = "gemini-2.0-flash-exp") => {
 };
 
 // Tipos para respostas
-export interface IcebreakerVersion {
-  nome: string;
-  conteudo: {
-    pt: string;
-    en: string;
-  };
-  duracao: number;
-  tags: string[];
-}
-
 export interface SpeechContent {
   pt: string;
   en: string;
@@ -260,23 +252,27 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
 
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
-    const versions = JSON.parse(jsonText);
+    const versions = JSON.parse(jsonText) as Array<{
+      nome: string;
+      conteudo: string;
+      duracao?: number;
+      tags?: string[];
+    }>;
 
     // Mapeia para o formato esperado
-    return versions.map((v: any) => ({
+    return versions.map((v): IcebreakerVersionType => ({
       nome: v.nome,
       conteudo: {
         pt: v.conteudo,
         en: "",
       },
-      duracao: v.duracao,
+      duracao: v.duracao || 30,
       tags: v.tags || [],
     }));
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao gerar icebreaker:", error);
-    throw new Error(
-      `Erro ao gerar icebreaker: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao gerar icebreaker: ${errorMessage}`);
   }
 }
 
@@ -370,11 +366,10 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
       },
       duracaoEstimada: speechData.duracaoEstimada || duracaoDesejada,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao gerar speech:", error);
-    throw new Error(
-      `Erro ao gerar speech: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao gerar speech: ${errorMessage}`);
   }
 }
 
@@ -424,11 +419,10 @@ Responda APENAS com o texto editado, sem explicações adicionais.
     const result = await model.generateContent(prompt);
     const response = result.response;
     return response.text().trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao editar icebreaker:", error);
-    throw new Error(
-      `Erro ao editar icebreaker: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao editar icebreaker: ${errorMessage}`);
   }
 }
 
@@ -478,11 +472,10 @@ Responda APENAS com o texto editado, sem explicações adicionais.
     const result = await model.generateContent(prompt);
     const response = result.response;
     return response.text().trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao editar speech:", error);
-    throw new Error(
-      `Erro ao editar speech: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao editar speech: ${errorMessage}`);
   }
 }
 
@@ -555,11 +548,10 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     return JSON.parse(jsonText);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao revisar STAR case:", error);
-    throw new Error(
-      `Erro ao revisar STAR case: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao revisar STAR case: ${errorMessage}`);
   }
 }
 
@@ -652,11 +644,10 @@ Responda APENAS com o JSON array válido, sem markdown ou texto adicional.
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     return JSON.parse(jsonText);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao sugerir perguntas:", error);
-    throw new Error(
-      `Erro ao sugerir perguntas: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao sugerir perguntas: ${errorMessage}`);
   }
 }
 
@@ -818,11 +809,10 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     return JSON.parse(jsonText);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao gerar STAR Case:", error);
-    throw new Error(
-      `Erro ao gerar STAR Case: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao gerar STAR Case: ${errorMessage}`);
   }
 }
 
@@ -1000,11 +990,10 @@ Responda APENAS com o JSON válido, sem markdown ou texto adicional.
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     return JSON.parse(jsonText);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao gerar Competência:", error);
-    throw new Error(
-      `Erro ao gerar Competência: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao gerar Competência: ${errorMessage}`);
   }
 }
 
@@ -1124,11 +1113,10 @@ Retorne APENAS o JSON, sem explicações adicionais.`;
     }
 
     return trackRecord;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao gerar Track Record:", error);
-    throw new Error(
-      `Erro ao gerar Track Record: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao gerar Track Record: ${errorMessage}`);
   }
 }
 
@@ -1219,11 +1207,10 @@ Retorne APENAS um JSON válido no seguinte formato:
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     return JSON.parse(jsonText);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao analisar performance:", error);
-    throw new Error(
-      `Erro ao analisar performance: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao analisar performance: ${errorMessage}`);
   }
 }
 
@@ -1337,11 +1324,10 @@ Retorne APENAS o JSON válido, sem markdown ou texto adicional.`;
     // Parse do JSON (removendo markdown se houver)
     const jsonText = text.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     return JSON.parse(jsonText);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao analisar job fit:", error);
-    throw new Error(
-      `Erro ao analisar job fit: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao analisar job fit: ${errorMessage}`);
   }
 }
 
@@ -1393,11 +1379,10 @@ Retorne APENAS o texto traduzido, sem aspas, sem markdown, sem explicações adi
   try {
     const result = await model.generateContent(prompt);
     return result.response.text().trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao traduzir conteúdo:", error);
-    throw new Error(
-      `Erro ao traduzir conteúdo: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao traduzir conteúdo: ${errorMessage}`);
   }
 }
 
@@ -1498,10 +1483,9 @@ Analise o portfólio do candidato e forneça **4-6 sugestões proativas** para m
     }
 
     return suggestions;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error generating proactive suggestions:", error);
-    throw new Error(
-      `Erro ao gerar sugestões: ${error.message || "Erro desconhecido"}`
-    );
+    const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+    throw new Error(`Erro ao gerar sugestões: ${errorMessage}`);
   }
 }

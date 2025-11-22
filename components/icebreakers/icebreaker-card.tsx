@@ -26,7 +26,12 @@ interface IcebreakerCardProps {
     id: string;
     tipo: string;
     titulo: string;
-    versoes: any[];
+    versoes: Array<{
+      nome: string;
+      conteudo: { pt: string; en: string };
+      duracao: number;
+      tags?: string[];
+    }>;
     favorite?: boolean;
     archived?: boolean;
   };

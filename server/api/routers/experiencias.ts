@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { generateStarCase } from "@/lib/ai/gemini";
+import { prismaExperienciaToApp } from "@/lib/type-guards";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 // Schema para STAR Case individual
@@ -62,16 +63,21 @@ const updateExperienciaSchema = z.object({
 
 export const experienciasRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.experiencia.findMany({
+    const experiencias = await ctx.prisma.experiencia.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
+    return experiencias.map(prismaExperienciaToApp);
   }),
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      const experiencia = await ctx.prisma.experiencia.findUnique({
+        where: { id: input.id },
+      });
+      return experiencia ? prismaExperienciaToApp(experiencia) : null;
       return ctx.prisma.experiencia.findUnique({
         where: { id: input.id },
       });

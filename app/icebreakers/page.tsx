@@ -14,7 +14,7 @@ export default async function IcebreakersPage() {
 
   // Prepare export data
   const exportItems = icebreakers.flatMap((icebreaker) =>
-    icebreaker.versoes.map((versao: any) => ({
+    icebreaker.versoes.map((versao: { nome: string; conteudo: { pt: string }; duracao: number; tags?: string[] }) => ({
       title: `${icebreaker.titulo} - ${versao.nome}`,
       content: versao.conteudo.pt,
       metadata: {

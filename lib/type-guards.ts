@@ -1,4 +1,17 @@
 import type { JsonValue } from "@prisma/client/runtime/library";
+import type { Prisma } from "@prisma/client";
+import type {
+  Competencia,
+  CompetenciaDescricao,
+  TrackRecordItem,
+  Experiencia,
+  Periodo,
+  BilingualContent,
+  StarCase,
+  Icebreaker,
+  IcebreakerVersion,
+  Speech,
+} from "@/types";
 
 /**
  * Type guards e helpers para converter JsonValue do Prisma em tipos específicos
@@ -6,11 +19,6 @@ import type { JsonValue } from "@prisma/client/runtime/library";
  */
 
 // ==================== COMPETENCIAS ====================
-
-export interface CompetenciaDescricao {
-  pt: string;
-  en: string;
-}
 
 export interface TrackRecord {
   projeto: string;
@@ -37,32 +45,13 @@ export function isTrackRecord(value: unknown): value is TrackRecord {
   return typeof obj.projeto === "string" && typeof obj.resultado === "string";
 }
 
-export function parseTrackRecordArray(value: JsonValue): TrackRecord[] {
+export function parseTrackRecordArray(value: JsonValue): TrackRecordItem[] {
   if (!Array.isArray(value)) return [];
   const filtered = value.filter(isTrackRecord);
-  return filtered as unknown as TrackRecord[];
+  return filtered as unknown as TrackRecordItem[];
 }
 
 // ==================== EXPERIENCIAS ====================
-
-export interface Periodo {
-  inicio: string;
-  fim: string | null;
-}
-
-export interface BilingualContent {
-  pt: string;
-  en: string;
-}
-
-export interface StarCase {
-  titulo: string;
-  situation: string;
-  task: string;
-  action: string;
-  result: string;
-  idioma: "pt" | "en";
-}
 
 export function isPeriodo(value: unknown): value is Periodo {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
@@ -109,13 +98,6 @@ export function parseStarCaseArray(value: JsonValue): StarCase[] {
 }
 
 // ==================== ICEBREAKERS ====================
-
-export interface IcebreakerVersion {
-  nome: string;
-  conteudo: BilingualContent;
-  duracao: number;
-  tags?: string[];
-}
 
 export function isIcebreakerVersion(value: unknown): value is IcebreakerVersion {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
@@ -245,4 +227,94 @@ export function jsonToStringArray(value: JsonValue): string[] {
     return value.filter((v): v is string => typeof v === "string");
   }
   return [];
+}
+
+// ==================== PRISMA CONVERTERS ====================
+
+/**
+ * Converte modelo Competencia do Prisma para tipo da aplicação
+ */
+export function prismaCompetenciaToApp(
+  prisma: Prisma.CompetenciaGetPayload<Record<string, never>>
+): Competencia {
+  return {
+    id: prisma.id,
+    nome: prisma.nome,
+    categoria: prisma.categoria as "technical" | "soft_skills" | "leadership",
+    nivel: prisma.nivel as "basic" | "intermediate" | "advanced" | "expert",
+    descricao: parseCompetenciaDescricao(prisma.descricao),
+    ferramentas: prisma.ferramentas,
+    evidencias: prisma.evidencias,
+    trackRecord: parseTrackRecordArray(prisma.trackRecord),
+    createdAt: prisma.createdAt,
+    updatedAt: prisma.updatedAt,
+  };
+}
+
+/**
+ * Converte modelo Experiencia do Prisma para tipo da aplicação
+ */
+export function prismaExperienciaToApp(
+  prisma: Prisma.ExperienciaGetPayload<Record<string, never>>
+): Experiencia {
+  return {
+    id: prisma.id,
+    empresa: prisma.empresa,
+    cargo: prisma.cargo,
+    periodo: parsePeriodo(prisma.periodo),
+    pitchElevator: parseBilingualContent(prisma.pitchElevator),
+    speechCompleto: parseBilingualContent(prisma.speechCompleto),
+    starCases: parseStarCaseArray(prisma.starCases),
+    tecnologias: prisma.tecnologias,
+    createdAt: prisma.createdAt,
+    updatedAt: prisma.updatedAt,
+  };
+}
+
+/**
+ * Converte modelo Icebreaker do Prisma para tipo da aplicação
+ */
+export function prismaIcebreakerToApp(
+  prisma: Prisma.IcebreakerGetPayload<Record<string, never>>
+): Icebreaker {
+  const versoes = parseIcebreakerVersions(prisma.versoes);
+  const primeiraVersao = versoes[0];
+  
+  return {
+    id: prisma.id,
+    tipo: prisma.tipo,
+    titulo: prisma.titulo,
+    versoes,
+    // Propriedades opcionais para compatibilidade
+    tipoVaga: prisma.tipo,
+    versao: primeiraVersao?.nome,
+    conteudo: primeiraVersao?.conteudo,
+    duracaoEstimada: primeiraVersao?.duracao,
+    foco: primeiraVersao?.tags,
+    favorite: prisma.favorite,
+    archived: prisma.archived,
+    createdAt: prisma.createdAt,
+    updatedAt: prisma.updatedAt,
+  };
+}
+
+/**
+ * Converte modelo Speech do Prisma para tipo da aplicação
+ */
+export function prismaSpeechToApp(
+  prisma: Prisma.SpeechGetPayload<Record<string, never>>
+): Speech {
+  return {
+    id: prisma.id,
+    tipoVaga: prisma.tipoVaga,
+    titulo: prisma.titulo,
+    versao: prisma.versao,
+    conteudo: parseSpeechContent(prisma.conteudo),
+    duracaoEstimada: prisma.duracaoEstimada,
+    foco: prisma.foco,
+    favorite: prisma.favorite,
+    archived: prisma.archived,
+    createdAt: prisma.createdAt,
+    updatedAt: prisma.updatedAt,
+  };
 }

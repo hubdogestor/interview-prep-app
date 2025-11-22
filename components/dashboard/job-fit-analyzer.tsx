@@ -45,8 +45,9 @@ export function JobFitAnalyzer({ open, onOpenChange }: JobFitAnalyzerProps) {
 
       setAnalysis(result);
       toast.success("Análise concluída!");
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao analisar fit com a vaga");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Erro ao analisar fit com a vaga";
+      toast.error(errorMessage);
     } finally {
       setIsAnalyzing(false);
     }

@@ -55,16 +55,37 @@ export default function PracticeIcebreakerPage() {
     );
   }
 
-  const conteudoOriginal =
-    typeof icebreaker.conteudo === "string"
-      ? icebreaker.conteudo
-      : (icebreaker.conteudo as { pt: string; en: string }).pt;
+  // Pega a primeira versão como padrão
+  const primeiraVersao = icebreaker.versoes[0];
+  
+  if (!primeiraVersao) {
+    return (
+      <DashboardPageLayout
+        header={{
+          title: "Sem conteúdo",
+          description: "Nenhuma versão disponível",
+          icon: MicIcon,
+        }}
+      >
+        <div className="flex flex-col items-center justify-center py-12 gap-4">
+          <p className="text-muted-foreground">Nenhuma versão disponível para praticar</p>
+          <Button onClick={() => router.push("/icebreakers")}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar para listagem
+          </Button>
+        </div>
+      </DashboardPageLayout>
+    );
+  }
+
+  const conteudoOriginal = primeiraVersao.conteudo.pt;
+  const duracaoEstimada = primeiraVersao.duracao;
 
   return (
     <DashboardPageLayout
       header={{
         title: `Practice: ${icebreaker.titulo}`,
-        description: icebreaker.tipoVaga,
+        description: icebreaker.tipoVaga || icebreaker.tipo,
         icon: MicIcon,
         action: (
           <Button
@@ -87,7 +108,7 @@ export default function PracticeIcebreakerPage() {
           <p className="text-sm">
             Grave seu icebreaker e receba feedback automatizado sobre clareza,
             fluência e completude. Tempo estimado:{" "}
-            <strong>{icebreaker.duracaoEstimada}s</strong>.
+            <strong>{duracaoEstimada}s</strong>.
           </p>
         </Card>
 

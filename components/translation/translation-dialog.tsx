@@ -51,8 +51,9 @@ export function TranslationDialog({
 
       setTranslatedText(result);
       toast.success("Tradução concluída!");
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao traduzir conteúdo");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Erro ao traduzir conteúdo";
+      toast.error(errorMessage);
     }
   };
 

@@ -1,42 +1,9 @@
+import type { Competencia, Experiencia } from "@/types";
+
 export interface ExportItem {
   title: string;
   content: string;
   metadata?: Record<string, string | number | boolean>;
-}
-
-interface Experiencia {
-  id: string;
-  empresa: string;
-  cargo: string;
-  periodo?: string;
-  descricao?: string;
-  tecnologias?: string[];
-  starCases: {
-    titulo: string;
-    situation: string;
-    task: string;
-    action: string;
-    result: string;
-    idioma: "pt" | "en";
-  }[];
-}
-
-interface Competencia {
-  id: string;
-  nome: string;
-  categoria: "technical" | "soft_skills" | "leadership";
-  nivel: "basic" | "intermediate" | "advanced" | "expert";
-  descricao: {
-    pt: string;
-    en: string;
-  };
-  ferramentas?: string[];
-  evidencias?: string[];
-  trackRecord?: {
-    projeto: string;
-    resultado: string;
-    ano: number;
-  }[];
 }
 
 export function exportToMarkdown(items: ExportItem[]): string {
@@ -77,11 +44,10 @@ export function exportExperiencias(experiencias: Experiencia[]): string {
     markdown += `**Cargo:** ${exp.cargo}\n\n`;
 
     if (exp.periodo) {
-      markdown += `**Período:** ${exp.periodo}\n\n`;
-    }
-
-    if (exp.descricao) {
-      markdown += `**Descrição:**\n${exp.descricao}\n\n`;
+      const periodoStr = exp.periodo.fim 
+        ? `${exp.periodo.inicio} - ${exp.periodo.fim}`
+        : `${exp.periodo.inicio} - Atual`;
+      markdown += `**Período:** ${periodoStr}\n\n`;
     }
 
     if (exp.tecnologias && exp.tecnologias.length > 0) {

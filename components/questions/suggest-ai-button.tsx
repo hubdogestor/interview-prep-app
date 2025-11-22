@@ -112,8 +112,9 @@ export function SuggestAIButton() {
         `${questionsToSave.length} ${questionsToSave.length === 1 ? "pergunta salva" : "perguntas salvas"} com sucesso!`
       );
       handleClose();
-    } catch (error: any) {
-      toast.error("Erro ao salvar perguntas: " + error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      toast.error("Erro ao salvar perguntas: " + errorMessage);
     }
   };
 

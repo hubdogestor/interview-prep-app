@@ -92,7 +92,7 @@ export const dashboardRouter = createTRPCRouter({
     });
 
     const starCases = experiencias.flatMap((exp) =>
-      exp.starCases.map((starCase: any) => ({
+      (exp.starCases as Array<{ id?: string; titulo?: string; competencia?: string; createdAt?: Date }>).map((starCase) => ({
         id: starCase.id,
         experienciaId: exp.id,
         titulo: starCase.titulo,

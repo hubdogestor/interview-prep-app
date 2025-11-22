@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { editSpeech,generateSpeech } from "@/lib/ai/gemini";
+import { prismaSpeechToApp } from "@/lib/type-guards";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 // Schema para criar speech
@@ -34,19 +35,21 @@ const updateSpeechSchema = z.object({
 
 export const speechesRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.speech.findMany({
+    const speeches = await ctx.prisma.speech.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
+    return speeches.map(prismaSpeechToApp);
   }),
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.speech.findUnique({
+      const speech = await ctx.prisma.speech.findUnique({
         where: { id: input.id },
       });
+      return speech ? prismaSpeechToApp(speech) : null;
     }),
 
   create: publicProcedure

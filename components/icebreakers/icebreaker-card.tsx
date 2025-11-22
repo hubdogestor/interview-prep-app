@@ -52,25 +52,59 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
   });
 
   const toggleFavoriteMutation = trpc.icebreakers.toggleFavorite.useMutation({
-    onSuccess: () => {
-      utils.icebreakers.list.invalidate();
+    onMutate: async ({ id }) => {
+      await utils.icebreakers.list.cancel();
+      const previousIcebreakers = utils.icebreakers.list.getData();
+
+      utils.icebreakers.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return old.map((i) =>
+          i.id === id ? { ...i, favorite: !i.favorite } : i
+        );
+      });
+
+      return { previousIcebreakers };
     },
-    onError: (error: { message: string }) => {
+    onError: (error: { message: string }, variables, context) => {
+      if (context?.previousIcebreakers) {
+        utils.icebreakers.list.setData(undefined, context.previousIcebreakers);
+      }
       toast.error("Erro ao favoritar: " + error.message);
+    },
+    onSettled: () => {
+      utils.icebreakers.list.invalidate();
     },
   });
 
   const toggleArchiveMutation = trpc.icebreakers.toggleArchive.useMutation({
+    onMutate: async ({ id }) => {
+      await utils.icebreakers.list.cancel();
+      const previousIcebreakers = utils.icebreakers.list.getData();
+
+      utils.icebreakers.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return old.map((i) =>
+          i.id === id ? { ...i, archived: !i.archived } : i
+        );
+      });
+
+      return { previousIcebreakers };
+    },
     onSuccess: () => {
       toast.success(
         icebreaker.archived
           ? "Icebreaker desarquivado!"
           : "Icebreaker arquivado!"
       );
-      utils.icebreakers.list.invalidate();
     },
-    onError: (error: { message: string }) => {
+    onError: (error: { message: string }, variables, context) => {
+      if (context?.previousIcebreakers) {
+        utils.icebreakers.list.setData(undefined, context.previousIcebreakers);
+      }
       toast.error("Erro ao arquivar: " + error.message);
+    },
+    onSettled: () => {
+      utils.icebreakers.list.invalidate();
     },
   });
 

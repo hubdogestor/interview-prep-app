@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MessageSquare } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { ExportButton } from "@/components/export/export-button";
@@ -6,6 +7,7 @@ import MessageIcon from "@/components/icons/message";
 import { GenerateAIButton } from "@/components/speeches/generate-ai-button";
 import { SpeechCard } from "@/components/speeches/speech-card";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { api } from "@/lib/trpc/server";
 
 export default async function SpeechesPage() {
@@ -33,17 +35,23 @@ export default async function SpeechesPage() {
         action: <ExportButton items={exportItems} filename="speeches" />,
       }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {speeches.map((speech) => (
-          <SpeechCard key={speech.id} speech={speech} />
-        ))}
-
-        {speeches.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <p className="uppercase">Nenhum speech cadastrado ainda</p>
-          </div>
-        )}
-      </div>
+      {speeches.length === 0 ? (
+        <EmptyState
+          icon={MessageSquare}
+          title="Nenhum Speech ainda"
+          description="Prepare sua narrativa profissional estruturada ou gere automaticamente com IA baseada no seu perfil"
+          action={{
+            label: "Criar Speech",
+            href: "/speeches/novo",
+          }}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {speeches.map((speech) => (
+            <SpeechCard key={speech.id} speech={speech} />
+          ))}
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link href="/speeches/novo">

@@ -3,6 +3,7 @@
 import type * as React from "react"
 import Image from "next/image"
 
+import { ThemeToggle } from "@/components/theme-toggle"
 import AtomIcon from "@/components/icons/atom"
 import BracketsIcon from "@/components/icons/brackets"
 import BriefcaseIcon from "@/components/icons/briefcase"
@@ -258,6 +259,10 @@ export function DashboardSidebar({ className, ...props }: React.ComponentProps<t
                         <GearIcon className="mr-2 h-4 w-4" />
                         Settings
                       </button>
+                      <div className="border-t px-4 py-2 flex items-center justify-between">
+                        <span className="text-sm">Theme</span>
+                        <ThemeToggle />
+                      </div>
                     </div>
                   </PopoverContent>
                 </Popover>

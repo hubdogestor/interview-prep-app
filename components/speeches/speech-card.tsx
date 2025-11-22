@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
+import { toastMessages } from "@/lib/toast-messages";
 import MessageIcon from "@/components/icons/message";
 import {
   AlertDialog,
@@ -39,32 +39,68 @@ export function SpeechCard({ speech }: SpeechCardProps) {
 
   const deleteMutation = trpc.speeches.delete.useMutation({
     onSuccess: () => {
-      toast.success("Speech removido com sucesso!");
+      toastMessages.speech.deleted();
       utils.speeches.list.invalidate();
     },
-    onError: (error: { message: string }) => {
-      toast.error("Erro ao remover speech: " + error.message);
+    onError: () => {
+      toastMessages.speech.error.delete();
     },
   });
 
   const toggleFavoriteMutation = trpc.speeches.toggleFavorite.useMutation({
-    onSuccess: () => {
-      utils.speeches.list.invalidate();
+    onMutate: async ({ id }) => {
+      await utils.speeches.list.cancel();
+      const previousSpeeches = utils.speeches.list.getData();
+
+      utils.speeches.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return old.map((s) =>
+          s.id === id ? { ...s, favorite: !s.favorite } : s
+        );
+      });
+
+      return { previousSpeeches };
     },
-    onError: (error: { message: string }) => {
-      toast.error("Erro ao favoritar: " + error.message);
+    onError: (err, variables, context) => {
+      if (context?.previousSpeeches) {
+        utils.speeches.list.setData(undefined, context.previousSpeeches);
+      }
+      toastMessages.speech.error.favorite();
+    },
+    onSettled: () => {
+      utils.speeches.list.invalidate();
     },
   });
 
   const toggleArchiveMutation = trpc.speeches.toggleArchive.useMutation({
-    onSuccess: () => {
-      toast.success(
-        speech.archived ? "Speech desarquivado!" : "Speech arquivado!"
-      );
-      utils.speeches.list.invalidate();
+    onMutate: async ({ id }) => {
+      await utils.speeches.list.cancel();
+      const previousSpeeches = utils.speeches.list.getData();
+
+      utils.speeches.list.setData(undefined, (old) => {
+        if (!old) return old;
+        return old.map((s) =>
+          s.id === id ? { ...s, archived: !s.archived } : s
+        );
+      });
+
+      return { previousSpeeches };
     },
-    onError: (error: { message: string }) => {
-      toast.error("Erro ao arquivar: " + error.message);
+    onSuccess: () => {
+      if (speech.archived) {
+        toastMessages.speech.unarchived();
+      } else {
+        toastMessages.speech.archived();
+      }
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousSpeeches) {
+        utils.speeches.list.setData(undefined, context.previousSpeeches);
+      }
+      toastMessages.speech.error.archive();
+    },
+    onSettled: () => {
+      utils.speeches.list.invalidate();
     },
   });
 

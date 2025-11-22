@@ -2,18 +2,53 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ArrowLeft, Mic,Play, Timer } from "lucide-react";
 
 import type { StarCase } from "@/types";
 import DashboardPageLayout from "@/components/dashboard/layout";
-import { StarCaseTeleprompter } from "@/components/experiencias/star-case-teleprompter";
 import BriefcaseIcon from "@/components/icons/briefcase";
-import { AudioPractice } from "@/components/practice/audio-practice";
 import { PracticeTimer } from "@/components/practice/practice-timer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
+
+const AudioPractice = dynamic(
+  () =>
+    import("@/components/practice/audio-practice").then(
+      (mod) => mod.AudioPractice
+    ),
+  {
+    loading: () => (
+      <Card className="p-8">
+        <div className="flex items-center justify-center gap-2">
+          <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <span className="text-muted-foreground">Carregando ferramenta de prática...</span>
+        </div>
+      </Card>
+    ),
+    ssr: false,
+  }
+);
+
+const StarCaseTeleprompter = dynamic(
+  () =>
+    import("@/components/experiencias/star-case-teleprompter").then(
+      (mod) => mod.StarCaseTeleprompter
+    ),
+  {
+    loading: () => (
+      <Card className="p-8">
+        <div className="flex items-center justify-center gap-2">
+          <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <span className="text-muted-foreground">Carregando teleprompter...</span>
+        </div>
+      </Card>
+    ),
+    ssr: false,
+  }
+);
 
 export default function PracticeExperienciaPage() {
   const params = useParams();

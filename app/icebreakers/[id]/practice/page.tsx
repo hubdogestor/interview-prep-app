@@ -1,14 +1,32 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ArrowLeft } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import MicIcon from "@/components/icons/mic";
-import { AudioPractice } from "@/components/practice/audio-practice";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
+
+const AudioPractice = dynamic(
+  () =>
+    import("@/components/practice/audio-practice").then(
+      (mod) => mod.AudioPractice
+    ),
+  {
+    loading: () => (
+      <Card className="p-8">
+        <div className="flex items-center justify-center gap-2">
+          <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <span className="text-muted-foreground">Carregando ferramenta de prática...</span>
+        </div>
+      </Card>
+    ),
+    ssr: false,
+  }
+);
 
 export default function PracticeIcebreakerPage() {
   const params = useParams();

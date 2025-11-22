@@ -3,6 +3,7 @@ import * as React from "react";
 import MobileNotifications from "@/components/dashboard/notifications/mobile-notifications";
 import BellIcon from "@/components/icons/bell";
 import MonkeyIcon from "@/components/icons/monkey";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -31,6 +32,9 @@ export function MobileHeader({ mockData }: MobileHeaderProps) {
           </div>
         </div>
 
+        {/* Right: Theme Toggle + Notifications */}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
         <Sheet>
           {/* Right: Notifications Menu */}
           <SheetTrigger asChild>
@@ -55,6 +59,7 @@ export function MobileHeader({ mockData }: MobileHeaderProps) {
             />
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </div>
   );

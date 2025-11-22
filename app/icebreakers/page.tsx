@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Mic } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { ExportButton } from "@/components/export/export-button";
@@ -6,6 +7,7 @@ import { GenerateAIButton } from "@/components/icebreakers/generate-ai-button";
 import { IcebreakerCard } from "@/components/icebreakers/icebreaker-card";
 import MicrophoneIcon from "@/components/icons/microphone";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { api } from "@/lib/trpc/server";
 
 export default async function IcebreakersPage() {
@@ -34,17 +36,23 @@ export default async function IcebreakersPage() {
         action: <ExportButton items={exportItems} filename="icebreakers" />,
       }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {icebreakers.map((icebreaker) => (
-          <IcebreakerCard key={icebreaker.id} icebreaker={icebreaker} />
-        ))}
-
-        {icebreakers.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <p className="uppercase">Nenhum icebreaker cadastrado ainda</p>
-          </div>
-        )}
-      </div>
+      {icebreakers.length === 0 ? (
+        <EmptyState
+          icon={Mic}
+          title="Nenhum Icebreaker ainda"
+          description="Crie sua primeira apresentação de 30-60 segundos ou gere automaticamente com IA"
+          action={{
+            label: "Criar Icebreaker",
+            href: "/icebreakers/novo",
+          }}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {icebreakers.map((icebreaker) => (
+            <IcebreakerCard key={icebreaker.id} icebreaker={icebreaker} />
+          ))}
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link href="/icebreakers/novo">

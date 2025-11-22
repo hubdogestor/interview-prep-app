@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { ThemeProvider } from "next-themes";
 
 import { CommandPalette } from "@/components/command-palette";
 import { MobileHeader } from "@/components/dashboard/mobile-header";
@@ -38,11 +39,11 @@ const isV0 = process.env["VERCEL_URL"]?.includes("vusercontent.net") ?? false;
 export const metadata: Metadata = {
   metadataBase: new URL(appBaseUrl),
   title: {
-    template: "%s - M.O.N.K.Y OS",
-    default: "M.O.N.K.Y OS",
+    template: "%s | Interview Prep",
+    default: "Interview Prep App",
   },
   description:
-    "The ultimate OS for rebels. Making the web for brave individuals.",
+    "Prepare-se para entrevistas de emprego com IA. Organize icebreakers, speeches, experiências e competências.",
   generator: "v0.app",
 };
 
@@ -52,7 +53,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <link
           rel="preload"
@@ -65,6 +66,12 @@ export default function RootLayout({
       <body
         className={`${rebelGrotesk.variable} ${robotoMono.variable} antialiased`}
       >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
         <TRPCProvider>
           <V0Provider isV0={isV0}>
             <KeyboardShortcutsProvider>
@@ -95,6 +102,7 @@ export default function RootLayout({
             </KeyboardShortcutsProvider>
           </V0Provider>
         </TRPCProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

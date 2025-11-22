@@ -12,6 +12,7 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import Widget from "@/components/dashboard/widget";
 import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { ResizableLayout } from "@/components/ui/resizable-layout";
 import { getBaseUrl } from "@/lib/env";
 import { TRPCProvider } from "@/lib/trpc/react";
 import { V0Provider } from "@/lib/v0-context";
@@ -80,21 +81,20 @@ export default function RootLayout({
               {/* Mobile Header - only visible on mobile */}
               <MobileHeader mockData={mockData} />
 
-              {/* Desktop Layout */}
-              <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-gap lg:px-sides">
-                <div className="hidden lg:block col-span-2 top-0 relative">
-                  <DashboardSidebar />
-                </div>
-                <div className="col-span-1 lg:col-span-7">{children}</div>
-                <div className="col-span-3 hidden lg:block">
+              {/* Desktop Layout com Painéis Redimensionáveis */}
+              <ResizableLayout
+                leftPanel={<DashboardSidebar />}
+                rightPanel={
                   <div className="space-y-gap py-sides min-h-screen max-h-screen sticky top-0 overflow-clip">
                     <Widget widgetData={mockData.widgetData} />
                     <Notifications
                       initialNotifications={mockData.notifications}
                     />
                   </div>
-                </div>
-              </div>
+                }
+              >
+                {children}
+              </ResizableLayout>
 
               </SidebarProvider>
 

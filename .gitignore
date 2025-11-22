@@ -33,3 +33,6 @@ next-env.d.ts
 
 # local backups contendo segredos
 backup arquivo envlocal
+
+*storybook.log
+storybook-static

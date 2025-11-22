@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Maximize2,
   Minimize2,
@@ -90,8 +90,8 @@ export function TeleprompterView({
     };
   }, [isPlaying]);
 
-  // Reset on open
-  useEffect(() => {
+  // Reset on open usando useLayoutEffect para evitar flicker
+  useLayoutEffect(() => {
     if (open) {
       setIsPlaying(false);
       setScrollPosition(0);

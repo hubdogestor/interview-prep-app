@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { GripVertical,Pause, Play, RotateCcw, X } from "lucide-react";
 
@@ -26,25 +26,7 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isRunning) return;
-
-    timerRef.current = window.setInterval(() => {
-      setElapsed((prev) => {
-        const newValue = prev + 1;
-        if (newValue >= targetDuration && !hasFinished) {
-          setHasFinished(true);
-          playAlert();
-        }
-        return newValue;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isRunning, targetDuration, hasFinished]);
-
+  // Audio alert function - declared before useEffect to avoid hoisting issues
   const playAlert = () => {
     const audioContext = new (window.AudioContext ||
       (window as any).webkitAudioContext)();
@@ -66,6 +48,25 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
   };
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    timerRef.current = window.setInterval(() => {
+      setElapsed((prev) => {
+        const newValue = prev + 1;
+        if (newValue >= targetDuration && !hasFinished) {
+          setHasFinished(true);
+          playAlert();
+        }
+        return newValue;
+      });
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isRunning, targetDuration, hasFinished, playAlert]);
 
   const handleReset = () => {
     setElapsed(0);

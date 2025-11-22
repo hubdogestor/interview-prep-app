@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Briefcase,
@@ -198,16 +198,20 @@ export function CommandPalette() {
     setSelectedIndex(0);
   }, [search]);
 
-  // Reset when dialog closes
-  useEffect(() => {
-    if (!open) {
-      setSearch("");
-      setSelectedIndex(0);
+  // Handle dialog close with state reset
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      // Reset state when closing
+      setTimeout(() => {
+        setSearch("");
+        setSelectedIndex(0);
+      }, 0);
     }
-  }, [open]);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl p-0 gap-0">
         <div className="flex items-center border-b px-4">
           <Input

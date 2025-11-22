@@ -157,7 +157,7 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
               <AlertDialogDescription>
-                Tem certeza que deseja excluir o icebreaker "{icebreaker.titulo}"?
+                Tem certeza que deseja excluir o icebreaker &quot;{icebreaker.titulo}&quot;?
                 Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>

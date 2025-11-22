@@ -100,7 +100,7 @@ export function AIStatsWidget() {
           <Sparkles className="h-10 w-10 mx-auto mb-2 opacity-20" />
           <p className="text-xs uppercase">Nenhuma geração IA ainda</p>
           <p className="text-xs mt-1">
-            Use os botões "Gerar com IA" nos formulários
+            Use os botões &quot;Gerar com IA&quot; nos formulários
           </p>
         </div>
       )}

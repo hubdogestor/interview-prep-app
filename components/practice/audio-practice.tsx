@@ -307,7 +307,7 @@ export function AudioPractice({
         {!isRecording && !audioBlob && (
           <div className="text-center text-sm text-muted-foreground max-w-md">
             <p>
-              Clique em "Gravar" quando estiver pronto. Pratique seu {tipo === "icebreaker" ? "icebreaker" : tipo === "speech" ? "speech" : "STAR Case"} como se estivesse em uma entrevista real.
+              Clique em 'Gravar' quando estiver pronto. Pratique seu {tipo === "icebreaker" ? "icebreaker" : tipo === "speech" ? "speech" : "STAR Case"} como se estivesse em uma entrevista real.
             </p>
           </div>
         )}

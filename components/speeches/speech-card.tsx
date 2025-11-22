@@ -177,7 +177,7 @@ export function SpeechCard({ speech }: SpeechCardProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
               <AlertDialogDescription>
-                Tem certeza que deseja excluir o speech "{speech.titulo}"?
+                Tem certeza que deseja excluir o speech &quot;{speech.titulo}&quot;?
                 Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>

@@ -33,33 +33,7 @@ export function PracticeTimer({
   const timerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    if (!isRunning) return;
-
-    timerRef.current = window.setInterval(() => {
-      setElapsed((prev) => {
-        const newValue = prev + 1;
-        if (newValue >= target && !hasFinished) {
-          setHasFinished(true);
-          playAlert();
-        }
-        return newValue;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isRunning, target, hasFinished]);
-
-  useEffect(() => {
-    if (open) {
-      setElapsed(0);
-      setIsRunning(false);
-      setHasFinished(false);
-    }
-  }, [open]);
-
+  // Audio alert function - declared before useEffect to avoid hoisting issues
   const playAlert = () => {
     // Create a simple beep sound using Web Audio API
     const audioContext = new (window.AudioContext ||
@@ -82,6 +56,33 @@ export function PracticeTimer({
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
   };
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    timerRef.current = window.setInterval(() => {
+      setElapsed((prev) => {
+        const newValue = prev + 1;
+        if (newValue >= target && !hasFinished) {
+          setHasFinished(true);
+          playAlert();
+        }
+        return newValue;
+      });
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isRunning, target, hasFinished, playAlert]);
+
+  useEffect(() => {
+    if (open) {
+      setElapsed(0);
+      setIsRunning(false);
+      setHasFinished(false);
+    }
+  }, [open]);
 
   const handleReset = () => {
     setElapsed(0);

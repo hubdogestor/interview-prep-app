@@ -10,6 +10,7 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import Widget from "@/components/dashboard/widget";
 import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { getBaseUrl } from "@/lib/env";
 import { TRPCProvider } from "@/lib/trpc/react";
 import { V0Provider } from "@/lib/v0-context";
 import mockDataJson from "@/mock.json";
@@ -19,9 +20,7 @@ import "./globals.css";
 
 const mockData = mockDataJson as MockData;
 
-const appBaseUrl =
-  process.env.NEXT_PUBLIC_APP_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+const appBaseUrl = getBaseUrl();
 
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",

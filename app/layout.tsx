@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 
 import { CommandPalette } from "@/components/command-palette";
+import { ContextFilesSync } from "@/components/ai/context-files-sync";
 import { MobileHeader } from "@/components/dashboard/mobile-header";
 import Notifications from "@/components/dashboard/notifications";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
@@ -99,6 +100,9 @@ export default function RootLayout({
 
               {/* Command Palette - Global (Ctrl+K) */}
               <CommandPalette />
+              
+              {/* Context Files Sync Notification */}
+              <ContextFilesSync />
             </KeyboardShortcutsProvider>
           </V0Provider>
         </TRPCProvider>

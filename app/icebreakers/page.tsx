@@ -5,6 +5,7 @@ import DashboardPageLayout from "@/components/dashboard/layout";
 import { ExportButton } from "@/components/export/export-button";
 import { GenerateAIButton } from "@/components/icebreakers/generate-ai-button";
 import { IcebreakerCard } from "@/components/icebreakers/icebreaker-card";
+import { IcebreakersPageSuggestions } from "@/components/icebreakers/page-suggestions";
 import MicrophoneIcon from "@/components/icons/microphone";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -36,6 +37,12 @@ export default async function IcebreakersPage() {
         action: <ExportButton items={exportItems} filename="icebreakers" />,
       }}
     >
+      {/* AI Contextual Suggestions */}
+      <IcebreakersPageSuggestions
+        itemCount={icebreakers.length}
+        hasEmptyState={icebreakers.length === 0}
+      />
+
       {icebreakers.length === 0 ? (
         <EmptyState
           icon={Mic}

@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useAIQueue } from "@/hooks/use-ai-queue";
 import { trpc } from "@/lib/trpc/react";
 
 const TIPO_OPTIONS = [
@@ -60,6 +61,9 @@ export function GenerateAIButton() {
 
   const router = useRouter();
   const utils = trpc.useUtils();
+  
+  // AI Queue integration
+  const { addToQueue, startProcessing, completeProcessing } = useAIQueue();
 
   const generateMutation = trpc.icebreakers.generateWithAI.useMutation({
     onSuccess: (data) => {
@@ -87,11 +91,27 @@ export function GenerateAIButton() {
   });
 
   const handleGenerate = () => {
-    generateMutation.mutate({
-      tipo,
-      categoria: categoria || undefined,
-      orientacoesCustomizadas: orientacoesCustomizadas || undefined,
+    // Add to AI queue
+    const queueId = addToQueue({
+      type: "icebreaker",
+      priority: 5,
+      metadata: { tipo, categoria },
     });
+
+    startProcessing(queueId);
+
+    // Execute mutation
+    generateMutation.mutate(
+      {
+        tipo,
+        categoria: categoria || undefined,
+        orientacoesCustomizadas: orientacoesCustomizadas || undefined,
+      },
+      {
+        onSuccess: () => completeProcessing(queueId),
+        onError: (error) => completeProcessing(queueId, error.message),
+      }
+    );
   };
 
   const handleSave = () => {

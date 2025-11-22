@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { AIQueueStatus } from "@/components/ai/ai-queue-status";
 import MobileNotifications from "@/components/dashboard/notifications/mobile-notifications";
 import BellIcon from "@/components/icons/bell";
 import MonkeyIcon from "@/components/icons/monkey";
@@ -32,8 +33,9 @@ export function MobileHeader({ mockData }: MobileHeaderProps) {
           </div>
         </div>
 
-        {/* Right: Theme Toggle + Notifications */}
+        {/* Right: Theme Toggle + AI Queue + Notifications */}
         <div className="flex items-center gap-2">
+          <AIQueueStatus />
           <ThemeToggle />
         <Sheet>
           {/* Right: Notifications Menu */}

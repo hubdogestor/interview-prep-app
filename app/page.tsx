@@ -1,27 +1,26 @@
-import DashboardChart from "@/components/dashboard/chart";
-import DashboardPageLayout from "@/components/dashboard/layout";
-import { RecentItems } from "@/components/dashboard/recent-items";
-import { FavoritesList } from "@/components/dashboard/favorites-list";
-import DashboardStat from "@/components/dashboard/stat";
-import BracketsIcon from "@/components/icons/brackets";
-import GearIcon from "@/components/icons/gear";
-import ProcessorIcon from "@/components/icons/proccesor";
-import StarIcon from "@/components/icons/star";
-import MicrophoneIcon from "@/components/icons/microphone";
-import MessageIcon from "@/components/icons/message";
-import BriefcaseIcon from "@/components/icons/briefcase";
-import { api } from "@/lib/trpc/server";
-import { QuickActions } from "@/components/dashboard/quick-actions";
-import { ExportPortfolioButton } from "@/components/dashboard/export-portfolio-button";
-import { NeedsReviewWidget } from "@/components/dashboard/needs-review-widget";
 import { AIStatsWidget } from "@/components/dashboard/ai-stats-widget";
+import DashboardChart from "@/components/dashboard/chart";
+import { ExportPortfolioButton } from "@/components/dashboard/export-portfolio-button";
+import { FavoritesList } from "@/components/dashboard/favorites-list";
+import DashboardPageLayout from "@/components/dashboard/layout";
+import { NeedsReviewWidget } from "@/components/dashboard/needs-review-widget";
 import { PracticeEvolutionChart } from "@/components/dashboard/practice-evolution-chart";
 import { PracticeHeatmap } from "@/components/dashboard/practice-heatmap";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { RecentItems } from "@/components/dashboard/recent-items";
 import { SmartSuggestions } from "@/components/dashboard/smart-suggestions";
+import DashboardStat from "@/components/dashboard/stat";
+import BracketsIcon from "@/components/icons/brackets";
+import BriefcaseIcon from "@/components/icons/briefcase";
+import MessageIcon from "@/components/icons/message";
+import MicrophoneIcon from "@/components/icons/microphone";
+import ProcessorIcon from "@/components/icons/proccesor";
+import StarIcon from "@/components/icons/star";
 import {
-  dashboardOverviewFallback,
   type DashboardOverviewData,
+  dashboardOverviewFallback,
 } from "@/data/dashboard-overview-fallback";
+import { api } from "@/lib/trpc/server";
 
 export default async function DashboardOverview() {
   let dashboard: DashboardOverviewData = dashboardOverviewFallback;

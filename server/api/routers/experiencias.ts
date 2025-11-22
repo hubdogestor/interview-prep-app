@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+
 import { generateStarCase } from "@/lib/ai/gemini";
+import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 // Schema para STAR Case individual
 const starCaseSchema = z.object({

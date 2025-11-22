@@ -1,6 +1,6 @@
+import { TrelloBoard } from "@/components/boards/trello-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import BracketsIcon from "@/components/icons/brackets"
-import { TrelloBoard } from "@/components/boards/trello-board"
 import { kanbanBoards } from "@/data/boards"
 
 export default function KanbanLeoPage() {

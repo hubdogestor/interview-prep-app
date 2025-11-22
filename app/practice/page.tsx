@@ -1,15 +1,16 @@
 "use client";
 
-import DashboardPageLayout from "@/components/dashboard/layout";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { trpc } from "@/lib/trpc/react";
-import { Target, TrendingUp, Clock, Calendar, Mic, MessageSquare, Briefcase, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp } from "@/lib/animations";
+import { ArrowLeft,Briefcase, Calendar, Clock, MessageSquare, Mic, Target, TrendingUp } from "lucide-react";
+
+import DashboardPageLayout from "@/components/dashboard/layout";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fadeInUp,staggerContainer } from "@/lib/animations";
+import { trpc } from "@/lib/trpc/react";
 
 const tipoConfig = {
   icebreaker: {

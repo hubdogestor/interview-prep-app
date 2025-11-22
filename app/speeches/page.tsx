@@ -1,10 +1,11 @@
 import Link from "next/link";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
-import MessageIcon from "@/components/icons/message";
-import { Button } from "@/components/ui/button";
-import { SpeechCard } from "@/components/speeches/speech-card";
-import { GenerateAIButton } from "@/components/speeches/generate-ai-button";
 import { ExportButton } from "@/components/export/export-button";
+import MessageIcon from "@/components/icons/message";
+import { GenerateAIButton } from "@/components/speeches/generate-ai-button";
+import { SpeechCard } from "@/components/speeches/speech-card";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/trpc/server";
 
 export default async function SpeechesPage() {

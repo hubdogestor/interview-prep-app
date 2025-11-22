@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import {motion } from "framer-motion";
+import { Loader2, Mic, Pause, Play, RotateCcw, Sparkles,Square } from "lucide-react";
+import { toast } from "sonner";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Mic, Square, Play, Pause, RotateCcw, Loader2, Sparkles } from "lucide-react";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
-import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
 import { fadeIn, scaleIn } from "@/lib/animations";
+import { trpc } from "@/lib/trpc/react";
 
 interface AudioPracticeProps {
   tipo: "icebreaker" | "speech" | "star_case";

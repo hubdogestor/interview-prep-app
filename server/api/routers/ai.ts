@@ -1,6 +1,7 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { translateContent, generateProactiveSuggestions } from "@/lib/ai/gemini";
+
+import { generateProactiveSuggestions,translateContent } from "@/lib/ai/gemini";
+import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const aiRouter = createTRPCRouter({
   // Translate content between PT-BR and EN

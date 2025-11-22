@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+
+import MessageIcon from "@/components/icons/message";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,9 +15,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import MessageIcon from "@/components/icons/message";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 
 interface SpeechCardProps {
   speech: {

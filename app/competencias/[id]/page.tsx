@@ -1,13 +1,12 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
 import { CompetenciaForm } from "@/components/competencias/competencia-form";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import StarIcon from "@/components/icons/star";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2 } from "lucide-react";
-import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +18,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc/react";
 
 export default function EditarCompetenciaPage() {
   const params = useParams();

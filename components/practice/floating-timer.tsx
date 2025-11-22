@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { GripVertical,Pause, Play, RotateCcw, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { X, Pause, Play, RotateCcw, GripVertical } from "lucide-react";
 
 interface FloatingTimerProps {
   targetDuration: number; // in seconds

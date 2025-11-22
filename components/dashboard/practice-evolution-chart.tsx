@@ -1,19 +1,20 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc/react";
 import { TrendingUp } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from "recharts";
+
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { trpc } from "@/lib/trpc/react";
 
 export function PracticeEvolutionChart() {
   const { data: stats, isLoading } = trpc.practice.stats.useQuery();

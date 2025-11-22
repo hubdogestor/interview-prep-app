@@ -1,19 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowRight, Check,Copy, Languages, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, Languages, ArrowRight, Copy, Check } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 
 interface TranslationDialogProps {
   open: boolean;

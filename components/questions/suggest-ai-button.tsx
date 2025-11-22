@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2,Sparkles } from "lucide-react";
+import { toast } from "sonner";
+
+import { ContextualLoading } from "@/components/ai/contextual-loading";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -12,14 +19,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ContextualLoading } from "@/components/ai/contextual-loading";
-import { Sparkles, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 
 interface SuggestedQuestion {
   categoria: "tecnica" | "comportamental" | "cultura" | "carreira";

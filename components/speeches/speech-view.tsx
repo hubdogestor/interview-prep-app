@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Mic,Monitor, Timer } from "lucide-react";
+
+import { ExportButton } from "@/components/export/export-button";
+import { FloatingTimer } from "@/components/practice/floating-timer";
+import { TeleprompterView } from "@/components/teleprompter/teleprompter-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CopyButton } from "@/components/ui/copy-button";
 import { TextStats } from "@/components/ui/text-stats";
-import { TeleprompterView } from "@/components/teleprompter/teleprompter-view";
-import { FloatingTimer } from "@/components/practice/floating-timer";
-import { ExportButton } from "@/components/export/export-button";
-import { Monitor, Timer, Mic } from "lucide-react";
 
 interface SpeechViewProps {
   speech: {

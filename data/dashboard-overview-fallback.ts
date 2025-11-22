@@ -1,4 +1,4 @@
-import { Prisma, type Competencia, type Experiencia, type Icebreaker, type Question, type Speech } from "@prisma/client";
+import { type Competencia, type Experiencia, type Icebreaker, Prisma, type Question, type Speech } from "@prisma/client";
 import type { inferRouterOutputs } from "@trpc/server";
 
 import type { AppRouter } from "@/server/api/root";

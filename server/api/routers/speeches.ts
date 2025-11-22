@@ -1,6 +1,7 @@
 import { z } from "zod";
+
+import { editSpeech,generateSpeech } from "@/lib/ai/gemini";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { generateSpeech, editSpeech } from "@/lib/ai/gemini";
 
 // Schema para criar speech
 const createSpeechSchema = z.object({

@@ -3,15 +3,15 @@ import { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
+import { CommandPalette } from "@/components/command-palette";
 import { MobileHeader } from "@/components/dashboard/mobile-header";
 import Notifications from "@/components/dashboard/notifications";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import Widget from "@/components/dashboard/widget";
+import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TRPCProvider } from "@/lib/trpc/react";
 import { V0Provider } from "@/lib/v0-context";
-import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
-import { CommandPalette } from "@/components/command-palette";
 import mockDataJson from "@/mock.json";
 import type { MockData } from "@/types/dashboard";
 

@@ -1,6 +1,7 @@
 import { z } from "zod";
+
+import { editIcebreaker,generateIcebreaker } from "@/lib/ai/gemini";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { generateIcebreaker, editIcebreaker } from "@/lib/ai/gemini";
 
 // Schema para versão individual de icebreaker
 const versaoSchema = z.object({

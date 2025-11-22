@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Languages } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
 import { TranslationDialog } from "./translation-dialog";
 
 interface TranslationButtonProps {

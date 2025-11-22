@@ -1,6 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Edit, Heart, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { SuggestAIButton } from "@/components/questions/suggest-ai-button";
 import {
   Accordion,
   AccordionContent,
@@ -9,10 +13,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SuggestAIButton } from "@/components/questions/suggest-ai-button";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
-import { Edit, Heart, Trash2 } from "lucide-react";
 
 const priorityColors: Record<string, string> = {
   alta: "bg-destructive",

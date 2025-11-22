@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2,Sparkles } from "lucide-react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,11 +13,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 
 interface TrackRecordAIButtonProps {
   competenciaNome: string;

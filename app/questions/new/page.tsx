@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import QuestionIcon from "@/components/icons/question";
 import { QuestionForm } from "@/components/questions/question-form";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 
 export default function NewQuestionPage() {
   const router = useRouter();

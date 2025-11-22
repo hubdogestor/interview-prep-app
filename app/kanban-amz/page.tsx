@@ -1,6 +1,6 @@
+import { TrelloBoard } from "@/components/boards/trello-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import ProcessorIcon from "@/components/icons/proccesor"
-import { TrelloBoard } from "@/components/boards/trello-board"
 import { kanbanBoards } from "@/data/boards"
 
 export default function KanbanAmzPage() {

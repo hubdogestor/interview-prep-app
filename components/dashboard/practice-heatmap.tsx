@@ -1,8 +1,8 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc/react";
 import { Calendar } from "lucide-react";
+
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { trpc } from "@/lib/trpc/react";
 
 export function PracticeHeatmap() {
   const { data: stats, isLoading } = trpc.practice.stats.useQuery();

@@ -1,13 +1,12 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { ExperienciaForm } from "@/components/experiencias/experiencia-form";
-import DashboardPageLayout from "@/components/dashboard/layout";
-import BriefcaseIcon from "@/components/icons/briefcase";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import { trpc } from "@/lib/trpc/react";
 import { toast } from "sonner";
+
+import DashboardPageLayout from "@/components/dashboard/layout";
+import { ExperienciaForm } from "@/components/experiencias/experiencia-form";
+import BriefcaseIcon from "@/components/icons/briefcase";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +18,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc/react";
 
 export default function EditarExperienciaPage() {
   const params = useParams();

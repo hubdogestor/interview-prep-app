@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Eye, Monitor, Timer } from "lucide-react";
+
+import { FloatingTimer } from "@/components/practice/floating-timer";
+import { TeleprompterView } from "@/components/teleprompter/teleprompter-view";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { CopyButton } from "@/components/ui/copy-button";
 import {
   Dialog,
   DialogContent,
@@ -10,13 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CopyButton } from "@/components/ui/copy-button";
 import { TextStats } from "@/components/ui/text-stats";
-import { TeleprompterView } from "@/components/teleprompter/teleprompter-view";
-import { FloatingTimer } from "@/components/practice/floating-timer";
-import { Eye, Monitor, Timer } from "lucide-react";
 
 interface Version {
   nome: string;

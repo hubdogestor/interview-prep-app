@@ -1,6 +1,7 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { z } from "zod";
+
 import { analyzeJobFit } from "@/lib/ai/gemini";
+import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const dashboardRouter = createTRPCRouter({
   overview: publicProcedure.query(async ({ ctx }) => {

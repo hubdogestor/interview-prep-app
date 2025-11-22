@@ -1,12 +1,13 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { AlertCircle, ArrowRight,Briefcase, MessageSquare, Mic } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/lib/trpc/react";
-import { AlertCircle, Mic, MessageSquare, Briefcase, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { trpc } from "@/lib/trpc/react";
 
 const tipoConfig = {
   icebreaker: {

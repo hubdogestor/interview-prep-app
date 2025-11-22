@@ -1,9 +1,10 @@
 "use client";
 
+import { Calendar, Sparkles, TrendingUp, Zap } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc/react";
-import { Sparkles, TrendingUp, Calendar, Zap } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { trpc } from "@/lib/trpc/react";
 
 export function AIStatsWidget() {
   const { data: stats, isLoading } = trpc.dashboard.aiStats.useQuery();

@@ -1,20 +1,21 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { ArrowLeft, Download,Play, Plus } from "lucide-react";
+import { toast } from "sonner";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import BriefcaseIcon from "@/components/icons/briefcase";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc/react";
-import { useRouter } from "next/navigation";
-import { Plus, ArrowLeft, Play, Download } from "lucide-react";
 import { SearchBar, SearchFilters } from "@/components/ui/search-bar";
-import { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { exportExperiencias, downloadMarkdown } from "@/lib/export/markdown";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp, buttonHover, buttonTap } from "@/lib/animations";
+import {fadeInUp, staggerContainer } from "@/lib/animations";
+import { downloadMarkdown,exportExperiencias } from "@/lib/export/markdown";
+import { trpc } from "@/lib/trpc/react";
 
 export default function ExperienciasPage() {
   const router = useRouter();

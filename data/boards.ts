@@ -1,4 +1,4 @@
-import type { BoardColumn, BoardCard } from "@/types/boards"
+import type { BoardCard,BoardColumn } from "@/types/boards"
 
 export const okr2026Columns: BoardColumn[] = [
   {

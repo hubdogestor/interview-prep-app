@@ -1,13 +1,13 @@
-import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
-import { profileRouter } from "@/server/api/routers/profile";
-import { dashboardRouter } from "@/server/api/routers/dashboard";
-import { icebreakersRouter } from "@/server/api/routers/icebreakers";
-import { competenciasRouter } from "@/server/api/routers/competencias";
-import { experienciasRouter } from "@/server/api/routers/experiencias";
-import { speechesRouter } from "@/server/api/routers/speeches";
-import { questionsRouter } from "@/server/api/routers/questions";
-import { practiceRouter } from "@/server/api/routers/practice";
 import { aiRouter } from "@/server/api/routers/ai";
+import { competenciasRouter } from "@/server/api/routers/competencias";
+import { dashboardRouter } from "@/server/api/routers/dashboard";
+import { experienciasRouter } from "@/server/api/routers/experiencias";
+import { icebreakersRouter } from "@/server/api/routers/icebreakers";
+import { practiceRouter } from "@/server/api/routers/practice";
+import { profileRouter } from "@/server/api/routers/profile";
+import { questionsRouter } from "@/server/api/routers/questions";
+import { speechesRouter } from "@/server/api/routers/speeches";
+import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
  * Root router - combina todos os routers por domínio

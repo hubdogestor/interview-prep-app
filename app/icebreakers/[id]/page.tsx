@@ -1,8 +1,9 @@
-import DashboardPageLayout from "@/components/dashboard/layout";
-import MicIcon from "@/components/icons/mic";
-import { IcebreakerView } from "@/components/icebreakers/icebreaker-view";
-import { api } from "@/lib/trpc/server";
 import { notFound } from "next/navigation";
+
+import DashboardPageLayout from "@/components/dashboard/layout";
+import { IcebreakerView } from "@/components/icebreakers/icebreaker-view";
+import MicIcon from "@/components/icons/mic";
+import { api } from "@/lib/trpc/server";
 
 export default async function IcebreakerViewPage({
   params,

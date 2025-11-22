@@ -1,8 +1,9 @@
+import { notFound } from "next/navigation";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import QuestionIcon from "@/components/icons/question";
 import { QuestionForm } from "@/components/questions/question-form";
 import { api } from "@/lib/trpc/server";
-import { notFound } from "next/navigation";
 
 export default async function EditQuestionPage({
   params,

@@ -1,12 +1,11 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { trpc } from "@/lib/trpc/react";
-import { Lightbulb, Sparkles, Target, TrendingUp, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowRight,Lightbulb, Sparkles, Target, TrendingUp } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { trpc } from "@/lib/trpc/react";
 
 export function SmartSuggestions() {
   const { data: needsReview = [] } = trpc.dashboard.needsReview.useQuery();

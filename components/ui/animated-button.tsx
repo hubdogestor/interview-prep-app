@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Button, ButtonProps } from "@/components/ui/button";
 import { forwardRef } from "react";
+import { motion } from "framer-motion";
+
+import { Button, ButtonProps } from "@/components/ui/button";
 import { buttonHover, buttonTap } from "@/lib/animations";
 
 export interface AnimatedButtonProps extends ButtonProps {}

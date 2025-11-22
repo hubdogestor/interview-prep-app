@@ -1,10 +1,23 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Edit2, Plus, Trash2, X } from "lucide-react";
+import { z } from "zod";
+
+import { StarCaseAIButton } from "@/components/experiencias/star-case-ai-button";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -14,22 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { TextStats } from "@/components/ui/text-stats";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Edit2, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -37,7 +35,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StarCaseAIButton } from "@/components/experiencias/star-case-ai-button";
+import { Separator } from "@/components/ui/separator";
+import { TextStats } from "@/components/ui/text-stats";
+import { Textarea } from "@/components/ui/textarea";
 
 // Schema para STAR Case individual
 const starCaseSchema = z.object({

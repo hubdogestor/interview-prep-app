@@ -2,6 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Briefcase,
+  HelpCircle,
+  MessageSquare,
+  Mic,
+  Plus,
+  Star,
+  Target as TargetIcon,
+} from "lucide-react";
+
+import { JobFitAnalyzer } from "@/components/dashboard/job-fit-analyzer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -10,18 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Plus,
-  Mic,
-  MessageSquare,
-  HelpCircle,
-  Briefcase,
-  Star,
-  Target as TargetIcon,
-} from "lucide-react";
-import { motion } from "framer-motion";
 import { buttonHover, buttonTap } from "@/lib/animations";
-import { JobFitAnalyzer } from "@/components/dashboard/job-fit-analyzer";
 
 const quickActions = [
   {

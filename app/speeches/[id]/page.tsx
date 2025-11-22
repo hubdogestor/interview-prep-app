@@ -1,8 +1,9 @@
+import { notFound } from "next/navigation";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import MessageIcon from "@/components/icons/message";
 import { SpeechView } from "@/components/speeches/speech-view";
 import { api } from "@/lib/trpc/server";
-import { notFound } from "next/navigation";
 
 export default async function SpeechViewPage({
   params,

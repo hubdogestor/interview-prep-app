@@ -3,21 +3,22 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Briefcase,
+  HelpCircle,
+  Home,
+  MessageSquare,
+  Mic,
+  Plus,
+  Star,
+  Target,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  Home,
-  Mic,
-  MessageSquare,
-  HelpCircle,
-  Briefcase,
-  Star,
-  Target,
-  Plus,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface CommandItem {
   id: string;

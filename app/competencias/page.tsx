@@ -1,20 +1,21 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { ArrowLeft, Download,Plus } from "lucide-react";
+import { toast } from "sonner";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
 import StarIcon from "@/components/icons/star";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc/react";
-import { useRouter } from "next/navigation";
-import { Plus, ArrowLeft, Download } from "lucide-react";
 import { SearchBar, SearchFilters } from "@/components/ui/search-bar";
-import { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { exportCompetencias, downloadMarkdown } from "@/lib/export/markdown";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp } from "@/lib/animations";
+import { fadeInUp,staggerContainer } from "@/lib/animations";
+import { downloadMarkdown,exportCompetencias } from "@/lib/export/markdown";
+import { trpc } from "@/lib/trpc/react";
 
 const categoryColors: Record<string, string> = {
   technical: "bg-chart-1",

@@ -1,13 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+
 import { CompetenciaForm } from "@/components/competencias/competencia-form";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import StarIcon from "@/components/icons/star";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 
 export default function NovaCompetenciaPage() {
   const router = useRouter();

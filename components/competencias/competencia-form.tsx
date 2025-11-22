@@ -1,25 +1,25 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, Trash2, X } from "lucide-react";
+import { z } from "zod";
+
+import { CompetenciaAIButton } from "@/components/competencias/competencia-ai-button";
+import { TrackRecordAIButton } from "@/components/competencias/track-record-ai-button";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { TextStats } from "@/components/ui/text-stats";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -27,8 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CompetenciaAIButton } from "@/components/competencias/competencia-ai-button";
-import { TrackRecordAIButton } from "@/components/competencias/track-record-ai-button";
+import { TextStats } from "@/components/ui/text-stats";
+import { Textarea } from "@/components/ui/textarea";
 
 // Schema para track record individual
 const trackRecordSchema = z.object({

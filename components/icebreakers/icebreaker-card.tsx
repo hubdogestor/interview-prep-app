@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+
+import { ViewVersionsModal } from "@/components/icebreakers/view-versions-modal";
+import MicrophoneIcon from "@/components/icons/microphone";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,10 +16,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import MicrophoneIcon from "@/components/icons/microphone";
-import { ViewVersionsModal } from "@/components/icebreakers/view-versions-modal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
 
 interface IcebreakerCardProps {
   icebreaker: {

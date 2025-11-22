@@ -1,6 +1,6 @@
+import { TrelloBoard } from "@/components/boards/trello-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import StarIcon from "@/components/icons/star"
-import { TrelloBoard } from "@/components/boards/trello-board"
 import { okr2026Columns } from "@/data/boards"
 
 export default function Okrs2026Page() {

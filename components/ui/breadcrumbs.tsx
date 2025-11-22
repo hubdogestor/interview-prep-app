@@ -1,9 +1,9 @@
 "use client";
 
+import { Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home } from "lucide-react";
-import { Fragment } from "react";
 
 interface BreadcrumbItem {
   label: string;

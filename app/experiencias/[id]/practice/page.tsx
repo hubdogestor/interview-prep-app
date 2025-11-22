@@ -1,17 +1,18 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Mic,Play, Timer } from "lucide-react";
+
 import DashboardPageLayout from "@/components/dashboard/layout";
+import { StarCaseTeleprompter } from "@/components/experiencias/star-case-teleprompter";
 import BriefcaseIcon from "@/components/icons/briefcase";
+import { AudioPractice } from "@/components/practice/audio-practice";
+import { PracticeTimer } from "@/components/practice/practice-timer";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play, Timer, Mic } from "lucide-react";
 import { trpc } from "@/lib/trpc/react";
-import { StarCaseTeleprompter } from "@/components/experiencias/star-case-teleprompter";
-import { PracticeTimer } from "@/components/practice/practice-timer";
-import { AudioPractice } from "@/components/practice/audio-practice";
 
 interface StarCase {
   titulo: string;

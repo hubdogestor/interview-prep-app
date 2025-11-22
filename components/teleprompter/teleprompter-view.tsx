@@ -1,14 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Maximize2,
   Minimize2,
@@ -17,8 +9,17 @@ import {
   RotateCcw,
   Settings,
 } from "lucide-react";
-import { TextStats } from "@/components/ui/text-stats";
 import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
+import { TextStats } from "@/components/ui/text-stats";
 
 interface TeleprompterViewProps {
   open: boolean;

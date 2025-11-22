@@ -1,21 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { AlertTriangle, Lightbulb, Loader2,Sparkles, Star, Target, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Sparkles, Target, TrendingUp, AlertTriangle, Lightbulb, Star, Loader2 } from "lucide-react";
-import { trpc } from "@/lib/trpc/react";
-import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 import type { JobFitAnalysis } from "@/lib/ai/gemini";
+import { trpc } from "@/lib/trpc/react";
 
 interface JobFitAnalyzerProps {
   open: boolean;

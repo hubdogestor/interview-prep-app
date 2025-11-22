@@ -1,6 +1,7 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { z } from "zod";
+
 import { suggestQuestions } from "@/lib/ai/gemini";
+import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const questionsRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {

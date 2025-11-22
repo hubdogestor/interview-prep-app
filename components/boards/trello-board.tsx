@@ -1,35 +1,30 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import type { ReactNode } from "react"
+import { useEffect, useState } from "react"
 import {
+  closestCorners,
   DndContext,
   DragEndEvent,
-  DragOverlay,
   DragOverEvent,
+  DragOverlay,
   DragStartEvent,
   KeyboardSensor,
   PointerSensor,
+  useDroppable,
   useSensor,
   useSensors,
-  closestCorners,
-  useDroppable,
 } from "@dnd-kit/core"
 import {
-  SortableContext,
   arrayMove,
+  SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { Edit3, Plus } from "lucide-react"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Progress } from "@/components/ui/progress"
-import { SortableItem } from "@/components/ui/sortable-item"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -38,7 +33,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
+import { SortableItem } from "@/components/ui/sortable-item"
+import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils"
 import type { BoardCard, BoardColumn } from "@/types/boards"
 
 interface TrelloBoardProps {

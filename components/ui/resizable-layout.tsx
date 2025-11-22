@@ -1,6 +1,6 @@
 "use client";
 
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, useMemo } from "react";
 
 import { ResizableHandle } from "@/components/ui/resizable-handle";
 import {
@@ -35,6 +35,22 @@ export function ResizableLayout({
     localStorageKey: "interview-prep-right-panel-width",
   });
 
+  // Memoizar estilos para evitar re-renders
+  const leftPanelStyle = useMemo(
+    () => ({
+      width: `${leftPanelState.width}px`,
+      ["--sidebar-width" as string]: `${leftPanelState.width}px`,
+    }),
+    [leftPanelState.width]
+  );
+
+  const rightPanelStyle = useMemo(
+    () => ({
+      width: `${rightPanelState.width}px`,
+    }),
+    [rightPanelState.width]
+  );
+
   return (
     <>
       {/* Layout Mobile - mantém o comportamento original */}
@@ -43,13 +59,7 @@ export function ResizableLayout({
       {/* Layout Desktop com Painéis Redimensionáveis */}
       <div className="hidden lg:flex w-full min-h-screen">
         {/* Painel Esquerdo com Handle Integrado */}
-        <div
-          className="relative flex-shrink-0"
-          style={{ 
-            width: `${leftPanelState.width}px`,
-            ["--sidebar-width" as string]: `${leftPanelState.width}px`
-          }}
-        >
+        <div className="relative flex-shrink-0" style={leftPanelStyle}>
           {leftPanel}
           
           {/* Handle overlay no lado direito */}
@@ -66,10 +76,7 @@ export function ResizableLayout({
         <div className="flex-1 min-w-0">{children}</div>
 
         {/* Painel Direito com Handle Integrado */}
-        <div
-          className="relative flex-shrink-0"
-          style={{ width: `${rightPanelState.width}px` }}
-        >
+        <div className="relative flex-shrink-0" style={rightPanelStyle}>
           {/* Handle overlay no lado esquerdo */}
           <div className="absolute top-0 left-0 bottom-0 w-1 z-50">
             <ResizableHandle

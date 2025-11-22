@@ -2,6 +2,7 @@
 
 import type * as React from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 import { ThemeToggle } from "@/components/theme-toggle"
 import AtomIcon from "@/components/icons/atom"
@@ -205,10 +206,10 @@ export function DashboardSidebar({ className, ...props }: React.ComponentProps<t
                           <span>{item.title}</span>
                         </div>
                       ) : (
-                        <a href={item.url}>
+                        <Link href={item.url}>
                           <item.icon className="size-5" />
                           <span>{item.title}</span>
-                        </a>
+                        </Link>
                       )}
                     </SidebarMenuButton>
                     {item.locked && (

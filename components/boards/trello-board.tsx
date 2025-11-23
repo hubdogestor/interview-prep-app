@@ -46,10 +46,30 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { SortableItem } from "@/components/ui/sortable-item"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
-import type { BoardCard, BoardColumn } from "@/types/boards"
+import type { BoardCard, BoardCardChip, BoardColumn } from "@/types/boards"
+
+// Flags pré-definidas para cards
+const AVAILABLE_CHIPS: BoardCardChip[] = [
+  { label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" },
+  { label: "OKR", colorClass: "bg-amber-500/15 text-amber-100 border-transparent" },
+  { label: "Urgente", colorClass: "bg-red-500/15 text-red-100 border-transparent" },
+  { label: "Importante", colorClass: "bg-orange-500/15 text-orange-100 border-transparent" },
+  { label: "Bug", colorClass: "bg-rose-500/15 text-rose-100 border-transparent" },
+  { label: "Feature", colorClass: "bg-green-500/15 text-green-100 border-transparent" },
+  { label: "Melhoria", colorClass: "bg-blue-500/15 text-blue-100 border-transparent" },
+  { label: "Pesquisa", colorClass: "bg-purple-500/15 text-purple-100 border-transparent" },
+  { label: "Bloqueado", colorClass: "bg-gray-500/15 text-gray-100 border-transparent" },
+]
 
 interface TrelloBoardProps {
   initialColumns: BoardColumn[]
@@ -68,6 +88,7 @@ type DraftState = Record<
     dueDate: string
     metric: string
     items: KrEntry[]
+    selectedChip: string // Label da flag selecionada ou vazio
   }
 >
 
@@ -180,7 +201,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
 
   const handleDraftChange = (
     columnId: string,
-    field: "title" | "description" | "owner" | "dueDate" | "metric",
+    field: "title" | "description" | "owner" | "dueDate" | "metric" | "selectedChip",
     value: string,
   ) => {
     setDrafts((prev) => ({
@@ -191,6 +212,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
         owner: field === "owner" ? value : prev[columnId]?.owner ?? "",
         dueDate: field === "dueDate" ? value : prev[columnId]?.dueDate ?? "",
         metric: field === "metric" ? value : prev[columnId]?.metric ?? "",
+        selectedChip: field === "selectedChip" ? value : prev[columnId]?.selectedChip ?? "",
         items: prev[columnId]?.items ?? createEmptyKrEntries(),
       },
     }))
@@ -205,6 +227,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
         owner: "",
         dueDate: "",
         metric: "",
+        selectedChip: "",
         items: createEmptyKrEntries(),
       },
     }))
@@ -255,6 +278,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
             owner: "",
             dueDate: "",
             metric: "",
+            selectedChip: "",
           }),
           items: [...ensureKrSlots(base), { description: "", metric: "" }],
         },
@@ -267,6 +291,11 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     if (!draft?.title?.trim()) return
     const normalizedItems = normalizeKrs(ensureKrSlots(draft.items))
 
+    // Encontrar chip selecionado ou deixar vazio
+    const selectedChipData = draft.selectedChip
+      ? AVAILABLE_CHIPS.find((chip) => chip.label === draft.selectedChip)
+      : undefined
+
     const newCard: BoardCard = {
       id: generateCardId(),
       title: draft.title.trim(),
@@ -275,10 +304,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
       dueDate: draft.dueDate.trim() || undefined,
       metric: draft.metric.trim() || undefined,
       items: normalizedItems.length ? normalizedItems : undefined,
-      chips: [
-        { label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" },
-        { label: "OKR", colorClass: "bg-amber-500/15 text-amber-100 border-transparent" },
-      ],
+      chips: selectedChipData ? [selectedChipData] : undefined,
       meta: new Date().toLocaleDateString("pt-BR"),
     }
 
@@ -405,6 +431,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                   owner: "",
                   dueDate: "",
                   metric: "",
+                  selectedChip: "",
                   items: createEmptyKrEntries(),
                 }
               }
@@ -585,11 +612,12 @@ interface BoardColumnCardProps {
     owner: string
     dueDate: string
     metric: string
+    selectedChip: string
     items: KrEntry[]
   }
   onDraftChange: (
     columnId: string,
-    field: "title" | "description" | "owner" | "dueDate" | "metric",
+    field: "title" | "description" | "owner" | "dueDate" | "metric" | "selectedChip",
     value: string,
   ) => void
   onDraftKrChange: (columnId: string, index: number, field: "description" | "metric", value: string) => void
@@ -670,6 +698,28 @@ function BoardColumnCard({
               onChange={(event) => onDraftChange(column.id, "metric", event.target.value)}
               className="bg-background/40"
             />
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Flag (opcional)</Label>
+              <Select
+                value={draft.selectedChip}
+                onValueChange={(value) => onDraftChange(column.id, "selectedChip", value)}
+              >
+                <SelectTrigger className="bg-background/40">
+                  <SelectValue placeholder="Sem flag" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Sem flag</SelectItem>
+                  {AVAILABLE_CHIPS.map((chip) => (
+                    <SelectItem key={chip.label} value={chip.label}>
+                      <div className="flex items-center gap-2">
+                        <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
+                        {chip.label}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {showKRs && (
               <div className="space-y-2">
                 {ensureKrSlots(draft.items).map((kr, index) => (

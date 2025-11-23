@@ -3,11 +3,11 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: '.env.local' });
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.DATABASE_URL;
 if (!uri) {
-  console.error("❌ MONGODB_URI not found in environment variables");
+  console.error("❌ DATABASE_URL not found in environment variables");
   process.exit(1);
 }
 

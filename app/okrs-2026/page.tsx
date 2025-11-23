@@ -1,4 +1,4 @@
-import { TrelloBoard } from "@/components/boards/trello-board"
+import { OKRClientBoard } from "@/components/boards/okr-client-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import StarIcon from "@/components/icons/star"
 import { okr2026Columns } from "@/data/boards"
@@ -17,7 +17,11 @@ export default function Okrs2026Page() {
           Arraste e reorganize os objetivos por trimestre. Cada coluna aceita novos cards e mantém o contexto visual
           inspirado em quadros Trello, perfeito para revisões rápidas com o time.
         </div>
-        <TrelloBoard initialColumns={okr2026Columns} addCardLabel="Adicionar OKR" />
+        <OKRClientBoard 
+          quarter="2026" 
+          initialColumns={okr2026Columns} 
+          addCardLabel="Adicionar OKR" 
+        />
       </section>
     </DashboardPageLayout>
   )

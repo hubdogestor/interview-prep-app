@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AlertCircle, ArrowRight,Briefcase, MessageSquare, Mic } from "lucide-react";
 

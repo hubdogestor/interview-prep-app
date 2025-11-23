@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { fadeIn } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/trpc/react";
 
 export interface AIContextualSuggestion {
   id: string;

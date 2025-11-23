@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Calendar, Sparkles, TrendingUp, Zap } from "lucide-react";
 
 import { Card } from "@/components/ui/card";

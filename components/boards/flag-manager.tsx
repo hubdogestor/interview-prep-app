@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/trpc/react";
 import type { BoardCardChip } from "@/types/boards";
 import { Badge } from "@/components/ui/badge";
 

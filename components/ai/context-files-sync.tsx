@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { fadeIn } from "@/lib/animations";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/trpc/react";
 
 interface ContextFile {
   name: string;

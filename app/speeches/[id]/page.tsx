@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
 import { type Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import MessageIcon from "@/components/icons/message";

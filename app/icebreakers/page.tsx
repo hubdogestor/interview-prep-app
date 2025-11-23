@@ -6,7 +6,6 @@ import { ExportButton } from "@/components/export/export-button";
 import { GenerateAIButton } from "@/components/icebreakers/generate-ai-button";
 import { IcebreakerCard } from "@/components/icebreakers/icebreaker-card";
 import { IcebreakersPageSuggestions } from "@/components/icebreakers/page-suggestions";
-import MicrophoneIcon from "@/components/icons/microphone";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { api } from "@/lib/trpc/server";

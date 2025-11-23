@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, CheckCircle, FileText, RefreshCw, X } from "lucide-react";
 
@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { fadeIn } from "@/lib/animations";
-import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc/react";
+import { cn } from "@/lib/utils";
+
+const CONTEXT_SYNC_ENABLED = false;
 
 interface ContextFile {
   name: string;
@@ -27,7 +29,7 @@ interface ContextFilesSyncProps {
  * Shows notification when context files are updated
  */
 export function ContextFilesSync({ className }: ContextFilesSyncProps) {
-  const [_files, setFiles] = useState<ContextFile[]>([]);
+  const [, setFiles] = useState<ContextFile[]>([]);
   const [outdatedFiles, setOutdatedFiles] = useState<string[]>([]);
   const [visible, setVisible] = useState(false);
   const [syncing, setSyncing] = useState(false);
@@ -49,35 +51,39 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
   const dismissFiles = trpc.contextSync.dismissFiles.useMutation();
   const utils = trpc.useUtils();
 
-  useEffect(() => {
-    checkContextFiles();
-  }, []);
-
-  const checkContextFiles = async () => {
-    try {
-      // TODO: Implementar API /api/context-files/status
-      // Temporariamente desabilitado para evitar 404s
+  const checkContextFiles = useCallback(async () => {
+    if (!CONTEXT_SYNC_ENABLED) {
       return;
-      
-      // Check if context files have changed
-      // const response = await fetch("/api/context-files/status");
-      // 
-      // if (!response.ok) return;
-      // 
-      // const data = await response.json();
-      // 
-      // setFiles(data.files || []);
-      // 
-      // const outdated = (data.files || [])
-      //   .filter((file: ContextFile) => syncStatus && new Date(file.lastModified) > new Date(syncStatus.lastSyncAt))
-      //   .map((file: ContextFile) => file.name);
-      // 
-      // setOutdatedFiles(outdated);
-      // setVisible(outdated.length > 0);
+    }
+
+    try {
+      const response = await fetch("/api/context-files/status");
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+
+      setFiles(data.files || []);
+
+      if (!syncStatus?.lastSyncAt) {
+        return;
+      }
+
+      const outdated = (data.files || [])
+        .filter((file: ContextFile) => new Date(file.lastModified) > new Date(syncStatus.lastSyncAt))
+        .map((file: ContextFile) => file.name);
+
+      setOutdatedFiles(outdated);
+      setVisible(outdated.length > 0);
     } catch (error) {
       console.error("Erro ao verificar context files:", error);
     }
-  };
+  }, [syncStatus]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    checkContextFiles();
+  }, [mounted, checkContextFiles]);
 
   const handleSync = async () => {
     setSyncing(true);

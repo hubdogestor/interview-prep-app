@@ -2,6 +2,8 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+type TimeoutId = ReturnType<typeof setTimeout>;
+
 interface UseResizablePanelProps {
   minWidth?: number;
   maxWidth?: number;
@@ -33,7 +35,7 @@ export function useResizablePanel({
   const [isResizing, setIsResizing] = useState(false);
   const startXRef = useRef<number>(0);
   const startWidthRef = useRef<number>(0);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<TimeoutId | null>(null);
   const lastSavedWidthRef = useRef<number>(defaultWidth);
 
   // Salva a largura no localStorage após 500ms de inatividade

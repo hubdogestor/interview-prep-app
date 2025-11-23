@@ -39,7 +39,7 @@ export function Breadcrumbs() {
   };
 
   let currentPath = "";
-  segments.forEach((segment, index) => {
+  segments.forEach((segment) => {
     currentPath += `/${segment}`;
 
     // Skip ID segments (MongoDB IDs or UUIDs)
@@ -63,8 +63,8 @@ export function Breadcrumbs() {
         <Home className="h-4 w-4" />
       </Link>
 
-      {items.slice(1).map((item, index) => {
-        const isLast = index === items.length - 2;
+      {items.slice(1).map((item, _index) => {
+        const isLast = _index === items.length - 2;
 
         return (
           <Fragment key={item.href}>

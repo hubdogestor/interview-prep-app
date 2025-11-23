@@ -33,8 +33,8 @@ export function AudioPractice({
   tipo,
   itemId,
   itemTitle,
-  conteudoOriginal,
-  onComplete,
+  conteudoOriginal: _conteudoOriginal,
+  onComplete: _onComplete,
 }: AudioPracticeProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -75,7 +75,7 @@ export function AudioPractice({
       const mockTranscricao = `[Transcrição simulada da prática de ${recordingTime} segundos]`;
 
       // Criar sessão de prática
-      const session = await createSessionMutation.mutateAsync({
+      await createSessionMutation.mutateAsync({
         tipo,
         itemId,
         itemTitle,

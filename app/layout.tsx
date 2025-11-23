@@ -4,8 +4,8 @@ import { Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 
-import { CommandPalette } from "@/components/command-palette";
 import { ContextFilesSync } from "@/components/ai/context-files-sync";
+import { CommandPalette } from "@/components/command-palette";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts-provider";
 import { getBaseUrl } from "@/lib/env";

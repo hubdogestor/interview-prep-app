@@ -41,7 +41,7 @@ export function ExportButton({
       const markdown = exportToMarkdown(items);
       downloadMarkdown(markdown, filename);
       toast.success("Arquivo Markdown baixado com sucesso!");
-    } catch (error) {
+    } catch {
       toast.error("Erro ao exportar Markdown");
     }
   };
@@ -50,7 +50,7 @@ export function ExportButton({
     try {
       exportToPDF(items, filename);
       toast.success("Abrindo visualização de impressão...");
-    } catch (error) {
+    } catch {
       toast.error("Erro ao exportar PDF");
     }
   };

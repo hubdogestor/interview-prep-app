@@ -189,12 +189,9 @@ export const dashboardRouter = createTRPCRouter({
   }),
 
   // Get AI usage statistics
-  aiStats: protectedProcedure.query(async ({ ctx }) => {
+  aiStats: protectedProcedure.query(async () => {
     // For now, return mock data since we don't track AI usage in DB yet
     // In production, you'd add an AIGenerationLog table to track this
-    const now = new Date();
-    const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const thisMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     return {
       thisWeek: 0,

@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 import { ViewVersionsModal } from "@/components/icebreakers/view-versions-modal";
 import MicrophoneIcon from "@/components/icons/microphone";
@@ -21,8 +21,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { InlineEdit } from "@/components/ui/inline-edit";
-import { trpc } from "@/lib/trpc/react";
 import { cardHover, cardTap, iconHover } from "@/lib/animations";
+import { trpc } from "@/lib/trpc/react";
 
 interface IcebreakerCardProps {
   icebreaker: {

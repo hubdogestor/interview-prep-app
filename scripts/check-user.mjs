@@ -1,6 +1,7 @@
-import { MongoClient } from 'mongodb';
+/* eslint-env node */
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import { MongoClient } from 'mongodb';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });

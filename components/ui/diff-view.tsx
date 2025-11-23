@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { staggerContainer, listItemStagger } from "@/lib/animations";
+import { listItemStagger,staggerContainer } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
 interface DiffViewProps {

@@ -23,6 +23,7 @@ import {
 } from "@dnd-kit/sortable"
 import { Edit3, Plus, Trash2 } from "lucide-react"
 
+import { FlagManagerSelect, useCustomFlags } from "@/components/boards/flag-manager"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,18 +47,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { SortableItem } from "@/components/ui/sortable-item"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
-import type { BoardCard, BoardCardChip, BoardColumn } from "@/types/boards"
-import { FlagManagerSelect, useCustomFlags } from "@/components/boards/flag-manager"
+import type { BoardCard, BoardColumn } from "@/types/boards"
 
 interface TrelloBoardProps {
   initialColumns: BoardColumn[]

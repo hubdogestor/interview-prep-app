@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
-import { toastMessages } from "@/lib/toast-messages";
 import MessageIcon from "@/components/icons/message";
 import {
   AlertDialog,
@@ -20,8 +19,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { InlineEdit } from "@/components/ui/inline-edit";
-import { trpc } from "@/lib/trpc/react";
 import { cardHover, cardTap, iconHover } from "@/lib/animations";
+import { toastMessages } from "@/lib/toast-messages";
+import { trpc } from "@/lib/trpc/react";
 
 interface SpeechCardProps {
   speech: {

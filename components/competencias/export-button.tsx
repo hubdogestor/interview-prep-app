@@ -1,11 +1,11 @@
 "use client";
 
-import type { Competencia } from "@/types";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { downloadMarkdown,exportCompetencias } from "@/lib/export/markdown";
+import type { Competencia } from "@/types";
 
 interface ExportButtonProps {
   competencia?: Competencia;

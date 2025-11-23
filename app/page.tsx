@@ -11,13 +11,13 @@ import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentItems } from "@/components/dashboard/recent-items";
 import { SmartSuggestions } from "@/components/dashboard/smart-suggestions";
 import DashboardStat from "@/components/dashboard/stat";
-import { ChartSkeleton } from "@/components/loading/widget-skeletons";
 import BracketsIcon from "@/components/icons/brackets";
 import BriefcaseIcon from "@/components/icons/briefcase";
 import MessageIcon from "@/components/icons/message";
 import MicrophoneIcon from "@/components/icons/microphone";
 import ProcessorIcon from "@/components/icons/proccesor";
 import StarIcon from "@/components/icons/star";
+import { ChartSkeleton } from "@/components/loading/widget-skeletons";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import {
   type DashboardOverviewData,

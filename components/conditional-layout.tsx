@@ -1,14 +1,14 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 import { MobileHeader } from "@/components/dashboard/mobile-header";
 import Notifications from "@/components/dashboard/notifications";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import Widget from "@/components/dashboard/widget";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { ResizableLayout } from "@/components/ui/resizable-layout";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import type { MockData } from "@/types/dashboard";
 
 interface ConditionalLayoutProps {

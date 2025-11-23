@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fadeInUp,staggerContainer } from "@/lib/animations";
-import { isAvaliacaoIA } from "@/lib/type-guards";
 import { trpc } from "@/lib/trpc/react";
+import { isAvaliacaoIA } from "@/lib/type-guards";
 
 const tipoConfig = {
   icebreaker: {

@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
 import { Edit2, Plus, Trash2, X } from "lucide-react";
 import { z } from "zod";
 
-import type { Experiencia } from "@/types";
 import { StarCaseAIButton } from "@/components/experiencias/star-case-ai-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,6 +39,7 @@ import { Separator } from "@/components/ui/separator";
 import { TextStats } from "@/components/ui/text-stats";
 import { Textarea } from "@/components/ui/textarea";
 import { createExperienciaSchema, starCaseSchema } from "@/lib/validation/schemas";
+import type { Experiencia } from "@/types";
 
 // Use schema centralizado para validação
 const formSchema = createExperienciaSchema;
@@ -80,9 +80,11 @@ export function ExperienciaForm({
     name: "starCases",
   });
 
-  const empresaNome = form.watch("empresa");
-  const cargoNome = form.watch("cargo");
-  const tecnologiasSelecionadas = form.watch("tecnologias") ?? [];
+  const empresaNome =
+    useWatch({ control: form.control, name: "empresa" }) ?? "";
+  const cargoNome = useWatch({ control: form.control, name: "cargo" }) ?? "";
+  const tecnologiasSelecionadas =
+    useWatch({ control: form.control, name: "tecnologias" }) ?? [];
 
   // Estado temporário para o STAR Case sendo criado/editado
   const [tempStarCase, setTempStarCase] = useState<StarCase>({

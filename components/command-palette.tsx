@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Briefcase,
-  FileText,
   HelpCircle,
   Home,
   Loader2,

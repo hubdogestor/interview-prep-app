@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ElementType } from "react";
+import { type ElementType,useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Award,
@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { staggerContainer, listItemStagger } from "@/lib/animations";
+import { listItemStagger,staggerContainer } from "@/lib/animations";
 import { trpc } from "@/lib/trpc/react";
 import { cn } from "@/lib/utils";
 

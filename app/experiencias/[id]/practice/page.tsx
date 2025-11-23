@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Mic,Play, Timer } from "lucide-react";
 
-import type { StarCase } from "@/types";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import BriefcaseIcon from "@/components/icons/briefcase";
 import { PracticeTimer } from "@/components/practice/practice-timer";
@@ -13,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
+import type { StarCase } from "@/types";
 
 const AudioPractice = dynamic(
   () =>

@@ -1,16 +1,17 @@
-import type { JsonValue } from "@prisma/client/runtime/library";
 import type { Prisma } from "@prisma/client";
+import type { JsonValue } from "@prisma/client/runtime/library";
+
 import type {
+  BilingualContent,
   Competencia,
   CompetenciaDescricao,
-  TrackRecordItem,
   Experiencia,
-  Periodo,
-  BilingualContent,
-  StarCase,
   Icebreaker,
   IcebreakerVersion,
+  Periodo,
   Speech,
+  StarCase,
+  TrackRecordItem,
 } from "@/types";
 
 /**

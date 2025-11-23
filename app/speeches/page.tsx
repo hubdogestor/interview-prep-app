@@ -3,7 +3,6 @@ import { MessageSquare } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { ExportButton } from "@/components/export/export-button";
-import MessageIcon from "@/components/icons/message";
 import { GenerateAIButton } from "@/components/speeches/generate-ai-button";
 import { SpeechCard } from "@/components/speeches/speech-card";
 import { Button } from "@/components/ui/button";

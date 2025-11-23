@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence,motion } from "framer-motion";
 import {
-  Sparkles,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Zap,
   AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Loader2,
+  Sparkles,
+  XCircle,
+  Zap,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";

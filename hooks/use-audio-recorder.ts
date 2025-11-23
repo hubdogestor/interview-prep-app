@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback,useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
+
+type IntervalId = ReturnType<typeof setInterval>;
 
 interface UseAudioRecorderReturn {
   isRecording: boolean;
@@ -25,7 +27,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<IntervalId | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
   const startTimer = useCallback(() => {

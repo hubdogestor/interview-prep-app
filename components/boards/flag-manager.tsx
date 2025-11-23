@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,10 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc/react";
+import { cn } from "@/lib/utils";
 import type { BoardCardChip } from "@/types/boards";
-import { Badge } from "@/components/ui/badge";
 
 const DEFAULT_CHIPS: BoardCardChip[] = [
   { label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" },

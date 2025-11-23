@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-import type { IcebreakerVersion } from "@/types";
 import { ContextualLoading } from "@/components/ai/contextual-loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,6 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAIQueue } from "@/hooks/use-ai-queue";
 import { trpc } from "@/lib/trpc/react";
+import type { IcebreakerVersion } from "@/types";
 
 const TIPO_OPTIONS = [
   { value: "elevator_pitch", label: "Elevator Pitch (1-2 min)" },

@@ -1,17 +1,16 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import js from "@eslint/js";
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
+import nextPlugin from "@next/eslint-plugin-next";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
-import nextPlugin from "@next/eslint-plugin-next";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import storybook from "eslint-plugin-storybook";
 import unusedImports from "eslint-plugin-unused-imports";
-import { fileURLToPath } from "url";
+import globals from "globals";
 import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -87,6 +86,40 @@ export default [{
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react-hooks/purity": "off",
+  },
+}, {
+  files: ["**/*.mjs"],
+  languageOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+    globals: {
+      ...globals.browser,
+      ...globals.node,
+    },
+  },
+  plugins: {
+    "simple-import-sort": simpleImportSort,
+    "unused-imports": unusedImports,
+  },
+  rules: {
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { vars: "all", varsIgnorePattern: "^_", args: "after-used", argsIgnorePattern: "^_" },
+    ],
+    "simple-import-sort/imports": [
+      "error",
+      {
+        groups: [
+          ["^\\u0000"],
+          ["^react", "^next", "^@?\\w"],
+          ["^@/"],
+          ["^\\."],
+          ["^.+\\.s?css$"],
+        ],
+      },
+    ],
+    "simple-import-sort/exports": "error",
   },
 }, ...storybook.configs["flat/recommended"]];
 

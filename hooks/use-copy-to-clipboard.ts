@@ -18,7 +18,7 @@ export function useCopyToClipboard() {
       }, 2000);
 
       return true;
-    } catch (error) {
+    } catch {
       toast.error("Erro ao copiar para a área de transferência");
       return false;
     }

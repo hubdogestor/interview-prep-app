@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Sparkles, Check } from "lucide-react";
+import { useEffect,useState } from "react";
+import { AnimatePresence,motion } from "framer-motion";
+import { Check,Loader2, Sparkles } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";

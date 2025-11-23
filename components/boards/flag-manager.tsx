@@ -64,7 +64,7 @@ export function useCustomFlags() {
     refetchInterval: 5000, // Auto-sync a cada 5 segundos
   });
 
-  const customChips: BoardCardChip[] = customFlags.map((flag) => ({
+  const customChips: BoardCardChip[] = customFlags.map((flag: { label: string; colorClass: string }) => ({
     label: flag.label,
     colorClass: flag.colorClass,
   }));
@@ -83,22 +83,60 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
   const utils = trpc.useUtils();
 
   const createMutation = trpc.customFlags.create.useMutation({
+    onMutate: () => {
+      // Desabilitar o botão imediatamente
+    },
     onSuccess: () => {
       utils.customFlags.list.invalidate();
       setNewFlagLabel("");
       setNewFlagColor(COLOR_OPTIONS[0].value);
       setShowNewDialog(false);
     },
+    onError: (error) => {
+      console.error("Erro ao criar flag:", error);
+      alert("Erro ao criar flag. Tente novamente.");
+    },
   });
 
   const deleteMutation = trpc.customFlags.delete.useMutation({
-    onSuccess: () => {
+    onMutate: async (deletedFlag) => {
+      // Cancel any outgoing refetches
+      await utils.customFlags.list.cancel();
+      
+      // Snapshot the previous value
+      const previousFlags = utils.customFlags.list.getData();
+      
+      // Optimistically update to the new value
+      if (previousFlags) {
+        utils.customFlags.list.setData(undefined, 
+          previousFlags.filter((flag: { id: string }) => flag.id !== deletedFlag.id)
+        );
+      }
+      
+      return { previousFlags };
+    },
+    onError: (error, _variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousFlags) {
+        utils.customFlags.list.setData(undefined, context.previousFlags);
+      }
+      console.error("Erro ao deletar flag:", error);
+      alert("Erro ao deletar flag. Tente novamente.");
+    },
+    onSettled: () => {
+      // Always refetch after error or success
       utils.customFlags.list.invalidate();
     },
   });
 
-  const handleDeleteFlag = (id: string) => {
-    deleteMutation.mutate({ id });
+  const handleDeleteFlag = (id: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (confirm("Tem certeza que deseja excluir esta flag?")) {
+      deleteMutation.mutate({ id });
+    }
   };
 
   const handleAddFlag = () => {
@@ -111,11 +149,11 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
   };
 
   const isCustomFlag = (label: string) => {
-    return customFlags.some((f) => f.label === label);
+    return customFlags.some((flag: { label: string; id: string }) => flag.label === label);
   };
 
   const getFlagId = (label: string) => {
-    return customFlags.find((f) => f.label === label)?.id || "";
+    return customFlags.find((flag: { label: string; id: string }) => flag.label === label)?.id || "";
   };
 
   return (
@@ -126,29 +164,39 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="none">Sem flag</SelectItem>
-          {allFlags.map((chip) => (
-            <SelectItem key={chip.label} value={chip.label}>
-              <div className="flex items-center justify-between gap-3 w-full">
-                <div className="flex items-center gap-2">
-                  <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
-                  {chip.label}
+          {allFlags.map((chip) => {
+            const isCustom = isCustomFlag(chip.label);
+            const flagId = isCustom ? getFlagId(chip.label) : "";
+            
+            return (
+              <SelectItem key={chip.label} value={chip.label}>
+                <div className="flex items-center justify-between gap-3 w-full">
+                  <div className="flex items-center gap-2">
+                    <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
+                    {chip.label}
+                  </div>
+                  {isCustom && (
+                    <button
+                      type="button"
+                      onPointerDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteFlag(flagId, e);
+                      }}
+                      className="ml-auto text-muted-foreground hover:text-destructive transition-colors"
+                      aria-label="Deletar flag"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  )}
                 </div>
-                {isCustomFlag(chip.label) && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleDeleteFlag(getFlagId(chip.label));
-                    }}
-                    className="ml-auto text-muted-foreground hover:text-destructive"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </div>
-            </SelectItem>
-          ))}
+              </SelectItem>
+            );
+          })}
           <div className="border-t border-white/10 mt-1 pt-1">
             <Button
               type="button"

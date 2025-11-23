@@ -162,39 +162,44 @@ export default function AmazonPrepPage() {
 
       {/* Sections Grid */}
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold">Módulos de Preparação</h2>
-        <p className="text-muted-foreground text-lg">
-          Explore cada categoria para acessar conteúdo detalhado e preparação focada
-        </p>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <h2 className="text-3xl font-bold mb-2">Módulos de Preparação</h2>
+          <p className="text-muted-foreground text-lg">
+            Explore cada categoria para acessar conteúdo detalhado e preparação focada
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-5">
           {sections.map((section) => (
             <Link key={section.id} href={`/amazon-prep/${section.id}`}>
-              <Card className="h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer group border-2 hover:border-primary/40 bg-gradient-to-br from-card to-card/50">
-                <CardHeader className="pb-6 space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div className={`p-4 rounded-xl ${section.color} bg-opacity-10`}>
-                      <div className="text-3xl">{section.icon}</div>
+              <Card className="group relative overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl cursor-pointer h-full">
+                <div className={`absolute inset-0 opacity-[0.03] ${section.color} group-hover:opacity-[0.08] transition-opacity`} />
+                
+                <CardContent className="p-6 relative">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex-shrink-0 w-14 h-14 rounded-xl ${section.color} bg-opacity-10 flex items-center justify-center text-2xl`}>
+                      {section.icon}
                     </div>
-                    <ArrowRightIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <CardTitle className="group-hover:text-primary transition-colors text-2xl">
-                        {section.title}
-                      </CardTitle>
-                      <Badge className={`${section.color} px-3 py-1 text-sm`} variant="secondary">
-                        {section.status}
-                      </Badge>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                          {section.title}
+                        </h3>
+                        <Badge variant="secondary" className="flex-shrink-0 text-xs">
+                          {section.items} tópicos
+                        </Badge>
+                      </div>
+                      
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                        {section.description}
+                      </p>
+                      
+                      <div className="flex items-center text-sm font-medium text-primary">
+                        <span>Explorar módulo</span>
+                        <ArrowRightIcon className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
-                    <CardDescription className="text-base leading-relaxed min-h-[60px]">
-                      {section.description}
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-4 border-t">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground font-medium">{section.items} tópicos disponíveis</span>
-                    <span className="text-primary font-semibold group-hover:underline">Explorar →</span>
                   </div>
                 </CardContent>
               </Card>

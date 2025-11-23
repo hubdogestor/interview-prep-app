@@ -4,12 +4,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { IcebreakerForm } from "@/components/icebreakers/icebreaker-form";
 import MicrophoneIcon from "@/components/icons/microphone";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc/react";
+import { createIcebreakerSchema } from "@/lib/validation/schemas";
+
+type IcebreakerFormValues = z.infer<typeof createIcebreakerSchema>;
 
 export default function EditarIcebreakerPage({
   params,
@@ -90,7 +94,7 @@ export default function EditarIcebreakerPage({
           defaultValues={{
             tipo: icebreaker.tipo as "elevator_pitch" | "quick_intro" | "personal_story",
             titulo: icebreaker.titulo,
-            versoes: icebreaker.versoes as any,
+            versoes: icebreaker.versoes as IcebreakerFormValues["versoes"],
           }}
           onSubmit={(data) =>
             updateMutation.mutate({

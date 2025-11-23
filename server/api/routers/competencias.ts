@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { generateCompetencia } from "@/lib/ai/gemini";
@@ -72,10 +73,10 @@ export const competenciasRouter = createTRPCRouter({
           nome: input.nome,
           categoria: input.categoria,
           nivel: input.nivel,
-          descricao: input.descricao as any,
+          descricao: input.descricao as Prisma.JsonValue,
           ferramentas: input.ferramentas,
           evidencias: input.evidencias,
-          trackRecord: input.trackRecord as any,
+          trackRecord: input.trackRecord as Prisma.JsonValue,
           userId: ctx.userId,
         },
       });
@@ -91,10 +92,10 @@ export const competenciasRouter = createTRPCRouter({
           ...(data.nome && { nome: data.nome }),
           ...(data.categoria && { categoria: data.categoria }),
           ...(data.nivel && { nivel: data.nivel }),
-          ...(data.descricao && { descricao: data.descricao as any }),
+          ...(data.descricao && { descricao: data.descricao as Prisma.JsonValue }),
           ...(data.ferramentas && { ferramentas: data.ferramentas }),
           ...(data.evidencias && { evidencias: data.evidencias }),
-          ...(data.trackRecord && { trackRecord: data.trackRecord as any }),
+          ...(data.trackRecord && { trackRecord: data.trackRecord as Prisma.JsonValue }),
         },
       });
     }),

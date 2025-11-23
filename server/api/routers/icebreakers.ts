@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { editIcebreaker,generateIcebreaker } from "@/lib/ai/gemini";
@@ -57,7 +58,7 @@ export const icebreakersRouter = createTRPCRouter({
         data: {
           tipo: input.tipo,
           titulo: input.titulo,
-          versoes: input.versoes as any,
+          versoes: input.versoes as Prisma.JsonValue,
           userId: ctx.userId,
         },
       });
@@ -72,7 +73,7 @@ export const icebreakersRouter = createTRPCRouter({
         data: {
           ...(data.tipo && { tipo: data.tipo }),
           ...(data.titulo && { titulo: data.titulo }),
-          ...(data.versoes && { versoes: data.versoes as any }),
+          ...(data.versoes && { versoes: data.versoes as Prisma.JsonValue }),
         },
       });
     }),

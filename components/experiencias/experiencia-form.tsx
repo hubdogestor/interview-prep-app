@@ -80,6 +80,10 @@ export function ExperienciaForm({
     name: "starCases",
   });
 
+  const empresaNome = form.watch("empresa");
+  const cargoNome = form.watch("cargo");
+  const tecnologiasSelecionadas = form.watch("tecnologias") ?? [];
+
   // Estado temporário para o STAR Case sendo criado/editado
   const [tempStarCase, setTempStarCase] = useState<StarCase>({
     titulo: "",
@@ -260,9 +264,9 @@ export function ExperienciaForm({
               </Button>
             </div>
 
-            {form.watch("tecnologias").length > 0 && (
+            {tecnologiasSelecionadas.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {form.watch("tecnologias").map((tech, index) => (
+                {tecnologiasSelecionadas.map((tech, index) => (
                   <Badge key={index} variant="secondary" className="gap-1">
                     #{tech}
                     <button
@@ -392,8 +396,8 @@ export function ExperienciaForm({
                 Nenhum STAR Case adicionado ainda
               </p>
               <StarCaseAIButton
-                empresaNome={form.watch("empresa")}
-                cargoNome={form.watch("cargo")}
+                empresaNome={empresaNome}
+                cargoNome={cargoNome}
                 mode="create"
                 onGenerated={(starCase) => {
                   append(starCase);
@@ -447,8 +451,8 @@ export function ExperienciaForm({
                         </Button>
                       </div>
                       <StarCaseAIButton
-                        empresaNome={form.watch("empresa")}
-                        cargoNome={form.watch("cargo")}
+                        empresaNome={empresaNome}
+                        cargoNome={cargoNome}
                         mode="rewrite"
                         existingCase={field}
                         onGenerated={(updatedCase) => {
@@ -460,8 +464,8 @@ export function ExperienciaForm({
                 </Card>
               ))}
               <StarCaseAIButton
-                empresaNome={form.watch("empresa")}
-                cargoNome={form.watch("cargo")}
+                empresaNome={empresaNome}
+                cargoNome={cargoNome}
                 mode="create"
                 onGenerated={(starCase) => {
                   append(starCase);

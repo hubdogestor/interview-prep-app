@@ -12,6 +12,15 @@ import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { fadeIn, scaleIn } from "@/lib/animations";
 import { trpc } from "@/lib/trpc/react";
 
+interface PracticeEvaluation {
+  clareza: number;
+  fluencia: number;
+  completude: number;
+  pontosFortes: string[];
+  areasAMelhorar: string[];
+  feedback: string;
+}
+
 interface AudioPracticeProps {
   tipo: "icebreaker" | "speech" | "star_case";
   itemId: string;
@@ -29,7 +38,7 @@ export function AudioPractice({
 }: AudioPracticeProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [evaluation, setEvaluation] = useState<any>(null);
+  const [evaluation, setEvaluation] = useState<PracticeEvaluation | null>(null);
 
   const {
     isRecording,
@@ -77,11 +86,11 @@ export function AudioPractice({
       });
 
       // Simular análise de IA (em produção, chamaria a API)
-      const mockEvaluation = {
+      const mockEvaluation: PracticeEvaluation = {
         clareza: Math.floor(70 + Math.random() * 30),
         fluencia: Math.floor(65 + Math.random() * 35),
         completude: Math.floor(60 + Math.random() * 40),
-        pontosFortesw: [
+        pontosFortes: [
           "Boa estruturação do conteúdo",
           "Tom de voz adequado",
           "Uso de exemplos concretos",
@@ -168,7 +177,7 @@ export function AudioPractice({
                 ✓ Pontos Fortes
               </h4>
               <ul className="space-y-1">
-                {evaluation.pontosFortesw.map((ponto: string, i: number) => (
+                {evaluation.pontosFortes.map((ponto, i) => (
                   <li key={i} className="text-sm pl-4">
                     • {ponto}
                   </li>
@@ -307,7 +316,7 @@ export function AudioPractice({
         {!isRecording && !audioBlob && (
           <div className="text-center text-sm text-muted-foreground max-w-md">
             <p>
-              Clique em 'Gravar' quando estiver pronto. Pratique seu {tipo === "icebreaker" ? "icebreaker" : tipo === "speech" ? "speech" : "STAR Case"} como se estivesse em uma entrevista real.
+              Clique em &apos;Gravar&apos; quando estiver pronto. Pratique seu {tipo === "icebreaker" ? "icebreaker" : tipo === "speech" ? "speech" : "STAR Case"} como se estivesse em uma entrevista real.
             </p>
           </div>
         )}

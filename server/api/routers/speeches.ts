@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { editSpeech,generateSpeech } from "@/lib/ai/gemini";
@@ -61,7 +62,7 @@ export const speechesRouter = createTRPCRouter({
           tipoVaga: input.tipoVaga,
           titulo: input.titulo,
           versao: input.versao,
-          conteudo: input.conteudo as any,
+          conteudo: input.conteudo as Prisma.JsonValue,
           duracaoEstimada: input.duracaoEstimada,
           foco: input.foco,
           userId: ctx.userId,
@@ -79,7 +80,7 @@ export const speechesRouter = createTRPCRouter({
           ...(data.tipoVaga && { tipoVaga: data.tipoVaga }),
           ...(data.titulo && { titulo: data.titulo }),
           ...(data.versao && { versao: data.versao }),
-          ...(data.conteudo && { conteudo: data.conteudo as any }),
+          ...(data.conteudo && { conteudo: data.conteudo as Prisma.JsonValue }),
           ...(data.duracaoEstimada && { duracaoEstimada: data.duracaoEstimada }),
           ...(data.foco && { foco: data.foco }),
         },

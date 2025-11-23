@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Plus, Trash2, X } from "lucide-react";
 import { z } from "zod";
 
@@ -80,6 +80,15 @@ export function CompetenciaForm({
     control: form.control,
     name: "trackRecord",
   });
+
+  const watchedValues = useWatch<FormValues>({ control: form.control });
+  const competenciaNome = watchedValues?.nome;
+  const competenciaCategoria = watchedValues?.categoria;
+  const competenciaNivel = watchedValues?.nivel;
+  const descricaoValue = watchedValues?.descricao;
+  const ferramentasValue = watchedValues?.ferramentas ?? [];
+  const evidenciasValue = watchedValues?.evidencias ?? [];
+  const trackRecordEntries = watchedValues?.trackRecord ?? [];
 
   const handleAddFerramentas = () => {
     if (!ferramentasInput.trim()) return;
@@ -248,17 +257,17 @@ export function CompetenciaForm({
             />
 
             {/* AI Button for rewriting/improving description */}
-            {form.watch("descricao.pt") && (
+            {descricaoValue?.pt && (
               <CompetenciaAIButton
                 mode="rewrite"
                 existingCompetencia={{
-                  nome: form.watch("nome"),
-                  categoria: form.watch("categoria"),
-                  nivel: form.watch("nivel"),
-                  descricao: form.watch("descricao"),
-                  ferramentas: form.watch("ferramentas"),
-                  evidencias: form.watch("evidencias"),
-                  trackRecord: form.watch("trackRecord"),
+                  nome: competenciaNome ?? "",
+                  categoria: competenciaCategoria ?? "technical",
+                  nivel: competenciaNivel ?? "intermediate",
+                  descricao: descricaoValue ?? { pt: "", en: "" },
+                  ferramentas: ferramentasValue,
+                  evidencias: evidenciasValue,
+                  trackRecord: trackRecordEntries,
                 }}
                 onGenerated={(competencia) => {
                   form.setValue("descricao", competencia.descricao);
@@ -304,9 +313,9 @@ export function CompetenciaForm({
               </Button>
             </div>
 
-            {form.watch("ferramentas").length > 0 && (
+            {ferramentasValue.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {form.watch("ferramentas").map((item, index) => (
+                {ferramentasValue.map((item, index) => (
                   <Badge key={index} variant="secondary" className="gap-1">
                     #{item}
                     <button
@@ -348,9 +357,9 @@ export function CompetenciaForm({
               </Button>
             </div>
 
-            {form.watch("evidencias").length > 0 && (
+            {evidenciasValue.length > 0 && (
               <div className="space-y-2">
-                {form.watch("evidencias").map((item, index) => (
+                {evidenciasValue.map((item, index) => (
                   <div
                     key={index}
                     className="flex items-center gap-2 p-2 bg-muted rounded"
@@ -377,10 +386,10 @@ export function CompetenciaForm({
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-display uppercase">Track Record</h3>
             <div className="flex gap-2">
-              {form.watch("nome") && (
+              {competenciaNome && (
                 <TrackRecordAIButton
-                  competenciaNome={form.watch("nome")}
-                  competenciaCategoria={form.watch("categoria")}
+                  competenciaNome={competenciaNome}
+                  competenciaCategoria={competenciaCategoria}
                   onGenerated={(trackRecord) => {
                     append(trackRecord);
                   }}
@@ -404,8 +413,12 @@ export function CompetenciaForm({
             </p>
           ) : (
             <div className="space-y-4">
-              {fields.map((field, index) => (
-                <Card key={field.id} className="p-4">
+              {fields.map((field, index) => {
+                const currentTrackRecord = trackRecordEntries[index] ?? field;
+                const hasProject = Boolean(currentTrackRecord?.projeto);
+
+                return (
+                  <Card key={field.id} className="p-4">
                   <div className="flex items-start gap-4">
                     <div className="flex-1 space-y-3">
                       <FormField
@@ -459,12 +472,12 @@ export function CompetenciaForm({
                       />
 
                       {/* AI Button to improve this track record */}
-                      {form.watch(`trackRecord.${index}.projeto`) && (
+                      {hasProject && (
                         <div className="flex justify-end">
                           <TrackRecordAIButton
-                            competenciaNome={form.watch("nome")}
-                            competenciaCategoria={form.watch("categoria")}
-                            existingTrackRecord={form.watch(`trackRecord.${index}`)}
+                            competenciaNome={competenciaNome}
+                            competenciaCategoria={competenciaCategoria}
+                            existingTrackRecord={currentTrackRecord}
                             onGenerated={(trackRecord) => {
                               form.setValue(`trackRecord.${index}`, trackRecord);
                             }}
@@ -482,8 +495,9 @@ export function CompetenciaForm({
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           )}
         </Card>

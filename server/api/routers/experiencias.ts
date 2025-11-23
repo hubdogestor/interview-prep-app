@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { generateStarCase } from "@/lib/ai/gemini";
@@ -88,10 +89,10 @@ export const experienciasRouter = createTRPCRouter({
         data: {
           empresa: input.empresa,
           cargo: input.cargo,
-          periodo: input.periodo as any,
-          pitchElevator: input.pitchElevator as any,
-          speechCompleto: input.speechCompleto as any,
-          starCases: input.starCases as any,
+          periodo: input.periodo as Prisma.JsonValue,
+          pitchElevator: input.pitchElevator as Prisma.JsonValue,
+          speechCompleto: input.speechCompleto as Prisma.JsonValue,
+          starCases: input.starCases as Prisma.JsonValue,
           tecnologias: input.tecnologias,
           userId: ctx.userId,
         },
@@ -107,12 +108,12 @@ export const experienciasRouter = createTRPCRouter({
         data: {
           ...(data.empresa && { empresa: data.empresa }),
           ...(data.cargo && { cargo: data.cargo }),
-          ...(data.periodo && { periodo: data.periodo as any }),
-          ...(data.pitchElevator && { pitchElevator: data.pitchElevator as any }),
+          ...(data.periodo && { periodo: data.periodo as Prisma.JsonValue }),
+          ...(data.pitchElevator && { pitchElevator: data.pitchElevator as Prisma.JsonValue }),
           ...(data.speechCompleto && {
-            speechCompleto: data.speechCompleto as any,
+            speechCompleto: data.speechCompleto as Prisma.JsonValue,
           }),
-          ...(data.starCases && { starCases: data.starCases as any }),
+          ...(data.starCases && { starCases: data.starCases as Prisma.JsonValue }),
           ...(data.tecnologias && { tecnologias: data.tecnologias }),
         },
       });

@@ -43,6 +43,9 @@ interface CompetenciaData {
   }[];
 }
 
+type CategoriaValue = "technical" | "soft_skills" | "leadership";
+type NivelValue = "basic" | "intermediate" | "advanced" | "expert";
+
 interface CompetenciaAIButtonProps {
   mode: "create" | "rewrite";
   existingCompetencia?: CompetenciaData;
@@ -59,8 +62,8 @@ export function CompetenciaAIButton({
 
   // Guided mode inputs
   const [nomeInput, setNomeInput] = useState("");
-  const [categoriaInput, setCategoriaInput] = useState<"technical" | "soft_skills" | "leadership">("technical");
-  const [nivelInput, setNivelInput] = useState<"basic" | "intermediate" | "advanced" | "expert">("intermediate");
+  const [categoriaInput, setCategoriaInput] = useState<CategoriaValue>("technical");
+  const [nivelInput, setNivelInput] = useState<NivelValue>("intermediate");
   const [contextoInput, setContextoInput] = useState("");
 
   // Rewrite mode inputs
@@ -156,7 +159,7 @@ export function CompetenciaAIButton({
 
         <div className="space-y-6 py-4">
           {mode === "create" ? (
-            <Tabs value={generationMode} onValueChange={(v) => setGenerationMode(v as "auto" | "guided")}>
+            <Tabs value={generationMode} onValueChange={(value: "auto" | "guided") => setGenerationMode(value)}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="auto">Automático</TabsTrigger>
                 <TabsTrigger value="guided">Guiado</TabsTrigger>
@@ -188,7 +191,7 @@ export function CompetenciaAIButton({
                       <Label htmlFor="categoria">Categoria</Label>
                       <Select
                         value={categoriaInput}
-                        onValueChange={(v) => setCategoriaInput(v as any)}
+                        onValueChange={(value: CategoriaValue) => setCategoriaInput(value)}
                       >
                         <SelectTrigger id="categoria">
                           <SelectValue />
@@ -205,7 +208,7 @@ export function CompetenciaAIButton({
                       <Label htmlFor="nivel">Nível</Label>
                       <Select
                         value={nivelInput}
-                        onValueChange={(v) => setNivelInput(v as any)}
+                        onValueChange={(value: NivelValue) => setNivelInput(value)}
                       >
                         <SelectTrigger id="nivel">
                           <SelectValue />

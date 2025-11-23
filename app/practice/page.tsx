@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fadeInUp,staggerContainer } from "@/lib/animations";
+import { isAvaliacaoIA } from "@/lib/type-guards";
 import { trpc } from "@/lib/trpc/react";
 
 const tipoConfig = {
@@ -220,24 +221,24 @@ export default function PracticeHistoryPage() {
                     </div>
 
                     {/* Avaliação IA */}
-                    {session.avaliacaoIA && typeof session.avaliacaoIA === "object" && (
+                    {isAvaliacaoIA(session.avaliacaoIA) && (
                       <div className="mt-4 pt-4 border-t border-border">
                         <div className="grid grid-cols-3 gap-3 mb-3">
                           <div className="text-center">
                             <div className="text-lg font-display text-chart-1">
-                              {(session.avaliacaoIA as any).clareza}
+                              {session.avaliacaoIA.clareza}
                             </div>
                             <div className="text-xs text-muted-foreground">Clareza</div>
                           </div>
                           <div className="text-center">
                             <div className="text-lg font-display text-chart-2">
-                              {(session.avaliacaoIA as any).fluencia}
+                              {session.avaliacaoIA.fluencia}
                             </div>
                             <div className="text-xs text-muted-foreground">Fluência</div>
                           </div>
                           <div className="text-center">
                             <div className="text-lg font-display text-chart-3">
-                              {(session.avaliacaoIA as any).completude}
+                              {session.avaliacaoIA.completude}
                             </div>
                             <div className="text-xs text-muted-foreground">Completude</div>
                           </div>

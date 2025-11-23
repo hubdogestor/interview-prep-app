@@ -6,6 +6,10 @@ import { GripVertical,Pause, Play, RotateCcw, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
+type WindowWithWebkitAudioContext = Window & {
+  webkitAudioContext?: typeof window.AudioContext;
+};
+
 interface FloatingTimerProps {
   targetDuration: number; // in seconds
   onClose: () => void;
@@ -31,9 +35,10 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
   // Audio alert function - declared before useEffect to avoid hoisting issues
   const playAlert = useCallback(() => {
     if (typeof window === "undefined") return;
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContext) return;
-    const audioContext = new AudioContext();
+    const audioContextConstructor =
+      window.AudioContext || (window as WindowWithWebkitAudioContext).webkitAudioContext;
+    if (!audioContextConstructor) return;
+    const audioContext = new audioContextConstructor();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 

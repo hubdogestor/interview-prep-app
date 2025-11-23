@@ -2,11 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import MessageIcon from "@/components/icons/message";
 import { SpeechForm } from "@/components/speeches/speech-form";
 import { trpc } from "@/lib/trpc/react";
+import { createSpeechSchema } from "@/lib/validation/schemas";
+
+type SpeechFormValues = z.infer<typeof createSpeechSchema>;
 
 export default function EditarSpeechPage({
   params,
@@ -79,7 +83,7 @@ export default function EditarSpeechPage({
             tipoVaga: speech.tipoVaga,
             titulo: speech.titulo,
             versao: speech.versao,
-            conteudo: speech.conteudo as any,
+            conteudo: speech.conteudo as SpeechFormValues["conteudo"],
             duracaoEstimada: speech.duracaoEstimada,
             foco: speech.foco,
           }}

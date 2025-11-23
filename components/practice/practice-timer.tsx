@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play, RotateCcw, Timer as TimerIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+type WindowWithWebkitAudioContext = Window & {
+  webkitAudioContext?: typeof window.AudioContext;
+};
 
 interface PracticeTimerProps {
   open: boolean;
@@ -45,10 +49,12 @@ function TimerDialogContent({ targetDuration }: TimerDialogContentProps) {
   const timerRef = useRef<number | null>(null);
 
   // Audio alert function - declared before useEffect to avoid hoisting issues
-  const playAlert = () => {
-    // Create a simple beep sound using Web Audio API
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+  const playAlert = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const audioContextConstructor =
+      window.AudioContext || (window as WindowWithWebkitAudioContext).webkitAudioContext;
+    if (!audioContextConstructor) return;
+    const audioContext = new audioContextConstructor();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -66,7 +72,7 @@ function TimerDialogContent({ targetDuration }: TimerDialogContentProps) {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
-  };
+  }, []);
 
   useEffect(() => {
     if (!isRunning) return;

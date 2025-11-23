@@ -174,9 +174,12 @@ export function IcebreakerCard({ icebreaker }: IcebreakerCardProps) {
 
         <div className="flex items-center gap-3 mb-4 flex-wrap">
           <ViewVersionsModal
-          versions={icebreaker.versoes as any}
-          titulo={icebreaker.titulo}
-        />
+            versions={icebreaker.versoes.map((versao) => ({
+              ...versao,
+              tags: versao.tags ?? [],
+            }))}
+            titulo={icebreaker.titulo}
+          />
         {icebreaker.favorite && (
           <Badge variant="default" className="uppercase bg-yellow-600">
             ⭐ Favorito

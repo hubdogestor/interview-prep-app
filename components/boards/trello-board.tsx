@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   closestCorners,
   DndContext,
@@ -92,9 +92,17 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     setColumns(cloneColumns(initialColumns))
   }, [initialColumns])
 
-  // Notificar parent quando colunas mudarem
+  // Notificar parent quando colunas mudarem (apenas mudanças reais)
+  const columnsRef = useRef<BoardColumn[]>(columns)
+  
   useEffect(() => {
-    onColumnsChange?.(columns)
+    const columnsStr = JSON.stringify(columns)
+    const prevColumnsStr = JSON.stringify(columnsRef.current)
+    
+    if (columnsStr !== prevColumnsStr) {
+      columnsRef.current = columns
+      onColumnsChange?.(columns)
+    }
   }, [columns, onColumnsChange])
 
   const sensors = useSensors(

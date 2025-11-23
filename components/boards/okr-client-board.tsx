@@ -69,6 +69,11 @@ export function OKRClientBoard({
   // Callback para quando as colunas mudarem
   const handleColumnsChange = useCallback(
     (newColumns: BoardColumn[]) => {
+      console.log('[OKRClientBoard] Columns changed, scheduling save...', {
+        quarter,
+        columnsCount: newColumns.length,
+      });
+      
       // Limpar timeout anterior
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
@@ -76,10 +81,11 @@ export function OKRClientBoard({
 
       // Aguardar 1 segundo após a última mudança para salvar
       saveTimeoutRef.current = setTimeout(() => {
+        console.log('[OKRClientBoard] Saving now...', quarter);
         saveColumns(newColumns);
       }, 1000);
     },
-    [saveColumns]
+    [saveColumns, quarter]
   );
 
   // Cleanup do timeout ao desmontar

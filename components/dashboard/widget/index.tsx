@@ -48,33 +48,33 @@ export default function Widget({ widgetData }: WidgetProps) {
   return (
     <Card className="w-full aspect-[2] relative overflow-hidden">
       <TVNoise opacity={0.3} intensity={0.2} speed={40} />
-      <CardContent className="bg-accent/30 flex-1 flex flex-col justify-between text-sm font-medium uppercase relative z-20">
-        <div className="flex justify-between items-center">
-          <span className="opacity-50">{dateInfo.dayOfWeek}</span>
-          <span>{dateInfo.restOfDate}</span>
+      <CardContent className="bg-accent/30 flex-1 flex flex-col justify-between text-[clamp(0.7rem,2.5vw,0.875rem)] font-medium uppercase relative z-20">
+        <div className="flex justify-between items-center gap-1">
+          <span className="opacity-50 truncate">{dateInfo.dayOfWeek}</span>
+          <span className="truncate text-right">{dateInfo.restOfDate}</span>
         </div>
         <div className="text-center">
-          <div className="text-5xl font-display" suppressHydrationWarning>
+          <div className="text-[clamp(2rem,8vw,3rem)] font-display" suppressHydrationWarning>
             {formatTime(currentTime)}
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-1">
           <span className="opacity-50">{widgetData.temperature}</span>
-          <span>{widgetData.location}</span>
+          <span className="truncate flex-1 text-center">{widgetData.location}</span>
 
-          <Badge variant="secondary" className="bg-accent">
+          <Badge variant="secondary" className="bg-accent text-[clamp(0.6rem,2vw,0.75rem)] px-1.5">
             {widgetData.timezone}
           </Badge>
         </div>
 
-        <div className="absolute inset-0 -z-[1]">
+        <div className="absolute inset-0 -z-[1] opacity-[0.4]">
           <Image
             src="/assets/pc_blueprint.gif"
             alt="logo"
             width={250}
             height={250}
-            className="size-full object-contain"
+            className="size-full object-contain scale-[0.85]"
           />
         </div>
       </CardContent>

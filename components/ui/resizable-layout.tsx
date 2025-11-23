@@ -21,7 +21,7 @@ export function ResizableLayout({
 }: ResizableLayoutProps) {
   // Hook para o painel esquerdo
   const leftPanelState = useResizablePanel({
-    minWidth: 200,
+    minWidth: 160,
     maxWidth: 400,
     defaultWidth: 240,
     localStorageKey: "interview-prep-left-panel-width",
@@ -29,7 +29,7 @@ export function ResizableLayout({
 
   // Hook para o painel direito
   const rightPanelState = useResizablePanelRight({
-    minWidth: 280,
+    minWidth: 200,
     maxWidth: 600,
     defaultWidth: 360,
     localStorageKey: "interview-prep-right-panel-width",

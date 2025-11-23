@@ -11,24 +11,33 @@ import { fadeIn } from "@/lib/animations";
 import { trpc } from "@/lib/trpc/react";
 import { cn } from "@/lib/utils";
 
-const CONTEXT_SYNC_ENABLED = false;
+const CONTEXT_SYNC_ENABLED = process.env.NEXT_PUBLIC_CONTEXT_SYNC_ENABLED === "true";
 
 interface ContextFile {
   name: string;
   path: string;
-  lastModified: Date;
+  lastModified: string | Date;
   size: number;
+}
+
+interface ContextFilesSyncPreviewData {
+  files: ContextFile[];
+  outdatedFiles: string[];
+  visible?: boolean;
 }
 
 interface ContextFilesSyncProps {
   className?: string;
+  previewData?: ContextFilesSyncPreviewData;
 }
 
 /**
  * Component to detect and sync context files changes
  * Shows notification when context files are updated
  */
-export function ContextFilesSync({ className }: ContextFilesSyncProps) {
+export function ContextFilesSync({ className, previewData }: ContextFilesSyncProps) {
+  const featureEnabled = previewData ? true : CONTEXT_SYNC_ENABLED;
+  const isPreview = Boolean(previewData);
   const [, setFiles] = useState<ContextFile[]>([]);
   const [outdatedFiles, setOutdatedFiles] = useState<string[]>([]);
   const [visible, setVisible] = useState(false);
@@ -45,14 +54,14 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
     refetchInterval: 5 * 60 * 1000, // Refetch a cada 5 minutos
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: mounted, // Só executa quando montado no cliente
+    enabled: mounted && featureEnabled && !isPreview, // Só executa quando montado no cliente
   });
   const updateLastSync = trpc.contextSync.updateLastSync.useMutation();
   const dismissFiles = trpc.contextSync.dismissFiles.useMutation();
   const utils = trpc.useUtils();
 
   const checkContextFiles = useCallback(async () => {
-    if (!CONTEXT_SYNC_ENABLED) {
+    if (!featureEnabled || isPreview) {
       return;
     }
 
@@ -65,12 +74,14 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
 
       setFiles(data.files || []);
 
-      if (!syncStatus?.lastSyncAt) {
+      const lastSyncDate = syncStatus?.lastSyncAt ? new Date(syncStatus.lastSyncAt) : null;
+
+      if (!lastSyncDate) {
         return;
       }
 
       const outdated = (data.files || [])
-        .filter((file: ContextFile) => new Date(file.lastModified) > new Date(syncStatus.lastSyncAt))
+        .filter((file: ContextFile) => new Date(file.lastModified) > lastSyncDate)
         .map((file: ContextFile) => file.name);
 
       setOutdatedFiles(outdated);
@@ -78,16 +89,32 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
     } catch (error) {
       console.error("Erro ao verificar context files:", error);
     }
-  }, [syncStatus]);
+  }, [featureEnabled, isPreview, syncStatus]);
 
   useEffect(() => {
     if (!mounted) return;
+
+    if (isPreview && previewData) {
+      setFiles(previewData.files);
+      setOutdatedFiles(previewData.outdatedFiles);
+      setVisible(previewData.visible ?? previewData.outdatedFiles.length > 0);
+      return;
+    }
+
     checkContextFiles();
-  }, [mounted, checkContextFiles]);
+  }, [mounted, isPreview, previewData, checkContextFiles]);
 
   const handleSync = async () => {
     setSyncing(true);
     setSyncProgress(0);
+
+    if (isPreview) {
+      setTimeout(() => {
+        setSyncProgress(100);
+        finalizeSyncSuccess();
+      }, 400);
+      return;
+    }
 
     try {
       // Simulate sync progress
@@ -137,6 +164,11 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
   };
 
   const handleDismiss = () => {
+    if (isPreview) {
+      setVisible(false);
+      return;
+    }
+
     // Mark as seen but don't update sync time
     if (!isError) {
       dismissFiles.mutate(

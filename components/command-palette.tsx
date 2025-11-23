@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Briefcase,
@@ -66,7 +66,8 @@ export function CommandPalette() {
 
   const isSearching = shouldSearch && (loadingIcebreakers || loadingSpeeches || loadingExperiencias || loadingCompetencias);
 
-  const commands: CommandItem[] = [
+  const commands: CommandItem[] = useMemo(
+    () => [
     // Navigation
     {
       id: "home",
@@ -169,30 +170,33 @@ export function CommandPalette() {
       action: () => router.push("/questions/new"),
       keywords: ["new", "create", "novo", "question", "pergunta"],
     },
-  ];
+    ],
+    [router]
+  );
 
   // Filter commands based on search
-  const filteredCommands = commands.filter((command) => {
+  const filteredCommands = useMemo(() => {
     const searchLower = search.toLowerCase();
-    return (
+    return commands.filter((command) =>
       command.label.toLowerCase().includes(searchLower) ||
       command.description?.toLowerCase().includes(searchLower) ||
       command.keywords?.some((kw) => kw.toLowerCase().includes(searchLower))
     );
-  });
+  }, [commands, search]);
 
   // Add content results if searching
-  const contentResults: CommandItem[] = [];
-  
-  if (shouldSearch) {
-    // Icebreakers
+  const contentResults = useMemo(() => {
+    if (!shouldSearch) return [];
+
+    const searchLower = search.toLowerCase();
+    const results: CommandItem[] = [];
+
     icebreakers?.forEach((icebreaker) => {
-      const searchLower = search.toLowerCase();
       if (
         icebreaker.titulo.toLowerCase().includes(searchLower) ||
         icebreaker.tipo.toLowerCase().includes(searchLower)
       ) {
-        contentResults.push({
+        results.push({
           id: `icebreaker-${icebreaker.id}`,
           label: icebreaker.titulo,
           description: `Icebreaker • ${icebreaker.tipo}`,
@@ -204,15 +208,13 @@ export function CommandPalette() {
       }
     });
 
-    // Speeches
     speeches?.forEach((speech) => {
-      const searchLower = search.toLowerCase();
       if (
         speech.titulo.toLowerCase().includes(searchLower) ||
         speech.tipoVaga.toLowerCase().includes(searchLower) ||
         speech.foco?.some((f) => f.toLowerCase().includes(searchLower))
       ) {
-        contentResults.push({
+        results.push({
           id: `speech-${speech.id}`,
           label: speech.titulo,
           description: `Speech • ${speech.tipoVaga} • ${speech.duracaoEstimada}min`,
@@ -224,15 +226,13 @@ export function CommandPalette() {
       }
     });
 
-    // Experiências
     experiencias?.forEach((exp) => {
-      const searchLower = search.toLowerCase();
       if (
         exp.empresa.toLowerCase().includes(searchLower) ||
         exp.cargo.toLowerCase().includes(searchLower) ||
         exp.starCases?.some((sc) => sc.situation.toLowerCase().includes(searchLower))
       ) {
-        contentResults.push({
+        results.push({
           id: `experiencia-${exp.id}`,
           label: `${exp.cargo} - ${exp.empresa}`,
           description: `Experiência • ${exp.periodo.inicio} - ${exp.periodo.fim || "Atual"}`,
@@ -244,14 +244,12 @@ export function CommandPalette() {
       }
     });
 
-    // Competências
     competencias?.forEach((comp) => {
-      const searchLower = search.toLowerCase();
       if (
         comp.nome.toLowerCase().includes(searchLower) ||
         comp.categoria?.toLowerCase().includes(searchLower)
       ) {
-        contentResults.push({
+        results.push({
           id: `competencia-${comp.id}`,
           label: comp.nome,
           description: `Competência • ${comp.categoria || "Geral"} • ${comp.nivel}`,
@@ -262,9 +260,14 @@ export function CommandPalette() {
         });
       }
     });
-  }
 
-  const allResults = [...filteredCommands, ...contentResults];
+    return results;
+  }, [shouldSearch, search, icebreakers, speeches, experiencias, competencias, router]);
+
+  const allResults = useMemo(
+    () => [...filteredCommands, ...contentResults],
+    [filteredCommands, contentResults]
+  );
 
   // Keyboard shortcut to open (Ctrl+K)
   useEffect(() => {

@@ -90,7 +90,7 @@ export function KanbanClientBoard({
         saveColumns(newColumns);
       }, 1000);
     },
-    [saveColumns, boardName]
+    [saveColumns]
   );
 
   // Cleanup do timeout ao desmontar

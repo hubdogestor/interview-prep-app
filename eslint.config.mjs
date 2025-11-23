@@ -121,6 +121,45 @@ export default [{
     ],
     "simple-import-sort/exports": "error",
   },
+}, {
+  files: ["scripts/**/*.mjs"],
+  languageOptions: {
+    parser: tsParser,
+    ecmaVersion: "latest",
+    sourceType: "module",
+    parserOptions: {
+      project: "./tsconfig.scripts.json",
+      tsconfigRootDir: __dirname,
+    },
+    globals: {
+      ...globals.browser,
+      ...globals.node,
+    },
+  },
+  plugins: {
+    "simple-import-sort": simpleImportSort,
+    "unused-imports": unusedImports,
+  },
+  rules: {
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { vars: "all", varsIgnorePattern: "^_", args: "after-used", argsIgnorePattern: "^_" },
+    ],
+    "simple-import-sort/imports": [
+      "error",
+      {
+        groups: [
+          ["^\\u0000"],
+          ["^react", "^next", "^@?\\w"],
+          ["^@/"],
+          ["^\\."],
+          ["^.+\\.s?css$"],
+        ],
+      },
+    ],
+    "simple-import-sort/exports": "error",
+  },
 }, ...storybook.configs["flat/recommended"]];
 
 

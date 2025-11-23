@@ -90,7 +90,7 @@ export function OKRClientBoard({
         saveColumns(newColumns);
       }, 1000);
     },
-    [saveColumns, quarter]
+    [saveColumns]
   );
 
   // Cleanup do timeout ao desmontar

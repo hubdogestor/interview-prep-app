@@ -6,24 +6,24 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export default function ProgramManagementPage() {
   return (
-    <div className="container max-w-6xl py-8 space-y-6">
-      <Link href="/amazon-prep" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+    <div className="container max-w-6xl py-10 px-6 space-y-8">
+      <Link href="/amazon-prep" className="inline-flex items-center text-base text-muted-foreground hover:text-primary transition-colors group">
+        <ArrowLeftIcon className="mr-2 h-5 w-5 group-hover:-translate-x-1 transition-transform" />
         Voltar para Amazon Prep
       </Link>
 
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Program Management na Amazon</h1>
-        <p className="text-muted-foreground text-lg">
-          Metodologias, frameworks e KPIs essenciais
+      <div className="space-y-3">
+        <h1 className="text-5xl font-bold tracking-tight">Program Management</h1>
+        <p className="text-muted-foreground text-xl max-w-3xl">
+          Metodologias Amazon, KPIs e frameworks Lean/Six Sigma para excelência operacional
         </p>
       </div>
 
-      <Tabs defaultValue="methodologies" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="methodologies">Metodologias</TabsTrigger>
-          <TabsTrigger value="kpis">KPIs & Métricas</TabsTrigger>
-          <TabsTrigger value="lean">Lean & Six Sigma</TabsTrigger>
+      <Tabs defaultValue="methodologies" className="space-y-8">
+        <TabsList className="grid w-full grid-cols-3 h-14">
+          <TabsTrigger value="methodologies" className="text-base">Metodologias Amazon</TabsTrigger>
+          <TabsTrigger value="kpis" className="text-base">KPIs & Métricas</TabsTrigger>
+          <TabsTrigger value="lean" className="text-base">Lean & Six Sigma</TabsTrigger>
         </TabsList>
 
         <TabsContent value="methodologies" className="space-y-4">

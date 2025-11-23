@@ -6,21 +6,21 @@ import { ArrowLeftIcon, CheckCircle2, Circle } from "lucide-react";
 
 export default function InterviewPrepPage() {
   return (
-    <div className="container max-w-6xl py-8 space-y-6">
-      <Link href="/amazon-prep" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+    <div className="container max-w-6xl py-10 px-6 space-y-8">
+      <Link href="/amazon-prep" className="inline-flex items-center text-base text-muted-foreground hover:text-primary transition-colors group">
+        <ArrowLeftIcon className="mr-2 h-5 w-5 group-hover:-translate-x-1 transition-transform" />
         Voltar para Amazon Prep
       </Link>
 
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Interview Preparation</h1>
-        <p className="text-muted-foreground text-lg">
-          Mock interviews, perguntas estratégicas e plano 30-60-90 dias
+      <div className="space-y-3">
+        <h1 className="text-5xl font-bold tracking-tight">Interview Preparation</h1>
+        <p className="text-muted-foreground text-xl max-w-3xl">
+          Preparação completa com mock interviews, perguntas estratégicas e plano detalhado 30-60-90 dias
         </p>
       </div>
 
-      <Tabs defaultValue="mock" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs defaultValue="mock" className="space-y-8">
+        <TabsList className="grid w-full grid-cols-3 h-14">
           <TabsTrigger value="mock">Mock Interviews</TabsTrigger>
           <TabsTrigger value="questions">Suas Perguntas</TabsTrigger>
           <TabsTrigger value="30-60-90">Plano 30-60-90</TabsTrigger>

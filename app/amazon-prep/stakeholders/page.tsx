@@ -6,23 +6,23 @@ import { ArrowLeftIcon, LinkedinIcon, MailIcon, BriefcaseIcon } from "lucide-rea
 
 export default function StakeholdersPage() {
   return (
-    <div className="container max-w-6xl py-8 space-y-6">
-      <Link href="/amazon-prep" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+    <div className="container max-w-6xl py-10 px-6 space-y-8">
+      <Link href="/amazon-prep" className="inline-flex items-center text-base text-muted-foreground hover:text-primary transition-colors group">
+        <ArrowLeftIcon className="mr-2 h-5 w-5 group-hover:-translate-x-1 transition-transform" />
         Voltar para Amazon Prep
       </Link>
 
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Stakeholder Analysis</h1>
-        <p className="text-muted-foreground text-lg">
-          Conheça seus principais stakeholders e como se alinhar
+      <div className="space-y-3">
+        <h1 className="text-5xl font-bold tracking-tight">Stakeholders</h1>
+        <p className="text-muted-foreground text-xl max-w-3xl">
+          Perfis detalhados dos principais stakeholders: Andreia Guarino (Manager) e Sujash Biswas (Head LATAM)
         </p>
       </div>
 
-      <Tabs defaultValue="andreia" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="andreia">Andreia Guarino Souza</TabsTrigger>
-          <TabsTrigger value="sujash">Sujash Biswas</TabsTrigger>
+      <Tabs defaultValue="andreia" className="space-y-8">
+        <TabsList className="grid w-full grid-cols-2 h-14">
+          <TabsTrigger value="andreia" className="text-base">Andreia Guarino Souza</TabsTrigger>
+          <TabsTrigger value="sujash" className="text-base">Sujash Biswas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="andreia" className="space-y-4">

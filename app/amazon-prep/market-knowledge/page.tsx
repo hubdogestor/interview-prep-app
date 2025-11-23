@@ -6,34 +6,34 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export default function MarketKnowledgePage() {
   return (
-    <div className="container max-w-6xl py-8 space-y-6">
-      <Link href="/amazon-prep" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+    <div className="container max-w-6xl py-10 px-6 space-y-8">
+      <Link href="/amazon-prep" className="inline-flex items-center text-base text-muted-foreground hover:text-primary transition-colors group">
+        <ArrowLeftIcon className="mr-2 h-5 w-5 group-hover:-translate-x-1 transition-transform" />
         Voltar para Amazon Prep
       </Link>
 
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Market Knowledge</h1>
-        <p className="text-muted-foreground text-lg">
-          Mercado de pagamentos no Brasil e América Latina
+      <div className="space-y-3">
+        <h1 className="text-5xl font-bold tracking-tight">Market Knowledge</h1>
+        <p className="text-muted-foreground text-xl max-w-3xl">
+          Conhecimento profundo do mercado brasileiro e LATAM de pagamentos, fintechs e regulamentação
         </p>
       </div>
 
-      <Tabs defaultValue="pix" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="pix">PIX</TabsTrigger>
-          <TabsTrigger value="cards">Cartões</TabsTrigger>
-          <TabsTrigger value="fintechs">Fintechs</TabsTrigger>
-          <TabsTrigger value="regulation">Regulamentação</TabsTrigger>
+      <Tabs defaultValue="pix" className="space-y-8">
+        <TabsList className="grid w-full grid-cols-4 h-14">
+          <TabsTrigger value="pix" className="text-base">PIX</TabsTrigger>
+          <TabsTrigger value="cards" className="text-base">Cartões</TabsTrigger>
+          <TabsTrigger value="fintechs" className="text-base">Fintechs</TabsTrigger>
+          <TabsTrigger value="regulation" className="text-base">Regulamentação</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pix" className="space-y-4">
+        <TabsContent value="pix" className="space-y-6 mt-6">
           <Card>
-            <CardHeader>
-              <CardTitle>PIX - Pagamentos Instantâneos do Brasil</CardTitle>
-              <CardDescription>O sistema que revolucionou o mercado brasileiro</CardDescription>
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl">PIX - Pagamentos Instantâneos do Brasil</CardTitle>
+              <CardDescription className="text-base">O sistema de pagamento instantâneo que revolucionou o mercado brasileiro</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 pt-2">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="p-4 bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 rounded-lg">
                   <div className="text-3xl font-bold text-green-500">63.8B</div>
@@ -149,13 +149,13 @@ export default function MarketKnowledgePage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="cards" className="space-y-4">
+        <TabsContent value="cards" className="space-y-6 mt-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Ecossistema de Cartões no Brasil</CardTitle>
-              <CardDescription>Bandeiras, adquirentes e tecnologias</CardDescription>
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl">Ecossistema de Cartões no Brasil</CardTitle>
+              <CardDescription className="text-base">Bandeiras, adquirentes e tendências do mercado de cartões</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 pt-2">
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold">Market Share - Bandeiras</h3>
                 <div className="space-y-3">

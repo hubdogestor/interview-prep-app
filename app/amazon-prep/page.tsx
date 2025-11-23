@@ -64,51 +64,51 @@ const jobInfo = {
 
 export default function AmazonPrepPage() {
   return (
-    <div className="container max-w-7xl py-8 space-y-8">
+    <div className="container max-w-7xl py-10 px-6 space-y-10">
       {/* Header */}
-      <div className="space-y-4">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight">
+      <div className="space-y-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-3">
+            <h1 className="text-5xl font-bold tracking-tight">
               Amazon Payment Ops Preparation
             </h1>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-xl">
               Preparação completa para Program Manager na Amazon Payments
             </p>
           </div>
-          <Badge variant="outline" className="text-sm px-4 py-2">
+          <Badge variant="outline" className="text-base px-6 py-2">
             Job ID: {jobInfo.jobId}
           </Badge>
         </div>
 
         {/* Job Info Card */}
         <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-2xl">{jobInfo.title}</CardTitle>
-                <CardDescription className="text-base">
+          <CardHeader className="pb-6">
+            <div className="flex items-start justify-between gap-6">
+              <div className="space-y-2">
+                <CardTitle className="text-3xl">{jobInfo.title}</CardTitle>
+                <CardDescription className="text-lg">
                   {jobInfo.company} • {jobInfo.location}
                 </CardDescription>
               </div>
-              <Badge className="bg-orange-500 hover:bg-orange-600">
+              <Badge className="bg-orange-500 hover:bg-orange-600 text-base px-4 py-2">
                 {jobInfo.partnership}
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4 text-sm">
+          <CardContent className="pt-6">
+            <div className="grid md:grid-cols-3 gap-6 text-base">
               <div>
-                <p className="text-muted-foreground mb-1">Foco Principal</p>
-                <p className="font-medium">Transformação com AI/ML</p>
+                <p className="text-muted-foreground mb-2">Foco Principal</p>
+                <p className="font-semibold">Transformação com AI/ML</p>
               </div>
               <div>
-                <p className="text-muted-foreground mb-1">Metodologias</p>
-                <p className="font-medium">Lean, Six Sigma, Working Backwards</p>
+                <p className="text-muted-foreground mb-2">Metodologias</p>
+                <p className="font-semibold">Lean, Six Sigma, Working Backwards</p>
               </div>
               <div>
-                <p className="text-muted-foreground mb-1">Escopo</p>
-                <p className="font-medium">LATAM Payment Operations</p>
+                <p className="text-muted-foreground mb-2">Escopo</p>
+                <p className="font-semibold">LATAM Payment Operations</p>
               </div>
             </div>
           </CardContent>
@@ -117,37 +117,37 @@ export default function AmazonPrepPage() {
 
       {/* Progress Overview */}
       <Card>
-        <CardHeader>
-          <CardTitle>Progresso Geral</CardTitle>
-          <CardDescription>Acompanhamento do material de preparação</CardDescription>
+        <CardHeader className="pb-6">
+          <CardTitle className="text-2xl">Progresso Geral</CardTitle>
+          <CardDescription className="text-base">Acompanhamento do material de preparação</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Estrutura Base</span>
-                <span className="font-medium">100%</span>
+        <CardContent className="pt-2">
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-between text-base">
+                <span className="font-medium">Estrutura Base</span>
+                <span className="font-bold">100%</span>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-green-500 w-full" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Conteúdo Principal</span>
-                <span className="font-medium">0%</span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 w-0" />
+              <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-green-500 w-full transition-all" />
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Preparação Prática</span>
-                <span className="font-medium">0%</span>
+            <div className="space-y-3">
+              <div className="flex justify-between text-base">
+                <span className="font-medium">Conteúdo Principal</span>
+                <span className="font-bold">0%</span>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-purple-500 w-0" />
+              <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-blue-500 w-0 transition-all" />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between text-base">
+                <span className="font-medium">Preparação Prática</span>
+                <span className="font-bold">0%</span>
+              </div>
+              <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-purple-500 w-0 transition-all" />
               </div>
             </div>
           </div>
@@ -155,28 +155,28 @@ export default function AmazonPrepPage() {
       </Card>
 
       {/* Sections Grid */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Módulos de Preparação</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold">Módulos de Preparação</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sections.map((section) => (
             <Link key={section.id} href={`/amazon-prep/${section.id}`}>
-              <Card className="h-full hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer group">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge className={section.color} variant="outline">
+              <Card className="h-full hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer group border-2 hover:border-primary/20">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <Badge className={`${section.color} px-3 py-1`} variant="outline">
                       {section.status}
                     </Badge>
                     <ArrowRightIcon className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
-                  <CardTitle className="group-hover:text-primary transition-colors">
+                  <CardTitle className="group-hover:text-primary transition-colors text-xl mb-2">
                     {section.title}
                   </CardTitle>
-                  <CardDescription className="line-clamp-2">
+                  <CardDescription className="line-clamp-2 text-base">
                     {section.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center text-sm text-muted-foreground">
+                <CardContent className="pt-4">
+                  <div className="flex items-center text-base text-muted-foreground">
                     <span>{section.items} tópicos</span>
                   </div>
                 </CardContent>
@@ -188,26 +188,26 @@ export default function AmazonPrepPage() {
 
       {/* Quick Actions */}
       <Card>
-        <CardHeader>
-          <CardTitle>Ações Rápidas</CardTitle>
+        <CardHeader className="pb-6">
+          <CardTitle className="text-2xl">Ações Rápidas</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            <Link href="/amazon-prep/leadership-principles" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-              <div className="font-medium mb-1">📚 Revisar Leadership Principles</div>
-              <div className="text-sm text-muted-foreground">Estudar os 16 princípios com exemplos STAR</div>
+        <CardContent className="pt-2">
+          <div className="grid md:grid-cols-2 gap-5">
+            <Link href="/amazon-prep/leadership-principles" className="p-5 border-2 rounded-lg hover:bg-muted/50 hover:border-primary/30 transition-all group">
+              <div className="font-semibold mb-2 text-lg group-hover:text-primary transition-colors">📚 Revisar Leadership Principles</div>
+              <div className="text-base text-muted-foreground">Estudar os 16 princípios com exemplos STAR</div>
             </Link>
-            <Link href="/amazon-prep/interview-prep" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-              <div className="font-medium mb-1">🎯 Mock Interview</div>
-              <div className="text-sm text-muted-foreground">Praticar perguntas comportamentais</div>
+            <Link href="/amazon-prep/interview-prep" className="p-5 border-2 rounded-lg hover:bg-muted/50 hover:border-primary/30 transition-all group">
+              <div className="font-semibold mb-2 text-lg group-hover:text-primary transition-colors">🎯 Mock Interview</div>
+              <div className="text-base text-muted-foreground">Praticar perguntas comportamentais</div>
             </Link>
-            <Link href="/amazon-prep/technical-deep-dive" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-              <div className="font-medium mb-1">⚙️ Technical Review</div>
-              <div className="text-sm text-muted-foreground">Revisar arquitetura de pagamentos</div>
+            <Link href="/amazon-prep/technical-deep-dive" className="p-5 border-2 rounded-lg hover:bg-muted/50 hover:border-primary/30 transition-all group">
+              <div className="font-semibold mb-2 text-lg group-hover:text-primary transition-colors">⚙️ Technical Review</div>
+              <div className="text-base text-muted-foreground">Revisar arquitetura de pagamentos</div>
             </Link>
-            <Link href="/amazon-prep/stakeholders" className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-              <div className="font-medium mb-1">👥 Stakeholder Profiles</div>
-              <div className="text-sm text-muted-foreground">Andreia Guarino e Sujash Biswas</div>
+            <Link href="/amazon-prep/stakeholders" className="p-5 border-2 rounded-lg hover:bg-muted/50 hover:border-primary/30 transition-all group">
+              <div className="font-semibold mb-2 text-lg group-hover:text-primary transition-colors">👥 Stakeholder Profiles</div>
+              <div className="text-base text-muted-foreground">Andreia Guarino e Sujash Biswas</div>
             </Link>
           </div>
         </CardContent>

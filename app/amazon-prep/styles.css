@@ -1,0 +1,76 @@
+/* Amazon Prep - Enhanced Spacing & Typography */
+
+/* Improve card spacing */
+.amazon-prep-card .card-header {
+  @apply pb-6;
+}
+
+.amazon-prep-card .card-content {
+  @apply pt-2;
+}
+
+/* Better typography hierarchy */
+.amazon-prep-section-title {
+  @apply text-2xl font-bold mb-6;
+}
+
+.amazon-prep-subsection-title {
+  @apply text-xl font-semibold text-primary mb-4;
+}
+
+/* Content blocks with better spacing */
+.amazon-prep-content-block {
+  @apply p-5 border-2 rounded-lg hover:border-primary/30 transition-colors;
+}
+
+.amazon-prep-code-block {
+  @apply bg-muted p-4 rounded-lg text-sm font-mono;
+}
+
+/* Lists with better spacing */
+.amazon-prep-list {
+  @apply space-y-3;
+}
+
+.amazon-prep-list-item {
+  @apply text-base text-muted-foreground;
+}
+
+/* Stats/metrics display */
+.amazon-prep-stat {
+  @apply p-5 border-2 rounded-lg space-y-2;
+}
+
+.amazon-prep-stat-label {
+  @apply text-sm font-medium text-muted-foreground;
+}
+
+.amazon-prep-stat-value {
+  @apply text-2xl font-bold;
+}
+
+/* Improved accordion items */
+.amazon-prep-accordion-item {
+  @apply border-2 rounded-lg px-6 data-[state=open]:border-primary/30 transition-colors mb-4;
+}
+
+.amazon-prep-accordion-trigger {
+  @apply py-6 hover:no-underline;
+}
+
+.amazon-prep-accordion-content {
+  @apply pt-2 pb-6;
+}
+
+/* Tab improvements */
+.amazon-prep-tabs-list {
+  @apply h-14;
+}
+
+.amazon-prep-tabs-trigger {
+  @apply text-base;
+}
+
+.amazon-prep-tabs-content {
+  @apply space-y-6 mt-6;
+}

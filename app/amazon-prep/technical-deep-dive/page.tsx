@@ -6,54 +6,54 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export default function TechnicalDeepDivePage() {
   return (
-    <div className="container max-w-6xl py-8 space-y-6">
-      <Link href="/amazon-prep" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <ArrowLeftIcon className="h-4 w-4 mr-2" />
+    <div className="container max-w-6xl py-10 px-6 space-y-8">
+      <Link href="/amazon-prep" className="inline-flex items-center text-base text-muted-foreground hover:text-primary transition-colors group">
+        <ArrowLeftIcon className="mr-2 h-5 w-5 group-hover:-translate-x-1 transition-transform" />
         Voltar para Amazon Prep
       </Link>
 
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Technical Deep Dive</h1>
-        <p className="text-muted-foreground text-lg">
-          Arquitetura de sistemas de pagamento, AWS services e segurança
+      <div className="space-y-3">
+        <h1 className="text-5xl font-bold tracking-tight">Technical Deep Dive</h1>
+        <p className="text-muted-foreground text-xl max-w-3xl">
+          Arquitetura de sistemas de pagamento, AWS services e segurança para operações em LATAM
         </p>
       </div>
 
-      <Tabs defaultValue="architecture" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="architecture">Arquitetura</TabsTrigger>
-          <TabsTrigger value="aws">AWS Services</TabsTrigger>
-          <TabsTrigger value="security">Segurança</TabsTrigger>
-          <TabsTrigger value="apis">APIs & Integração</TabsTrigger>
+      <Tabs defaultValue="architecture" className="space-y-8">
+        <TabsList className="grid w-full grid-cols-4 h-14">
+          <TabsTrigger value="architecture" className="text-base">Arquitetura</TabsTrigger>
+          <TabsTrigger value="aws" className="text-base">AWS Services</TabsTrigger>
+          <TabsTrigger value="security" className="text-base">Segurança</TabsTrigger>
+          <TabsTrigger value="apis" className="text-base">APIs & Integração</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="architecture" className="space-y-4">
+        <TabsContent value="architecture" className="space-y-6 mt-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Payment System Architecture</CardTitle>
-              <CardDescription>Arquitetura de microsserviços e event-driven na AWS</CardDescription>
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl">Payment System Architecture</CardTitle>
+              <CardDescription className="text-base">Arquitetura de microsserviços e event-driven na AWS</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Conceitos Fundamentais</h3>
+            <CardContent className="space-y-8 pt-2">
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-primary">Conceitos Fundamentais</h3>
                 
-                <div className="space-y-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-semibold mb-2">🔷 Microsserviços</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                <div className="space-y-5">
+                  <div className="p-5 border-2 rounded-lg hover:border-primary/30 transition-colors">
+                    <h4 className="font-semibold mb-3 text-lg">🔷 Microsserviços</h4>
+                    <p className="text-base text-muted-foreground mb-4">
                       Arquitetura onde cada serviço é pequeno, focado em uma responsabilidade específica e pode ser desenvolvido/deployado independentemente.
                     </p>
-                    <div className="bg-muted p-3 rounded text-xs font-mono">
+                    <div className="bg-muted p-4 rounded-lg text-sm font-mono">
                       Auth Service → Payment Service → Fraud Service → Settlement Service
                     </div>
                   </div>
 
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-semibold mb-2">⚡ Event-Driven Architecture</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                  <div className="p-5 border-2 rounded-lg hover:border-primary/30 transition-colors">
+                    <h4 className="font-semibold mb-3 text-lg">⚡ Event-Driven Architecture</h4>
+                    <p className="text-base text-muted-foreground mb-4">
                       Serviços se comunicam através de eventos assíncronos. Um serviço publica um evento e outros serviços interessados o consomem.
                     </p>
-                    <div className="bg-muted p-3 rounded text-xs space-y-1">
+                    <div className="bg-muted p-4 rounded-lg text-sm space-y-2">
                       <div>Event: "PaymentInitiated" → Fraud Service analisa</div>
                       <div>Event: "PaymentAuthorized" → Settlement Service processa</div>
                       <div>Event: "PaymentCompleted" → Notification Service notifica</div>

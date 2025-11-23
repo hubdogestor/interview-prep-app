@@ -32,11 +32,18 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
   const [visible, setVisible] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  // Garantir que só execute no cliente
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: syncStatus, isError } = trpc.contextSync.getStatus.useQuery(undefined, {
     refetchInterval: 5 * 60 * 1000, // Refetch a cada 5 minutos
     retry: false,
     refetchOnWindowFocus: false,
+    enabled: mounted, // Só executa quando montado no cliente
   });
   const updateLastSync = trpc.contextSync.updateLastSync.useMutation();
   const dismissFiles = trpc.contextSync.dismissFiles.useMutation();

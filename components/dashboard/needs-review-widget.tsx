@@ -39,7 +39,13 @@ const tipoConfig: Record<string, {
 };
 
 export function NeedsReviewWidget() {
-  const { data: items = [], isLoading } = trpc.dashboard.needsReview.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: items = [], isLoading } = trpc.dashboard.needsReview.useQuery(undefined, { enabled: mounted });
 
   if (isLoading) {
     return (

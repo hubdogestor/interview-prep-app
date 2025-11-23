@@ -7,7 +7,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { trpc } from "@/lib/trpc/react";
 
 export function AIStatsWidget() {
-  const { data: stats, isLoading } = trpc.dashboard.aiStats.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: stats, isLoading } = trpc.dashboard.aiStats.useQuery(undefined, { enabled: mounted });
 
   if (isLoading) {
     return (

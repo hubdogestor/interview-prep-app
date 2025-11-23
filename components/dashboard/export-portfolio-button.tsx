@@ -13,10 +13,17 @@ import {
 } from "@/components/ui/tooltip";
 import { downloadMarkdown,exportPortfolioCompleto } from "@/lib/export/markdown";
 import { trpc } from "@/lib/trpc/react";
+import { useEffect, useState } from "react";
 
 export function ExportPortfolioButton() {
-  const { data: experiencias = [] } = trpc.experiencias.list.useQuery();
-  const { data: competencias = [] } = trpc.competencias.list.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: experiencias = [] } = trpc.experiencias.list.useQuery(undefined, { enabled: mounted });
+  const { data: competencias = [] } = trpc.competencias.list.useQuery(undefined, { enabled: mounted });
 
   const handleExportPortfolio = () => {
     if (experiencias.length === 0 && competencias.length === 0) {

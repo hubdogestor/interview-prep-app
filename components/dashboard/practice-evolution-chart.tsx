@@ -15,9 +15,16 @@ import {
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { trpc } from "@/lib/trpc/react";
+import { useEffect, useState } from "react";
 
 export function PracticeEvolutionChart() {
-  const { data: stats, isLoading } = trpc.practice.stats.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
 
   if (isLoading) {
     return (

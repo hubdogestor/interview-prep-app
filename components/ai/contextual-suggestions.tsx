@@ -67,11 +67,21 @@ export function AIContextualSuggestions({
   className,
 }: AIContextualSuggestionsProps) {
   const [visible, setVisible] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  // Garantir que só execute no cliente
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   // Busca sugestões dismissadas do banco de dados (com fallback localStorage)
   const { data: dismissedIds = [], isError } = trpc.dismissedSuggestions.list.useQuery(
     { pageContext },
-    { retry: false, refetchOnWindowFocus: false }
+    { 
+      retry: false, 
+      refetchOnWindowFocus: false,
+      enabled: mounted, // Só executa quando montado no cliente
+    }
   );
   
   const dismissMutation = trpc.dismissedSuggestions.dismiss.useMutation();

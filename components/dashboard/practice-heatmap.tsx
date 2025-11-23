@@ -13,7 +13,13 @@ import {
 import { trpc } from "@/lib/trpc/react";
 
 export function PracticeHeatmap() {
-  const { data: stats, isLoading } = trpc.practice.stats.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
 
   if (isLoading) {
     return (

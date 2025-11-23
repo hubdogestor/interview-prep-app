@@ -80,7 +80,13 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, iconColor }: Stat
  * Shows detailed metrics, trends, and insights
  */
 export function PracticeAnalyticsDashboard() {
-  const { data: stats, isLoading } = trpc.practice.stats.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
 
   if (isLoading) {
     return (

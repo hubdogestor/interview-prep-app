@@ -8,9 +8,15 @@ import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
 
 export function SmartSuggestions() {
-  const { data: needsReview = [] } = trpc.dashboard.needsReview.useQuery();
-  const { data: stats } = trpc.practice.stats.useQuery();
-  const { data: dashboard } = trpc.dashboard.overview.useQuery();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: needsReview = [] } = trpc.dashboard.needsReview.useQuery(undefined, { enabled: mounted });
+  const { data: stats } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
+  const { data: dashboard } = trpc.dashboard.overview.useQuery(undefined, { enabled: mounted });
 
   const suggestions = [];
 

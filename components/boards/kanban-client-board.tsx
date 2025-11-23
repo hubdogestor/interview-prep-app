@@ -69,11 +69,6 @@ export function KanbanClientBoard({
   // Callback para quando as colunas mudarem
   const handleColumnsChange = useCallback(
     (newColumns: BoardColumn[]) => {
-      console.log('[KanbanClientBoard] Columns changed, scheduling save...', {
-        boardName,
-        columnsCount: newColumns.length,
-      });
-      
       // Limpar timeout anterior
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
@@ -81,7 +76,6 @@ export function KanbanClientBoard({
 
       // Aguardar 1 segundo após a última mudança para salvar
       saveTimeoutRef.current = setTimeout(() => {
-        console.log('[KanbanClientBoard] Saving now...', boardName);
         saveColumns(newColumns);
       }, 1000);
     },

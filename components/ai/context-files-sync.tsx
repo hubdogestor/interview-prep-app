@@ -43,25 +43,29 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
 
   const checkContextFiles = async () => {
     try {
+      // TODO: Implementar API /api/context-files/status
+      // Temporariamente desabilitado para evitar 404s
+      return;
+      
       // Check if context files have changed
-      const response = await fetch("/api/context-files/status");
-      
-      if (!response.ok) return;
-      
-      const data = await response.json();
-      
-      setFiles(data.files || []);
-      
-      // Check localStorage for last sync times
-      const lastSync = localStorage.getItem("context-files-last-sync");
-      const lastSyncDate = lastSync ? new Date(JSON.parse(lastSync)) : new Date(0);
-      
-      const outdated = (data.files || [])
-        .filter((file: ContextFile) => new Date(file.lastModified) > lastSyncDate)
-        .map((file: ContextFile) => file.name);
-      
-      setOutdatedFiles(outdated);
-      setVisible(outdated.length > 0);
+      // const response = await fetch("/api/context-files/status");
+      // 
+      // if (!response.ok) return;
+      // 
+      // const data = await response.json();
+      // 
+      // setFiles(data.files || []);
+      // 
+      // // Check localStorage for last sync times
+      // const lastSync = localStorage.getItem("context-files-last-sync");
+      // const lastSyncDate = lastSync ? new Date(JSON.parse(lastSync)) : new Date(0);
+      // 
+      // const outdated = (data.files || [])
+      //   .filter((file: ContextFile) => new Date(file.lastModified) > lastSyncDate)
+      //   .map((file: ContextFile) => file.name);
+      // 
+      // setOutdatedFiles(outdated);
+      // setVisible(outdated.length > 0);
     } catch (error) {
       console.error("Erro ao verificar context files:", error);
     }

@@ -84,12 +84,6 @@ const data = {
           isActive: false,
         },
         {
-          title: "Laboratory",
-          url: "/laboratory",
-          icon: AtomIcon,
-          isActive: false,
-        },
-        {
           title: "Admin Settings",
           url: "/admin",
           icon: GearIcon,

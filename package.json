@@ -14,7 +14,8 @@
     "db:studio": "prisma studio",
     "typecheck": "tsc --noEmit",
     "start": "next start",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

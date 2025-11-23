@@ -701,7 +701,7 @@ function BoardColumnCard({
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">Flag (opcional)</Label>
               <Select
-                value={draft.selectedChip || "none"}
+                value={draft.selectedChip ? draft.selectedChip : "none"}
                 onValueChange={(value) => onDraftChange(column.id, "selectedChip", value === "none" ? "" : value)}
               >
                 <SelectTrigger className="bg-background/40">

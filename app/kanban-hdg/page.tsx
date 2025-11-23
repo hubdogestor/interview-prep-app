@@ -20,7 +20,8 @@ export default function KanbanHdgPage() {
         <KanbanClientBoard 
           boardName="hdg" 
           initialColumns={kanbanBoards.hdg} 
-          addCardLabel="Adicionar item" 
+          addCardLabel="Adicionar item"
+          showKRs={false}
         />
       </section>
     </DashboardPageLayout>

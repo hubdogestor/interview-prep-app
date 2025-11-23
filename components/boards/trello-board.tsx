@@ -21,8 +21,18 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Edit3, Plus } from "lucide-react"
+import { Edit3, Plus, Trash2 } from "lucide-react"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -46,6 +56,7 @@ interface TrelloBoardProps {
   addCardLabel?: string
   className?: string
   onColumnsChange?: (columns: BoardColumn[]) => void
+  showKRs?: boolean
 }
 
 type DraftState = Record<
@@ -77,7 +88,7 @@ type CardFormState = {
 const KR_PRESET_COUNT = 3
 const KR_MAX_COUNT = 6
 
-export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", className, onColumnsChange }: TrelloBoardProps) {
+export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", className, onColumnsChange, showKRs = true }: TrelloBoardProps) {
   const [columns, setColumns] = useState<BoardColumn[]>(() => cloneColumns(initialColumns))
   const [activeCard, setActiveCard] = useState<BoardCard | null>(null)
   const [composerColumn, setComposerColumn] = useState<string | null>(null)
@@ -86,6 +97,11 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     columnId: string
     cardId: string
     form: CardFormState
+  } | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    columnId: string
+    cardId: string
+    cardTitle: string
   } | null>(null)
 
   useEffect(() => {
@@ -343,6 +359,22 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
 
   const closeEditDialog = () => setEditingCard(null)
 
+  const handleDeleteCard = () => {
+    if (!deleteConfirm) return
+
+    setColumns((prev) =>
+      prev.map((column) => {
+        if (column.id !== deleteConfirm.columnId) return column
+        return {
+          ...column,
+          cards: column.cards.filter((card) => card.id !== deleteConfirm.cardId),
+        }
+      }),
+    )
+
+    setDeleteConfirm(null)
+  }
+
   return (
     <div className={cn("space-y-6", className)}>
       <DndContext
@@ -360,6 +392,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
               column={column}
               isComposerOpen={composerColumn === column.id}
               addCardLabel={addCardLabel}
+              showKRs={showKRs}
               onOpenComposer={() => setComposerColumn(column.id)}
               onCloseComposer={() => {
                 resetDraft(column.id)
@@ -388,7 +421,11 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                 <div className="space-y-3">
                   {column.cards.map((card) => (
                     <SortableItem id={card.id} key={card.id}>
-                      <BoardCardItem card={card} onEdit={() => startEditingCard(column.id, card)} />
+                      <BoardCardItem 
+                        card={card} 
+                        onEdit={() => startEditingCard(column.id, card)}
+                        onDelete={() => setDeleteConfirm({ columnId: column.id, cardId: card.id, cardTitle: card.title })}
+                      />
                     </SortableItem>
                   ))}
                   {column.cards.length === 0 && (
@@ -471,28 +508,30 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                   onChange={(event) => handleEditChange("metric", event.target.value)}
                 />
               </div>
-              <div className="space-y-2">
-                <Label>KRs</Label>
-                {ensureKrSlots(editingCard.form.krs).map((kr, index) => (
-                  <div key={`edit-kr-${index}`} className="grid gap-2 md:grid-cols-2">
-                    <Input
-                      placeholder={`KR${index + 1} - descrição`}
-                      value={kr.description}
-                      onChange={(event) => handleEditKrChange(index, "description", event.target.value)}
-                    />
-                    <Input
-                      placeholder="Métrica/resultado"
-                      value={kr.metric}
-                      onChange={(event) => handleEditKrChange(index, "metric", event.target.value)}
-                    />
-                  </div>
-                ))}
-                {editingCard.form.krs.length < KR_MAX_COUNT && (
-                  <Button type="button" variant="secondary" size="sm" onClick={addEditKrRow}>
-                    Adicionar KR extra
-                  </Button>
-                )}
-              </div>
+              {showKRs && (
+                <div className="space-y-2">
+                  <Label>KRs</Label>
+                  {ensureKrSlots(editingCard.form.krs).map((kr, index) => (
+                    <div key={`edit-kr-${index}`} className="grid gap-2 md:grid-cols-2">
+                      <Input
+                        placeholder={`KR${index + 1} - descrição`}
+                        value={kr.description}
+                        onChange={(event) => handleEditKrChange(index, "description", event.target.value)}
+                      />
+                      <Input
+                        placeholder="Métrica/resultado"
+                        value={kr.metric}
+                        onChange={(event) => handleEditKrChange(index, "metric", event.target.value)}
+                      />
+                    </div>
+                  ))}
+                  {editingCard.form.krs.length < KR_MAX_COUNT && (
+                    <Button type="button" variant="secondary" size="sm" onClick={addEditKrRow}>
+                      Adicionar KR extra
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <DialogFooter>
@@ -505,6 +544,28 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={Boolean(deleteConfirm)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteConfirm(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir card?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir &quot;{deleteConfirm?.cardTitle}&quot;? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteCard} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
@@ -514,6 +575,7 @@ interface BoardColumnCardProps {
   children: ReactNode
   isComposerOpen: boolean
   addCardLabel: string
+  showKRs: boolean
   onOpenComposer: () => void
   onCloseComposer: () => void
   onSaveCard: () => void
@@ -539,6 +601,7 @@ function BoardColumnCard({
   children,
   isComposerOpen,
   addCardLabel,
+  showKRs,
   onOpenComposer,
   onCloseComposer,
   onSaveCard,
@@ -607,29 +670,31 @@ function BoardColumnCard({
               onChange={(event) => onDraftChange(column.id, "metric", event.target.value)}
               className="bg-background/40"
             />
-            <div className="space-y-2">
-              {ensureKrSlots(draft.items).map((kr, index) => (
-                <div key={`${column.id}-kr-${index}`} className="grid gap-2 md:grid-cols-2">
-                  <Input
-                    placeholder={`KR${index + 1} - descrição`}
-                    value={kr.description}
-                    onChange={(event) => onDraftKrChange(column.id, index, "description", event.target.value)}
-                    className="bg-background/40"
-                  />
-                  <Input
-                    placeholder="Métrica/resultado"
-                    value={kr.metric}
-                    onChange={(event) => onDraftKrChange(column.id, index, "metric", event.target.value)}
-                    className="bg-background/40"
-                  />
-                </div>
-              ))}
-              {ensureKrSlots(draft.items).length < KR_MAX_COUNT && (
-                <Button type="button" variant="secondary" size="sm" onClick={onAddDraftKr}>
-                  Adicionar KR extra
-                </Button>
-              )}
-            </div>
+            {showKRs && (
+              <div className="space-y-2">
+                {ensureKrSlots(draft.items).map((kr, index) => (
+                  <div key={`${column.id}-kr-${index}`} className="grid gap-2 md:grid-cols-2">
+                    <Input
+                      placeholder={`KR${index + 1} - descrição`}
+                      value={kr.description}
+                      onChange={(event) => onDraftKrChange(column.id, index, "description", event.target.value)}
+                      className="bg-background/40"
+                    />
+                    <Input
+                      placeholder="Métrica/resultado"
+                      value={kr.metric}
+                      onChange={(event) => onDraftKrChange(column.id, index, "metric", event.target.value)}
+                      className="bg-background/40"
+                    />
+                  </div>
+                ))}
+                {ensureKrSlots(draft.items).length < KR_MAX_COUNT && (
+                  <Button type="button" variant="secondary" size="sm" onClick={onAddDraftKr}>
+                    Adicionar KR extra
+                  </Button>
+                )}
+              </div>
+            )}
             <div className="flex gap-2">
               <Button size="sm" onClick={onSaveCard}>
                 Salvar
@@ -654,9 +719,10 @@ interface BoardCardItemProps {
   card: BoardCard
   isOverlay?: boolean
   onEdit?: () => void
+  onDelete?: () => void
 }
 
-function BoardCardItem({ card, isOverlay = false, onEdit }: BoardCardItemProps) {
+function BoardCardItem({ card, isOverlay = false, onEdit, onDelete }: BoardCardItemProps) {
   return (
     <div
       className={cn(
@@ -676,7 +742,7 @@ function BoardCardItem({ card, isOverlay = false, onEdit }: BoardCardItemProps) 
             </Badge>
           ))}
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1">
           {card.metric && (
             <span className="text-[11px] font-mono uppercase text-muted-foreground">{card.metric}</span>
           )}
@@ -693,6 +759,21 @@ function BoardCardItem({ card, isOverlay = false, onEdit }: BoardCardItemProps) 
             >
               <Edit3 className="h-4 w-4" />
               <span className="sr-only">Editar card</span>
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 rounded-full text-muted-foreground hover:text-destructive"
+              onClick={(event) => {
+                event.stopPropagation()
+                onDelete()
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="sr-only">Excluir card</span>
             </Button>
           )}
         </div>

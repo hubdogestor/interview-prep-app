@@ -11,12 +11,14 @@ interface OKRClientBoardProps {
   quarter: string;
   initialColumns: BoardColumn[];
   addCardLabel?: string;
+  showKRs?: boolean;
 }
 
 export function OKRClientBoard({
   quarter,
   initialColumns,
   addCardLabel = "Adicionar OKR",
+  showKRs = true,
 }: OKRClientBoardProps) {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -107,6 +109,7 @@ export function OKRClientBoard({
         initialColumns={columns}
         addCardLabel={addCardLabel}
         onColumnsChange={handleColumnsChange}
+        showKRs={showKRs}
       />
     </div>
   );

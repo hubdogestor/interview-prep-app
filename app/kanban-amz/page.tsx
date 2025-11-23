@@ -20,7 +20,8 @@ export default function KanbanAmzPage() {
         <KanbanClientBoard 
           boardName="amz" 
           initialColumns={kanbanBoards.amz} 
-          addCardLabel="Adicionar item" 
+          addCardLabel="Adicionar item"
+          showKRs={false}
         />
       </section>
     </DashboardPageLayout>

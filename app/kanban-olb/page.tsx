@@ -20,7 +20,8 @@ export default function KanbanOlbPage() {
         <KanbanClientBoard 
           boardName="olb" 
           initialColumns={kanbanBoards.olb} 
-          addCardLabel="Adicionar item" 
+          addCardLabel="Adicionar item"
+          showKRs={false}
         />
       </section>
     </DashboardPageLayout>

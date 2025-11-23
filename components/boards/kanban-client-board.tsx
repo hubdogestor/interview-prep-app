@@ -11,12 +11,14 @@ interface KanbanClientBoardProps {
   boardName: string;
   initialColumns: BoardColumn[];
   addCardLabel?: string;
+  showKRs?: boolean;
 }
 
 export function KanbanClientBoard({
   boardName,
   initialColumns,
   addCardLabel = "Adicionar item",
+  showKRs = true,
 }: KanbanClientBoardProps) {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -107,6 +109,7 @@ export function KanbanClientBoard({
         initialColumns={columns}
         addCardLabel={addCardLabel}
         onColumnsChange={handleColumnsChange}
+        showKRs={showKRs}
       />
     </div>
   );

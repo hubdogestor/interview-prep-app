@@ -20,7 +20,8 @@ export default function KanbanLeoPage() {
         <KanbanClientBoard 
           boardName="leo" 
           initialColumns={kanbanBoards.leo} 
-          addCardLabel="Adicionar item" 
+          addCardLabel="Adicionar item"
+          showKRs={false}
         />
       </section>
     </DashboardPageLayout>

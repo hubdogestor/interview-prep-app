@@ -1,7 +1,9 @@
 import "server-only";
 
 import { cache } from "react";
+import { headers } from "next/headers";
 
+import { auth } from "@/lib/auth";
 import { createCaller } from "@/server/api/root";
 import { createContextInner } from "@/server/api/trpc";
 
@@ -10,8 +12,10 @@ import { createContextInner } from "@/server/api/trpc";
  * Utiliza React cache para deduplicate requests
  */
 export const api = cache(async () => {
+  const session = await auth();
   const context = await createContextInner({
-    headers: new Headers(),
+    headers: headers(),
+    session,
   });
 
   return createCaller(context);

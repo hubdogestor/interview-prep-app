@@ -8,14 +8,19 @@ import prisma from "@/lib/db";
 
 type CreateContextOptions = {
   headers: Headers;
-  session: Awaited<ReturnType<typeof auth>> | null;
+  session?: Awaited<ReturnType<typeof auth>> | null;
 };
 
 export const createContextInner = async (_opts: CreateContextOptions) => {
+  const session =
+    typeof _opts.session === "undefined"
+      ? await auth()
+      : _opts.session ?? null;
+
   return {
     prisma,
     headers: _opts.headers,
-    session: _opts.session,
+    session,
   };
 };
 

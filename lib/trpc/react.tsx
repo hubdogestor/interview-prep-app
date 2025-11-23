@@ -43,6 +43,12 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
               "x-trpc-source": "react",
             };
           },
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include", // Enviar cookies de autenticação
+            });
+          },
         }),
       ],
     }),

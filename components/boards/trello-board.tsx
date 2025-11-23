@@ -103,6 +103,7 @@ type CardFormState = {
   owner: string
   dueDate: string
   metric: string
+  selectedChip: string
   krs: KrEntry[]
 }
 
@@ -328,6 +329,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
         owner: card.owner ?? "",
         dueDate: card.dueDate ?? "",
         metric: card.metric ?? "",
+        selectedChip: card.chips?.[0]?.label ?? "",
         krs: ensureKrSlots(parseItemsToKrs(card.items ?? [])),
       },
     })
@@ -357,6 +359,9 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     if (!editingCard) return
 
     const normalizedKrs = normalizeKrs(editingCard.form.krs)
+    const selectedChipData = editingCard.form.selectedChip
+      ? AVAILABLE_CHIPS.find((chip) => chip.label === editingCard.form.selectedChip)
+      : undefined
 
     setColumns((prev) =>
       prev.map((column) => {
@@ -372,6 +377,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                   owner: editingCard.form.owner || undefined,
                   dueDate: editingCard.form.dueDate || undefined,
                   metric: editingCard.form.metric || undefined,
+                  chips: selectedChipData ? [selectedChipData] : undefined,
                   items: normalizedKrs.length ? normalizedKrs : undefined,
                 }
               : card,
@@ -534,6 +540,28 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
                   value={editingCard.form.metric}
                   onChange={(event) => handleEditChange("metric", event.target.value)}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="card-chip">Flag (opcional)</Label>
+                <Select
+                  value={editingCard.form.selectedChip ? editingCard.form.selectedChip : "none"}
+                  onValueChange={(value) => handleEditChange("selectedChip", value === "none" ? "" : value)}
+                >
+                  <SelectTrigger id="card-chip">
+                    <SelectValue placeholder="Sem flag" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sem flag</SelectItem>
+                    {AVAILABLE_CHIPS.map((chip) => (
+                      <SelectItem key={chip.label} value={chip.label}>
+                        <div className="flex items-center gap-2">
+                          <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
+                          {chip.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               {showKRs && (
                 <div className="space-y-2">

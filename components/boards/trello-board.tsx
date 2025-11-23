@@ -546,18 +546,11 @@ function BoardColumnCard({
       )}
     >
       <div className="space-y-1">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            {column.subtitle && (
-              <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{column.subtitle}</p>
-            )}
-            <h3 className="text-xl font-display tracking-[0.1em]">{column.title}</h3>
-          </div>
-          {column.highlight && (
-            <Badge variant="outline" className="text-[10px] font-semibold uppercase tracking-widest">
-              {column.highlight}
-            </Badge>
+        <div className="text-center">
+          {column.subtitle && (
+            <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{column.subtitle}</p>
           )}
+          <h3 className="text-2xl font-display tracking-[0.1em]">{column.title}</h3>
         </div>
         {column.accentColor && <div className={cn("h-1 rounded-full bg-gradient-to-r", column.accentColor)} />}
       </div>

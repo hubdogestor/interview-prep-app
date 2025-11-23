@@ -3,9 +3,8 @@ import type { BoardCard,BoardColumn } from "@/types/boards"
 export const okr2026Columns: BoardColumn[] = [
   {
     id: "okr-q1",
-    title: "Q1 · Fundamentos",
+    title: "2026 - Q1",
     subtitle: "JAN — MAR",
-    highlight: "Kickoff",
     accentColor: "from-emerald-400/60 via-lime-400/40 to-transparent",
     cards: [
       {
@@ -46,9 +45,8 @@ export const okr2026Columns: BoardColumn[] = [
   },
   {
     id: "okr-q2",
-    title: "Q2 · Escala Regional",
+    title: "2026 - Q2",
     subtitle: "ABR — JUN",
-    highlight: "Expansão",
     accentColor: "from-cyan-400/60 via-blue-400/30 to-transparent",
     cards: [
       {
@@ -86,9 +84,8 @@ export const okr2026Columns: BoardColumn[] = [
   },
   {
     id: "okr-q3",
-    title: "Q3 · Produtos Digitais",
+    title: "2026 - Q3",
     subtitle: "JUL — SET",
-    highlight: "OPERAÇÃO",
     accentColor: "from-amber-400/60 via-orange-400/30 to-transparent",
     cards: [
       {
@@ -126,9 +123,8 @@ export const okr2026Columns: BoardColumn[] = [
   },
   {
     id: "okr-q4",
-    title: "Q4 · Consolidação",
+    title: "2026 - Q4",
     subtitle: "OUT — DEZ",
-    highlight: "Impacto",
     accentColor: "from-pink-400/60 via-red-400/30 to-transparent",
     cards: [
       {
@@ -171,29 +167,21 @@ const baseKanbanColumns: Omit<BoardColumn, "cards">[] = [
   {
     id: "backlog",
     title: "Backlog",
-    subtitle: "Ideias & Insights",
-    highlight: "Explorar",
     accentColor: "from-slate-500/40 via-slate-400/20 to-transparent",
   },
   {
     id: "todo",
     title: "To-Do",
-    subtitle: "Prioridade ativa",
-    highlight: "Focar",
     accentColor: "from-sky-500/40 via-blue-400/20 to-transparent",
   },
   {
     id: "doing",
     title: "Doing",
-    subtitle: "Execução",
-    highlight: "Em andamento",
     accentColor: "from-amber-500/40 via-orange-400/20 to-transparent",
   },
   {
     id: "done",
     title: "Done",
-    subtitle: "Impactos reais",
-    highlight: "Entregue",
     accentColor: "from-emerald-500/40 via-lime-400/20 to-transparent",
   },
 ]

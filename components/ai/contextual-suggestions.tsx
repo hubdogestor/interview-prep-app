@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { fadeIn } from "@/lib/animations";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/lib/trpc/client";
 
 export interface AIContextualSuggestion {
   id: string;
@@ -67,20 +68,21 @@ export function AIContextualSuggestions({
 }: AIContextualSuggestionsProps) {
   const [visible, setVisible] = useState(true);
   
-  // Initialize dismissed from localStorage
-  const [dismissed, setDismissed] = useState<Set<string>>(() => {
-    if (typeof window === "undefined") return new Set();
-    const stored = localStorage.getItem(`ai-suggestions-dismissed-${pageContext}`);
-    return stored ? new Set(JSON.parse(stored)) : new Set();
-  });
+  // Busca sugestões dismissadas do banco de dados
+  const { data: dismissedIds = [] } = trpc.dismissedSuggestions.list.useQuery({ pageContext });
+  const dismissMutation = trpc.dismissedSuggestions.dismiss.useMutation();
+  const utils = trpc.useUtils();
+
+  const dismissed = new Set(dismissedIds);
 
   const handleDismiss = (id: string) => {
-    const newDismissed = new Set(dismissed);
-    newDismissed.add(id);
-    setDismissed(newDismissed);
-    localStorage.setItem(
-      `ai-suggestions-dismissed-${pageContext}`,
-      JSON.stringify(Array.from(newDismissed))
+    dismissMutation.mutate(
+      { suggestionId: id, pageContext },
+      {
+        onSuccess: () => {
+          utils.dismissedSuggestions.list.invalidate({ pageContext });
+        },
+      }
     );
   };
 

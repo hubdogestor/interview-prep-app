@@ -24,7 +24,7 @@ export function ResizableLayout({
     minWidth: 160,
     maxWidth: 400,
     defaultWidth: 240,
-    localStorageKey: "interview-prep-left-panel-width",
+    side: "left",
   });
 
   // Hook para o painel direito
@@ -32,7 +32,6 @@ export function ResizableLayout({
     minWidth: 200,
     maxWidth: 600,
     defaultWidth: 360,
-    localStorageKey: "interview-prep-right-panel-width",
   });
 
   // Memoizar estilos para evitar re-renders

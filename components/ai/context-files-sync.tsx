@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { fadeIn } from "@/lib/animations";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/lib/trpc/client";
 
 interface ContextFile {
   name: string;
@@ -32,13 +33,15 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
   const [syncing, setSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
 
+  const { data: syncStatus } = trpc.contextSync.getStatus.useQuery(undefined, {
+    refetchInterval: 5 * 60 * 1000, // Refetch a cada 5 minutos
+  });
+  const updateLastSync = trpc.contextSync.updateLastSync.useMutation();
+  const dismissFiles = trpc.contextSync.dismissFiles.useMutation();
+  const utils = trpc.useUtils();
+
   useEffect(() => {
     checkContextFiles();
-    
-    // Check every 5 minutes
-    const interval = setInterval(checkContextFiles, 5 * 60 * 1000);
-    
-    return () => clearInterval(interval);
   }, []);
 
   const checkContextFiles = async () => {
@@ -56,12 +59,8 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
       // 
       // setFiles(data.files || []);
       // 
-      // // Check localStorage for last sync times
-      // const lastSync = localStorage.getItem("context-files-last-sync");
-      // const lastSyncDate = lastSync ? new Date(JSON.parse(lastSync)) : new Date(0);
-      // 
       // const outdated = (data.files || [])
-      //   .filter((file: ContextFile) => new Date(file.lastModified) > lastSyncDate)
+      //   .filter((file: ContextFile) => syncStatus && new Date(file.lastModified) > new Date(syncStatus.lastSyncAt))
       //   .map((file: ContextFile) => file.name);
       // 
       // setOutdatedFiles(outdated);
@@ -90,15 +89,18 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
       setSyncProgress(100);
 
       if (response.ok) {
-        // Update last sync time
-        localStorage.setItem("context-files-last-sync", JSON.stringify(new Date()));
-        
-        setTimeout(() => {
-          setOutdatedFiles([]);
-          setVisible(false);
-          setSyncing(false);
-          setSyncProgress(0);
-        }, 1000);
+        // Update last sync time no banco de dados
+        updateLastSync.mutate(undefined, {
+          onSuccess: () => {
+            utils.contextSync.getStatus.invalidate();
+            setTimeout(() => {
+              setOutdatedFiles([]);
+              setVisible(false);
+              setSyncing(false);
+              setSyncProgress(0);
+            }, 1000);
+          },
+        });
       } else {
         throw new Error("Erro ao sincronizar");
       }
@@ -111,11 +113,15 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
 
   const handleDismiss = () => {
     // Mark as seen but don't update sync time
-    localStorage.setItem(
-      "context-files-dismissed",
-      JSON.stringify({ files: outdatedFiles, date: new Date() })
+    dismissFiles.mutate(
+      { files: outdatedFiles },
+      {
+        onSuccess: () => {
+          utils.contextSync.getStatus.invalidate();
+          setVisible(false);
+        },
+      }
     );
-    setVisible(false);
   };
 
   if (!visible || outdatedFiles.length === 0) {

@@ -1,7 +1,9 @@
 import { aiRouter } from "@/server/api/routers/ai";
 import { competenciasRouter } from "@/server/api/routers/competencias";
+import { contextSyncRouter } from "@/server/api/routers/context-sync";
 import { customFlagsRouter } from "@/server/api/routers/custom-flags";
 import { dashboardRouter } from "@/server/api/routers/dashboard";
+import { dismissedSuggestionsRouter } from "@/server/api/routers/dismissed-suggestions";
 import { experienciasRouter } from "@/server/api/routers/experiencias";
 import { icebreakersRouter } from "@/server/api/routers/icebreakers";
 import { kanbansRouter } from "@/server/api/routers/kanbans";
@@ -10,6 +12,7 @@ import { practiceRouter } from "@/server/api/routers/practice";
 import { profileRouter } from "@/server/api/routers/profile";
 import { questionsRouter } from "@/server/api/routers/questions";
 import { speechesRouter } from "@/server/api/routers/speeches";
+import { userPreferencesRouter } from "@/server/api/routers/user-preferences";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -28,6 +31,9 @@ export const appRouter = createTRPCRouter({
   okrs: okrsRouter,
   kanbans: kanbansRouter,
   customFlags: customFlagsRouter,
+  userPreferences: userPreferencesRouter,
+  dismissedSuggestions: dismissedSuggestionsRouter,
+  contextSync: contextSyncRouter,
 });
 
 // Export type definition of API

@@ -127,6 +127,17 @@ const data = {
         },
       ],
     },
+    {
+      title: "Amazon Prep",
+      items: [
+        {
+          title: "Payment Ops Prep",
+          url: "/amazon-prep",
+          icon: AtomIcon,
+          isActive: false,
+        },
+      ],
+    },
   ],
   desktop: {
     title: "Desktop (Online)",

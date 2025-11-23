@@ -1,4 +1,4 @@
-import { TrelloBoard } from "@/components/boards/trello-board"
+import { KanbanClientBoard } from "@/components/boards/kanban-client-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import BriefcaseIcon from "@/components/icons/briefcase"
 import { kanbanBoards } from "@/data/boards"
@@ -17,7 +17,11 @@ export default function KanbanOlbPage() {
           Quadro feito para acompanhar demandas do cliente OLB com a mesma lógica Trello: quatro estágios claros e cards
           fáceis de mover ou criar.
         </div>
-        <TrelloBoard initialColumns={kanbanBoards.olb} addCardLabel="Adicionar item" />
+        <KanbanClientBoard 
+          boardName="olb" 
+          initialColumns={kanbanBoards.olb} 
+          addCardLabel="Adicionar item" 
+        />
       </section>
     </DashboardPageLayout>
   )

@@ -1,4 +1,4 @@
-import { TrelloBoard } from "@/components/boards/trello-board"
+import { KanbanClientBoard } from "@/components/boards/kanban-client-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import AtomIcon from "@/components/icons/atom"
 import { kanbanBoards } from "@/data/boards"
@@ -17,7 +17,11 @@ export default function KanbanHdgPage() {
           Um quadro compacto para alinhar squads HDG. Arraste cards, crie novas entregas e mantenha tudo transparente
           entre backlog e done.
         </div>
-        <TrelloBoard initialColumns={kanbanBoards.hdg} addCardLabel="Adicionar item" />
+        <KanbanClientBoard 
+          boardName="hdg" 
+          initialColumns={kanbanBoards.hdg} 
+          addCardLabel="Adicionar item" 
+        />
       </section>
     </DashboardPageLayout>
   )

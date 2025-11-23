@@ -1,4 +1,4 @@
-import { TrelloBoard } from "@/components/boards/trello-board"
+import { KanbanClientBoard } from "@/components/boards/kanban-client-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import ProcessorIcon from "@/components/icons/proccesor"
 import { kanbanBoards } from "@/data/boards"
@@ -17,7 +17,11 @@ export default function KanbanAmzPage() {
           Monitoramento rápido das entregas que suportam AMZ LATAM. Arraste cards entre backlog, to-do, doing e done para
           acompanhar o pulso de cada trilha.
         </div>
-        <TrelloBoard initialColumns={kanbanBoards.amz} addCardLabel="Adicionar item" />
+        <KanbanClientBoard 
+          boardName="amz" 
+          initialColumns={kanbanBoards.amz} 
+          addCardLabel="Adicionar item" 
+        />
       </section>
     </DashboardPageLayout>
   )

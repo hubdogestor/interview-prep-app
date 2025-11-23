@@ -1,4 +1,4 @@
-import { TrelloBoard } from "@/components/boards/trello-board"
+import { KanbanClientBoard } from "@/components/boards/kanban-client-board"
 import DashboardPageLayout from "@/components/dashboard/layout"
 import BracketsIcon from "@/components/icons/brackets"
 import { kanbanBoards } from "@/data/boards"
@@ -17,7 +17,11 @@ export default function KanbanLeoPage() {
           Estrutura simples com backlog → done. Use drag-and-drop para priorizar iniciativas da frente autoral de
           Leonardo, mantendo uma visão enxuta para 2026.
         </div>
-        <TrelloBoard initialColumns={kanbanBoards.leo} addCardLabel="Adicionar item" />
+        <KanbanClientBoard 
+          boardName="leo" 
+          initialColumns={kanbanBoards.leo} 
+          addCardLabel="Adicionar item" 
+        />
       </section>
     </DashboardPageLayout>
   )

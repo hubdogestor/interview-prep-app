@@ -45,6 +45,7 @@ interface TrelloBoardProps {
   initialColumns: BoardColumn[]
   addCardLabel?: string
   className?: string
+  onColumnsChange?: (columns: BoardColumn[]) => void
 }
 
 type DraftState = Record<
@@ -76,7 +77,7 @@ type CardFormState = {
 const KR_PRESET_COUNT = 3
 const KR_MAX_COUNT = 6
 
-export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", className }: TrelloBoardProps) {
+export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", className, onColumnsChange }: TrelloBoardProps) {
   const [columns, setColumns] = useState<BoardColumn[]>(() => cloneColumns(initialColumns))
   const [activeCard, setActiveCard] = useState<BoardCard | null>(null)
   const [composerColumn, setComposerColumn] = useState<string | null>(null)
@@ -90,6 +91,11 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
   useEffect(() => {
     setColumns(cloneColumns(initialColumns))
   }, [initialColumns])
+
+  // Notificar parent quando colunas mudarem
+  useEffect(() => {
+    onColumnsChange?.(columns)
+  }, [columns, onColumnsChange])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

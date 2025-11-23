@@ -4,8 +4,8 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Pega o token de sessão do NextAuth
-  const token = request.cookies.get("authjs.session-token") ||
-                request.cookies.get("__Secure-authjs.session-token");
+  const token = request.cookies.get("next-auth.session-token") ||
+                request.cookies.get("__Secure-next-auth.session-token");
 
   const isLoggedIn = !!token;
   const isAuthPage = pathname.startsWith("/auth");

@@ -1,26 +1,27 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const practiceRouter = createTRPCRouter({
   // Listar todas as sessões de prática
-  list: publicProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.practiceSession.findMany({
+      where: { userId: ctx.userId },
       orderBy: { createdAt: "desc" },
     });
   }),
 
   // Buscar uma sessão específica
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.practiceSession.findUnique({
-        where: { id: input.id },
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 
   // Buscar sessões por tipo de item
-  listByType: publicProcedure
+  listByType: protectedProcedure
     .input(
       z.object({
         tipo: z.enum(["icebreaker", "speech", "star_case"]),
@@ -28,23 +29,23 @@ export const practiceRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       return ctx.prisma.practiceSession.findMany({
-        where: { tipo: input.tipo },
+        where: { tipo: input.tipo, userId: ctx.userId },
         orderBy: { createdAt: "desc" },
       });
     }),
 
   // Buscar sessões por item específico
-  listByItem: publicProcedure
+  listByItem: protectedProcedure
     .input(z.object({ itemId: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.practiceSession.findMany({
-        where: { itemId: input.itemId },
+        where: { itemId: input.itemId, userId: ctx.userId },
         orderBy: { createdAt: "desc" },
       });
     }),
 
   // Criar nova sessão de prática
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         tipo: z.enum(["icebreaker", "speech", "star_case"]),
@@ -69,12 +70,15 @@ export const practiceRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.practiceSession.create({
-        data: input,
+        data: {
+          ...input,
+          userId: ctx.userId,
+        },
       });
     }),
 
   // Atualizar sessão de prática
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -96,23 +100,25 @@ export const practiceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
       return ctx.prisma.practiceSession.update({
-        where: { id },
+        where: { id, userId: ctx.userId },
         data,
       });
     }),
 
   // Deletar sessão de prática
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.practiceSession.delete({
-        where: { id: input.id },
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 
   // Estatísticas de práticas
-  stats: publicProcedure.query(async ({ ctx }) => {
-    const sessions = await ctx.prisma.practiceSession.findMany();
+  stats: protectedProcedure.query(async ({ ctx }) => {
+    const sessions = await ctx.prisma.practiceSession.findMany({
+      where: { userId: ctx.userId },
+    });
 
     const totalSessions = sessions.length;
     const totalDuracao = sessions.reduce((sum, s) => sum + s.duracao, 0);

@@ -126,7 +126,7 @@ export const experienciasRouter = createTRPCRouter({
       });
     }),
 
-  generateStarCaseWithAI: publicProcedure
+  generateStarCaseWithAI: protectedProcedure
     .input(
       z.object({
         mode: z.enum(["auto", "guided", "rewrite"]),
@@ -159,7 +159,8 @@ export const experienciasRouter = createTRPCRouter({
             }
           : undefined,
         input.existingCase,
-        input.rewriteInstructions
+        input.rewriteInstructions,
+        ctx.userId
       );
     }),
 });

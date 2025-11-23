@@ -107,7 +107,7 @@ export const competenciasRouter = createTRPCRouter({
       });
     }),
 
-  generateCompetenciaWithAI: publicProcedure
+  generateCompetenciaWithAI: protectedProcedure
     .input(
       z.object({
         mode: z.enum(["auto", "guided", "rewrite"]),
@@ -146,12 +146,13 @@ export const competenciasRouter = createTRPCRouter({
             }
           : undefined,
         input.existingCompetencia,
-        input.rewriteInstructions
+        input.rewriteInstructions,
+        ctx.userId
       );
     }),
 
   // Generate or improve a single Track Record with AI
-  generateTrackRecordWithAI: publicProcedure
+  generateTrackRecordWithAI: protectedProcedure
     .input(
       z.object({
         competenciaNome: z.string(),
@@ -166,13 +167,14 @@ export const competenciasRouter = createTRPCRouter({
         instructions: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { generateTrackRecord } = await import("@/lib/ai/gemini");
       return generateTrackRecord(
         input.competenciaNome,
         input.competenciaCategoria,
         input.existingTrackRecord,
-        input.instructions
+        input.instructions,
+        ctx.userId
       );
     }),
 });

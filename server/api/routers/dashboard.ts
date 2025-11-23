@@ -189,7 +189,7 @@ export const dashboardRouter = createTRPCRouter({
   }),
 
   // Get AI usage statistics
-  aiStats: publicProcedure.query(async ({ ctx }) => {
+  aiStats: protectedProcedure.query(async ({ ctx }) => {
     // For now, return mock data since we don't track AI usage in DB yet
     // In production, you'd add an AIGenerationLog table to track this
     const now = new Date();
@@ -211,14 +211,14 @@ export const dashboardRouter = createTRPCRouter({
   }),
 
   // Analyze job fit with AI
-  analyzeJobFit: publicProcedure
+  analyzeJobFit: protectedProcedure
     .input(
       z.object({
         jobDescription: z.string().min(50, "Descrição da vaga muito curta"),
       })
     )
-    .mutation(async ({ input }) => {
-      const result = await analyzeJobFit(input.jobDescription);
+    .mutation(async ({ ctx, input }) => {
+      const result = await analyzeJobFit(input.jobDescription, ctx.userId);
       return result;
     }),
 });

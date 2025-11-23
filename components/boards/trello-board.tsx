@@ -551,7 +551,7 @@ function BoardColumnCard({
             {column.subtitle && (
               <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{column.subtitle}</p>
             )}
-            <h3 className="text-xl font-display tracking-tight">{column.title}</h3>
+            <h3 className="text-xl font-display tracking-[0.1em]">{column.title}</h3>
           </div>
           {column.highlight && (
             <Badge variant="outline" className="text-[10px] font-semibold uppercase tracking-widest">

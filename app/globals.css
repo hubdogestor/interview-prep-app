@@ -162,6 +162,11 @@
   body {
     @apply bg-muted text-foreground font-mono;
   }
+  
+  /* Improve readability of display font by adding letter spacing */
+  .font-display {
+    letter-spacing: 0.05em;
+  }
 }
 
 .recharts-cartesian-grid-vertical :first-child,

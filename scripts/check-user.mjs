@@ -1,7 +1,16 @@
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
 
-const uri = "mongodb+srv://leon4rdo:Livia2701@cluster0.dpfuagq.mongodb.net/interview-prep";
+// Load environment variables
+dotenv.config();
+
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  console.error("❌ MONGODB_URI not found in environment variables");
+  process.exit(1);
+}
+
 const client = new MongoClient(uri);
 
 async function checkUser() {

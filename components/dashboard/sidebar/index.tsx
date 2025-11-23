@@ -89,24 +89,6 @@ const data = {
           isActive: false,
         },
         {
-          title: "Devices",
-          url: "/devices",
-          icon: ProcessorIcon,
-          isActive: false,
-        },
-        {
-          title: "Security",
-          url: "/security",
-          icon: CuteRobotIcon,
-          isActive: false,
-        },
-        {
-          title: "Communication",
-          url: "/communication",
-          icon: EmailIcon,
-          isActive: false,
-        },
-        {
           title: "Admin Settings",
           url: "/admin",
           icon: GearIcon,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Calendar, Sparkles, TrendingUp, Zap } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
@@ -8,13 +8,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { trpc } from "@/lib/trpc/react";
 
 export function AIStatsWidget() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: stats, isLoading } = trpc.dashboard.aiStats.useQuery(undefined, { enabled: mounted });
+  const isClient = useMemo(() => typeof window !== "undefined", []);
+  const { data: stats, isLoading } = trpc.dashboard.aiStats.useQuery(undefined, {
+    enabled: isClient,
+  });
 
   if (isLoading) {
     return (

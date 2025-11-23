@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { GripVertical,Pause, Play, RotateCcw, X } from "lucide-react";
 
@@ -15,21 +15,25 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
   const [elapsed, setElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [hasFinished, setHasFinished] = useState(false);
-  const [position, setPosition] = useState({ x: window.innerWidth - 250, y: 20 });
+  const [position, setPosition] = useState(() => {
+    if (typeof window === "undefined") {
+      return { x: 0, y: 0 };
+    }
+    return { x: window.innerWidth - 250, y: 20 };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [mounted, setMounted] = useState(false);
 
   const timerRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isClient = typeof window !== "undefined" && typeof document !== "undefined";
 
   // Audio alert function - declared before useEffect to avoid hoisting issues
-  const playAlert = () => {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+  const playAlert = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const audioContext = new AudioContext();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -47,7 +51,7 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
-  };
+  }, []);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -101,31 +105,32 @@ export function FloatingTimer({ targetDuration, onClose }: FloatingTimerProps) {
     });
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging) return;
       setPosition({
         x: e.clientX - dragOffset.x,
         y: e.clientY - dragOffset.y,
       });
-    }
-  };
+    },
+    [isDragging, dragOffset]
+  );
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
   useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-      return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-      };
-    }
-  }, [isDragging, dragOffset]);
+    if (!isDragging) return;
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  if (!mounted) return null;
+  if (!isClient) return null;
 
   const timerContent = (
     <div

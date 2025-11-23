@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronRight,
@@ -67,12 +67,7 @@ export function AIContextualSuggestions({
   className,
 }: AIContextualSuggestionsProps) {
   const [visible, setVisible] = useState(true);
-  const [mounted, setMounted] = useState(false);
-
-  // Garantir que só execute no cliente
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isClient = typeof window !== "undefined";
   
   // Busca sugestões dismissadas do banco de dados (com fallback localStorage)
   const { data: dismissedIds = [], isError } = trpc.dismissedSuggestions.list.useQuery(
@@ -80,7 +75,7 @@ export function AIContextualSuggestions({
     { 
       retry: false, 
       refetchOnWindowFocus: false,
-      enabled: mounted, // Só executa quando montado no cliente
+      enabled: isClient, // Só executa quando no cliente
     }
   );
   
@@ -89,7 +84,7 @@ export function AIContextualSuggestions({
 
   // Fallback: carregar do localStorage se não autenticado
   const [localDismissed, setLocalDismissed] = useState<Set<string>>(() => {
-    if (typeof window === "undefined") return new Set();
+    if (!isClient) return new Set();
     const stored = localStorage.getItem(`ai-suggestions-dismissed-${pageContext}`);
     return stored ? new Set(JSON.parse(stored)) : new Set();
   });

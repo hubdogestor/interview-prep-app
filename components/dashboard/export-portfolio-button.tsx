@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,17 +14,11 @@ import {
 } from "@/components/ui/tooltip";
 import { downloadMarkdown,exportPortfolioCompleto } from "@/lib/export/markdown";
 import { trpc } from "@/lib/trpc/react";
-import { useEffect, useState } from "react";
 
 export function ExportPortfolioButton() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: experiencias = [] } = trpc.experiencias.list.useQuery(undefined, { enabled: mounted });
-  const { data: competencias = [] } = trpc.competencias.list.useQuery(undefined, { enabled: mounted });
+  const isClient = useMemo(() => typeof window !== "undefined", []);
+  const { data: experiencias = [] } = trpc.experiencias.list.useQuery(undefined, { enabled: isClient });
+  const { data: competencias = [] } = trpc.competencias.list.useQuery(undefined, { enabled: isClient });
 
   const handleExportPortfolio = () => {
     if (experiencias.length === 0 && competencias.length === 0) {

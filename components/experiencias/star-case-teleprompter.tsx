@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Maximize2,
   Minimize2,
@@ -40,6 +40,24 @@ export function StarCaseTeleprompter({
   onOpenChange,
   starCase,
 }: StarCaseTeleprompterProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {open ? (
+        <TeleprompterContent
+          starCase={starCase}
+          onClose={() => onOpenChange(false)}
+        />
+      ) : null}
+    </Dialog>
+  );
+}
+
+interface TeleprompterContentProps {
+  starCase: StarCase;
+  onClose: () => void;
+}
+
+function TeleprompterContent({ starCase, onClose }: TeleprompterContentProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [scrollSpeed, setScrollSpeed] = useState(1);
   const [fontSize, setFontSize] = useState(24);
@@ -96,28 +114,14 @@ export function StarCaseTeleprompter({
     };
   }, [isPlaying]);
 
-  // Reset on open usando useLayoutEffect para evitar flicker
-  useLayoutEffect(() => {
-    if (open) {
-      setIsPlaying(false);
-      setScrollPosition(0);
-      setElapsedTime(0);
-      if (contentRef.current) {
-        contentRef.current.scrollTop = 0;
-      }
-    }
-  }, [open]);
-
   // Fullscreen handling
   useEffect(() => {
     if (!containerRef.current) return;
 
     if (isFullscreen) {
       containerRef.current.requestFullscreen?.();
-    } else {
-      if (document.fullscreenElement) {
-        document.exitFullscreen?.();
-      }
+    } else if (typeof document !== "undefined" && document.fullscreenElement) {
+      document.exitFullscreen?.();
     }
   }, [isFullscreen]);
 
@@ -149,8 +153,7 @@ export function StarCaseTeleprompter({
   ); // ~150 words per minute speaking pace
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
+    <DialogContent
         ref={containerRef}
         className={`${
           isFullscreen
@@ -184,7 +187,7 @@ export function StarCaseTeleprompter({
                     <Maximize2 className="h-4 w-4" />
                   )}
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+                <Button variant="ghost" size="icon" onClick={onClose}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -319,7 +322,6 @@ export function StarCaseTeleprompter({
             </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+    </DialogContent>
   );
 }

@@ -25,13 +25,24 @@ export function PracticeTimer({
   onOpenChange,
   targetDuration = 120,
 }: PracticeTimerProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {open ? <TimerDialogContent targetDuration={targetDuration} /> : null}
+    </Dialog>
+  );
+}
+
+interface TimerDialogContentProps {
+  targetDuration: number;
+}
+
+function TimerDialogContent({ targetDuration }: TimerDialogContentProps) {
   const [target, setTarget] = useState(targetDuration);
   const [elapsed, setElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [hasFinished, setHasFinished] = useState(false);
 
   const timerRef = useRef<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Audio alert function - declared before useEffect to avoid hoisting issues
   const playAlert = () => {
@@ -76,14 +87,6 @@ export function PracticeTimer({
     };
   }, [isRunning, target, hasFinished, playAlert]);
 
-  useEffect(() => {
-    if (open) {
-      setElapsed(0);
-      setIsRunning(false);
-      setHasFinished(false);
-    }
-  }, [open]);
-
   const handleReset = () => {
     setElapsed(0);
     setIsRunning(false);
@@ -116,8 +119,7 @@ export function PracticeTimer({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+    <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle className="uppercase font-display flex items-center gap-2">
             <TimerIcon className="h-5 w-5" />
@@ -205,6 +207,5 @@ export function PracticeTimer({
           </div>
         </div>
       </DialogContent>
-    </Dialog>
   );
 }

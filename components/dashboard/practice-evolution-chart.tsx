@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { TrendingUp } from "lucide-react";
 import {
   CartesianGrid,
@@ -15,16 +16,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { trpc } from "@/lib/trpc/react";
-import { useEffect, useState } from "react";
 
 export function PracticeEvolutionChart() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
+  const isClient = useMemo(() => typeof window !== "undefined", []);
+  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: isClient });
 
   if (isLoading) {
     return (

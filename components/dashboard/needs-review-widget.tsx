@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { AlertCircle, ArrowRight,Briefcase, MessageSquare, Mic } from "lucide-react";
 
@@ -40,13 +40,8 @@ const tipoConfig: Record<string, {
 };
 
 export function NeedsReviewWidget() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: items = [], isLoading } = trpc.dashboard.needsReview.useQuery(undefined, { enabled: mounted });
+  const isClient = useMemo(() => typeof window !== "undefined", []);
+  const { data: items = [], isLoading } = trpc.dashboard.needsReview.useQuery(undefined, { enabled: isClient });
 
   if (isLoading) {
     return (

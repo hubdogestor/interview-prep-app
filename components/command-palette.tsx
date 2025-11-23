@@ -309,10 +309,10 @@ export function CommandPalette() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, selectedIndex, allResults]);
 
-  // Reset selected index when search changes
-  useEffect(() => {
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
     setSelectedIndex(0);
-  }, [search]);
+  };
 
   // Handle dialog close with state reset
   const handleOpenChange = (newOpen: boolean) => {
@@ -334,7 +334,7 @@ export function CommandPalette() {
           <Input
             placeholder="Buscar comandos, icebreakers, speeches, experiências..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-14"
             autoFocus
           />

@@ -1,7 +1,6 @@
 "use client";
 
-import type { ElementType } from "react";
-import { useEffect, useState } from "react";
+import { useMemo, type ElementType } from "react";
 import { motion } from "framer-motion";
 import {
   Award,
@@ -81,13 +80,8 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, iconColor }: Stat
  * Shows detailed metrics, trends, and insights
  */
 export function PracticeAnalyticsDashboard() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
+  const isClient = useMemo(() => typeof window !== "undefined", []);
+  const { data: stats, isLoading } = trpc.practice.stats.useQuery(undefined, { enabled: isClient });
 
   if (isLoading) {
     return (

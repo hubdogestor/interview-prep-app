@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight,Lightbulb, Sparkles, Target, TrendingUp } from "lucide-react";
 
@@ -9,15 +9,10 @@ import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/react";
 
 export function SmartSuggestions() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: needsReview = [] } = trpc.dashboard.needsReview.useQuery(undefined, { enabled: mounted });
-  const { data: stats } = trpc.practice.stats.useQuery(undefined, { enabled: mounted });
-  const { data: dashboard } = trpc.dashboard.overview.useQuery(undefined, { enabled: mounted });
+  const isClient = useMemo(() => typeof window !== "undefined", []);
+  const { data: needsReview = [] } = trpc.dashboard.needsReview.useQuery(undefined, { enabled: isClient });
+  const { data: stats } = trpc.practice.stats.useQuery(undefined, { enabled: isClient });
+  const { data: dashboard } = trpc.dashboard.overview.useQuery(undefined, { enabled: isClient });
 
   const suggestions = [];
 

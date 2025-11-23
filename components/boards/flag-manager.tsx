@@ -77,17 +77,15 @@ export function useCustomFlags() {
 export function FlagManagerSelect({ value, onValueChange, className }: FlagManagerSelectProps) {
   const { allFlags, customFlags } = useCustomFlags();
   const [showNewDialog, setShowNewDialog] = useState(false);
+  const [showManageDialog, setShowManageDialog] = useState(false);
   const [newFlagLabel, setNewFlagLabel] = useState("");
   const [newFlagColor, setNewFlagColor] = useState(COLOR_OPTIONS[0].value);
 
   const utils = trpc.useUtils();
 
   const createMutation = trpc.customFlags.create.useMutation({
-    onMutate: () => {
-      // Desabilitar o botão imediatamente
-    },
-    onSuccess: () => {
-      utils.customFlags.list.invalidate();
+    onSuccess: async () => {
+      await utils.customFlags.list.invalidate();
       setNewFlagLabel("");
       setNewFlagColor(COLOR_OPTIONS[0].value);
       setShowNewDialog(false);
@@ -99,41 +97,16 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
   });
 
   const deleteMutation = trpc.customFlags.delete.useMutation({
-    onMutate: async (deletedFlag) => {
-      // Cancel any outgoing refetches
-      await utils.customFlags.list.cancel();
-      
-      // Snapshot the previous value
-      const previousFlags = utils.customFlags.list.getData();
-      
-      // Optimistically update to the new value
-      if (previousFlags) {
-        utils.customFlags.list.setData(undefined, 
-          previousFlags.filter((flag: { id: string }) => flag.id !== deletedFlag.id)
-        );
-      }
-      
-      return { previousFlags };
+    onSuccess: async () => {
+      await utils.customFlags.list.invalidate();
     },
-    onError: (error, _variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
-      if (context?.previousFlags) {
-        utils.customFlags.list.setData(undefined, context.previousFlags);
-      }
+    onError: (error) => {
       console.error("Erro ao deletar flag:", error);
       alert("Erro ao deletar flag. Tente novamente.");
     },
-    onSettled: () => {
-      // Always refetch after error or success
-      utils.customFlags.list.invalidate();
-    },
   });
 
-  const handleDeleteFlag = (id: string, e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  const handleDeleteFlag = (id: string) => {
     if (confirm("Tem certeza que deseja excluir esta flag?")) {
       deleteMutation.mutate({ id });
     }
@@ -148,14 +121,6 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
     });
   };
 
-  const isCustomFlag = (label: string) => {
-    return customFlags.some((flag: { label: string; id: string }) => flag.label === label);
-  };
-
-  const getFlagId = (label: string) => {
-    return customFlags.find((flag: { label: string; id: string }) => flag.label === label)?.id || "";
-  };
-
   return (
     <>
       <Select value={value} onValueChange={onValueChange}>
@@ -164,40 +129,15 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="none">Sem flag</SelectItem>
-          {allFlags.map((chip) => {
-            const isCustom = isCustomFlag(chip.label);
-            const flagId = isCustom ? getFlagId(chip.label) : "";
-            
-            return (
-              <SelectItem key={chip.label} value={chip.label}>
-                <div className="flex items-center justify-between gap-3 w-full">
-                  <div className="flex items-center gap-2">
-                    <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
-                    {chip.label}
-                  </div>
-                  {isCustom && (
-                    <button
-                      type="button"
-                      onPointerDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleDeleteFlag(flagId, e);
-                      }}
-                      className="ml-auto text-muted-foreground hover:text-destructive transition-colors"
-                      aria-label="Deletar flag"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  )}
-                </div>
-              </SelectItem>
-            );
-          })}
-          <div className="border-t border-white/10 mt-1 pt-1">
+          {allFlags.map((chip) => (
+            <SelectItem key={chip.label} value={chip.label}>
+              <div className="flex items-center gap-2">
+                <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
+                {chip.label}
+              </div>
+            </SelectItem>
+          ))}
+          <div className="border-t border-white/10 mt-1 pt-1 space-y-1">
             <Button
               type="button"
               variant="ghost"
@@ -212,6 +152,22 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
               <Plus className="h-3 w-3" />
               Nova flag
             </Button>
+            {customFlags.length > 0 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start gap-2 text-xs text-muted-foreground"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowManageDialog(true);
+                }}
+              >
+                <X className="h-3 w-3" />
+                Gerenciar flags
+              </Button>
+            )}
           </div>
         </SelectContent>
       </Select>
@@ -273,6 +229,51 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
               disabled={!newFlagLabel.trim() || createMutation.isPending}
             >
               {createMutation.isPending ? "Criando..." : "Criar Flag"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showManageDialog} onOpenChange={setShowManageDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Gerenciar Flags Customizadas</DialogTitle>
+            <DialogDescription>
+              Exclua flags customizadas que você não precisa mais.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 py-4">
+            {customFlags.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Nenhuma flag customizada ainda.
+              </p>
+            ) : (
+              customFlags.map((flag: { id: string; label: string; colorClass: string }) => (
+                <div
+                  key={flag.id}
+                  className="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/10 bg-background/40"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className={cn("h-3 w-3 rounded-full", flag.colorClass)} />
+                    <span className="text-sm">{flag.label}</span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                    onClick={() => handleDeleteFlag(flag.id)}
+                    disabled={deleteMutation.isPending}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowManageDialog(false)}>
+              Fechar
             </Button>
           </DialogFooter>
         </DialogContent>

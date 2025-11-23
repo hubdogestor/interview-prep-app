@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { editIcebreaker,generateIcebreaker } from "@/lib/ai/gemini";
 import { prismaIcebreakerToApp } from "@/lib/type-guards";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 // Schema para versão individual de icebreaker
 const versaoSchema = z.object({
@@ -31,8 +31,9 @@ const updateIcebrekerSchema = z.object({
 });
 
 export const icebreakersRouter = createTRPCRouter({
-  list: publicProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     const icebreakers = await ctx.prisma.icebreaker.findMany({
+      where: { userId: ctx.userId },
       orderBy: {
         createdAt: "desc",
       },
@@ -40,16 +41,16 @@ export const icebreakersRouter = createTRPCRouter({
     return icebreakers.map(prismaIcebreakerToApp);
   }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const icebreaker = await ctx.prisma.icebreaker.findUnique({
-        where: { id: input.id },
+      const icebreaker = await ctx.prisma.icebreaker.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
       return icebreaker ? prismaIcebreakerToApp(icebreaker) : null;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createIcebrekerSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.icebreaker.create({
@@ -57,16 +58,17 @@ export const icebreakersRouter = createTRPCRouter({
           tipo: input.tipo,
           titulo: input.titulo,
           versoes: input.versoes as any,
+          userId: ctx.userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateIcebrekerSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      return ctx.prisma.icebreaker.update({
-        where: { id },
+      return ctx.prisma.icebreaker.updateMany({
+        where: { id, userId: ctx.userId },
         data: {
           ...(data.tipo && { tipo: data.tipo }),
           ...(data.titulo && { titulo: data.titulo }),
@@ -75,49 +77,49 @@ export const icebreakersRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.icebreaker.delete({
-        where: { id: input.id },
+      return ctx.prisma.icebreaker.deleteMany({
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 
-  toggleFavorite: publicProcedure
+  toggleFavorite: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const icebreaker = await ctx.prisma.icebreaker.findUnique({
-        where: { id: input.id },
+      const icebreaker = await ctx.prisma.icebreaker.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
 
       if (!icebreaker) {
         throw new Error("Icebreaker não encontrado");
       }
 
-      return ctx.prisma.icebreaker.update({
-        where: { id: input.id },
+      return ctx.prisma.icebreaker.updateMany({
+        where: { id: input.id, userId: ctx.userId },
         data: { favorite: !icebreaker.favorite },
       });
     }),
 
-  toggleArchive: publicProcedure
+  toggleArchive: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const icebreaker = await ctx.prisma.icebreaker.findUnique({
-        where: { id: input.id },
+      const icebreaker = await ctx.prisma.icebreaker.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
 
       if (!icebreaker) {
         throw new Error("Icebreaker não encontrado");
       }
 
-      return ctx.prisma.icebreaker.update({
-        where: { id: input.id },
+      return ctx.prisma.icebreaker.updateMany({
+        where: { id: input.id, userId: ctx.userId },
         data: { archived: !icebreaker.archived },
       });
     }),
 
-  generateWithAI: publicProcedure
+  generateWithAI: protectedProcedure
     .input(
       z.object({
         tipo: z.enum(["elevator_pitch", "quick_intro", "personal_story"]),
@@ -126,8 +128,10 @@ export const icebreakersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Busca o perfil do usuário
-      const profile = await ctx.prisma.profile.findFirst();
+      // Busca o perfil do usuário logado
+      const profile = await ctx.prisma.profile.findFirst({
+        where: { userId: ctx.userId },
+      });
 
       if (!profile) {
         throw new Error(
@@ -152,7 +156,7 @@ export const icebreakersRouter = createTRPCRouter({
       return { versoes };
     }),
 
-  editWithAI: publicProcedure
+  editWithAI: protectedProcedure
     .input(
       z.object({
         conteudoAtual: z.string().min(1, "Conteúdo atual é obrigatório"),
@@ -160,14 +164,10 @@ export const icebreakersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Busca o perfil do usuário para usar como userId
-      const profile = await ctx.prisma.profile.findFirst();
-      const userId = profile?.id || "default";
-
       const conteudoEditado = await editIcebreaker(
         input.conteudoAtual,
         input.instrucoes,
-        userId
+        ctx.userId
       );
 
       return { conteudoEditado };

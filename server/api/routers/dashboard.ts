@@ -1,18 +1,18 @@
 import { z } from "zod";
 
 import { analyzeJobFit } from "@/lib/ai/gemini";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const dashboardRouter = createTRPCRouter({
-  overview: publicProcedure.query(async ({ ctx }) => {
+  overview: protectedProcedure.query(async ({ ctx }) => {
     const [profile, competencias, experiencias, speeches, questions, icebreakers] =
       await Promise.all([
-        ctx.prisma.profile.findFirst(),
-        ctx.prisma.competencia.findMany({ orderBy: { createdAt: "desc" } }),
-        ctx.prisma.experiencia.findMany({ orderBy: { createdAt: "desc" } }),
-        ctx.prisma.speech.findMany({ orderBy: { createdAt: "desc" } }),
-        ctx.prisma.question.findMany({ orderBy: { createdAt: "desc" } }),
-        ctx.prisma.icebreaker.findMany({ orderBy: { createdAt: "desc" } }),
+        ctx.prisma.profile.findFirst({ where: { userId: ctx.userId } }),
+        ctx.prisma.competencia.findMany({ where: { userId: ctx.userId }, orderBy: { createdAt: "desc" } }),
+        ctx.prisma.experiencia.findMany({ where: { userId: ctx.userId }, orderBy: { createdAt: "desc" } }),
+        ctx.prisma.speech.findMany({ where: { userId: ctx.userId }, orderBy: { createdAt: "desc" } }),
+        ctx.prisma.question.findMany({ where: { userId: ctx.userId }, orderBy: { createdAt: "desc" } }),
+        ctx.prisma.icebreaker.findMany({ where: { userId: ctx.userId }, orderBy: { createdAt: "desc" } }),
       ]);
 
     const totals = {
@@ -80,12 +80,14 @@ export const dashboardRouter = createTRPCRouter({
   }),
 
   // Get items that need review (no practice in 7+ days)
-  needsReview: publicProcedure.query(async ({ ctx }) => {
+  needsReview: protectedProcedure.query(async ({ ctx }) => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     // Get all STAR Cases from experiences
-    const experiencias = await ctx.prisma.experiencia.findMany();
+    const experiencias = await ctx.prisma.experiencia.findMany({
+      where: { userId: ctx.userId },
+    });
 
     const starCases = experiencias.flatMap((exp) =>
       (exp.starCases as Array<{ id?: string; titulo?: string; competencia?: string; createdAt?: Date }>).map((starCase) => ({
@@ -100,6 +102,7 @@ export const dashboardRouter = createTRPCRouter({
     // Get recent practice sessions
     const practiceSessions = await ctx.prisma.practiceSession.findMany({
       where: {
+        userId: ctx.userId,
         createdAt: {
           gte: sevenDaysAgo,
         },
@@ -114,9 +117,11 @@ export const dashboardRouter = createTRPCRouter({
     // Get all icebreakers and speeches
     const [icebreakers, speeches] = await Promise.all([
       ctx.prisma.icebreaker.findMany({
+        where: { userId: ctx.userId },
         select: { id: true, titulo: true, createdAt: true },
       }),
       ctx.prisma.speech.findMany({
+        where: { userId: ctx.userId },
         select: { id: true, titulo: true, createdAt: true },
       }),
     ]);

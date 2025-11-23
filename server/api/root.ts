@@ -3,6 +3,8 @@ import { competenciasRouter } from "@/server/api/routers/competencias";
 import { dashboardRouter } from "@/server/api/routers/dashboard";
 import { experienciasRouter } from "@/server/api/routers/experiencias";
 import { icebreakersRouter } from "@/server/api/routers/icebreakers";
+import { kanbansRouter } from "@/server/api/routers/kanbans";
+import { okrsRouter } from "@/server/api/routers/okrs";
 import { practiceRouter } from "@/server/api/routers/practice";
 import { profileRouter } from "@/server/api/routers/profile";
 import { questionsRouter } from "@/server/api/routers/questions";
@@ -22,6 +24,8 @@ export const appRouter = createTRPCRouter({
   questions: questionsRouter,
   practice: practiceRouter,
   ai: aiRouter,
+  okrs: okrsRouter,
+  kanbans: kanbansRouter,
 });
 
 // Export type definition of API

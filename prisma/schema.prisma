@@ -26,6 +26,8 @@ model User {
   speeches         Speech[]
   questions        Question[]
   practiceSessions PracticeSession[]
+  okrs             OKR[]
+  kanbanBoards     KanbanBoard[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
@@ -195,20 +197,51 @@ model Question {
 // PRACTICE SESSION - historico de praticas
 // ========================================
 model PracticeSession {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  tipo            String
-  itemId          String
-  itemTitle       String
-  duracao         Int
-  transcricao     String?
-  audioUrl        String?
-  avaliacaoIA     Json?
-  notas           String?
-  score           Int?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  userId          String?  @db.ObjectId
-  user            User?    @relation(fields: [userId], references: [id])
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  tipo        String
+  itemId      String
+  itemTitle   String
+  duracao     Int
+  transcricao String?
+  audioUrl    String?
+  avaliacaoIA Json?
+  notas       String?
+  score       Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String?  @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id])
 
   @@map("practice_sessions")
+}
+
+// ========================================
+// OKR - Objectives and Key Results
+// ========================================
+model OKR {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  quarter   String // "2026-Q1", "2026-Q2", etc
+  columns   Json // Array of BoardColumn
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String?  @db.ObjectId
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("okrs")
+}
+
+// ========================================
+// KANBAN BOARD - project management boards
+// ========================================
+model KanbanBoard {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String // "leo", "amz", "olb", "hdg"
+  columns   Json // Array of BoardColumn
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String?  @db.ObjectId
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@unique([name, userId])
+  @@map("kanban_boards")
 }

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { generateStarCase } from "@/lib/ai/gemini";
 import { prismaExperienciaToApp } from "@/lib/type-guards";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 // Schema para STAR Case individual
 const starCaseSchema = z.object({
@@ -62,8 +62,9 @@ const updateExperienciaSchema = z.object({
 });
 
 export const experienciasRouter = createTRPCRouter({
-  list: publicProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     const experiencias = await ctx.prisma.experiencia.findMany({
+      where: { userId: ctx.userId },
       orderBy: {
         createdAt: "desc",
       },
@@ -71,16 +72,16 @@ export const experienciasRouter = createTRPCRouter({
     return experiencias.map(prismaExperienciaToApp);
   }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const experiencia = await ctx.prisma.experiencia.findUnique({
-        where: { id: input.id },
+      const experiencia = await ctx.prisma.experiencia.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
       return experiencia ? prismaExperienciaToApp(experiencia) : null;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createExperienciaSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.experiencia.create({
@@ -92,16 +93,17 @@ export const experienciasRouter = createTRPCRouter({
           speechCompleto: input.speechCompleto as any,
           starCases: input.starCases as any,
           tecnologias: input.tecnologias,
+          userId: ctx.userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateExperienciaSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      return ctx.prisma.experiencia.update({
-        where: { id },
+      return ctx.prisma.experiencia.updateMany({
+        where: { id, userId: ctx.userId },
         data: {
           ...(data.empresa && { empresa: data.empresa }),
           ...(data.cargo && { cargo: data.cargo }),
@@ -116,11 +118,11 @@ export const experienciasRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.experiencia.delete({
-        where: { id: input.id },
+      return ctx.prisma.experiencia.deleteMany({
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 

@@ -1,24 +1,30 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import { type FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 
 type CreateContextOptions = {
   headers: Headers;
+  session: Awaited<ReturnType<typeof auth>> | null;
 };
 
 export const createContextInner = async (_opts: CreateContextOptions) => {
   return {
     prisma,
     headers: _opts.headers,
+    session: _opts.session,
   };
 };
 
 export const createTRPCContext = async (opts: FetchCreateContextFnOptions) => {
+  const session = await auth();
+  
   return createContextInner({
     headers: opts.req.headers,
+    session,
   });
 };
 
@@ -50,6 +56,24 @@ const loggerMiddleware = t.middleware(async ({ path, type, next }) => {
   return result;
 });
 
+const isAuthed = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.session?.user?.id) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Você precisa estar autenticado para realizar esta ação",
+    });
+  }
+  
+  return next({
+    ctx: {
+      ...ctx,
+      session: ctx.session,
+      userId: ctx.session.user.id,
+    },
+  });
+});
+
 export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure.use(loggerMiddleware);
+export const protectedProcedure = t.procedure.use(loggerMiddleware).use(isAuthed);
 export const createCallerFactory = t.createCallerFactory;

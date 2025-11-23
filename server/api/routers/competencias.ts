@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { generateCompetencia } from "@/lib/ai/gemini";
 import { prismaCompetenciaToApp } from "@/lib/type-guards";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 // Schema para track record individual
 const trackRecordSchema = z.object({
@@ -47,23 +47,24 @@ const updateCompetenciaSchema = z.object({
 });
 
 export const competenciasRouter = createTRPCRouter({
-  list: publicProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     const competencias = await ctx.prisma.competencia.findMany({
+      where: { userId: ctx.userId },
       orderBy: [{ nivel: "desc" }, { createdAt: "desc" }],
     });
     return competencias.map(prismaCompetenciaToApp);
   }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const competencia = await ctx.prisma.competencia.findUnique({
-        where: { id: input.id },
+      const competencia = await ctx.prisma.competencia.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
       return competencia ? prismaCompetenciaToApp(competencia) : null;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(createCompetenciaSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.competencia.create({
@@ -75,16 +76,17 @@ export const competenciasRouter = createTRPCRouter({
           ferramentas: input.ferramentas,
           evidencias: input.evidencias,
           trackRecord: input.trackRecord as any,
+          userId: ctx.userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateCompetenciaSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      return ctx.prisma.competencia.update({
-        where: { id },
+      return ctx.prisma.competencia.updateMany({
+        where: { id, userId: ctx.userId },
         data: {
           ...(data.nome && { nome: data.nome }),
           ...(data.categoria && { categoria: data.categoria }),
@@ -97,11 +99,11 @@ export const competenciasRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.competencia.delete({
-        where: { id: input.id },
+      return ctx.prisma.competencia.deleteMany({
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 

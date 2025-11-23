@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 import { suggestQuestions } from "@/lib/ai/gemini";
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const questionsRouter = createTRPCRouter({
-  list: publicProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.question.findMany({
+      where: { userId: ctx.userId },
       orderBy: [
         { favorite: "desc" },
         { prioridade: "asc" },
@@ -14,15 +15,15 @@ export const questionsRouter = createTRPCRouter({
     });
   }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.prisma.question.findUnique({
-        where: { id: input.id },
+      return ctx.prisma.question.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         categoria: z.enum(["tecnica", "comportamental", "cultura", "carreira"]),
@@ -41,11 +42,12 @@ export const questionsRouter = createTRPCRouter({
           pergunta: input.pergunta,
           contexto: input.contexto,
           prioridade: input.prioridade,
+          userId: ctx.userId,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -60,38 +62,38 @@ export const questionsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      return ctx.prisma.question.update({
-        where: { id },
+      return ctx.prisma.question.updateMany({
+        where: { id, userId: ctx.userId },
         data,
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.question.delete({
-        where: { id: input.id },
+      return ctx.prisma.question.deleteMany({
+        where: { id: input.id, userId: ctx.userId },
       });
     }),
 
-  toggleFavorite: publicProcedure
+  toggleFavorite: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const question = await ctx.prisma.question.findUnique({
-        where: { id: input.id },
+      const question = await ctx.prisma.question.findFirst({
+        where: { id: input.id, userId: ctx.userId },
       });
 
       if (!question) {
         throw new Error("Question not found");
       }
 
-      return ctx.prisma.question.update({
-        where: { id: input.id },
+      return ctx.prisma.question.updateMany({
+        where: { id: input.id, userId: ctx.userId },
         data: { favorite: !question.favorite },
       });
     }),
 
-  suggestWithAI: publicProcedure
+  suggestWithAI: protectedProcedure
     .input(
       z.object({
         tipoVaga: z.string().optional(),
@@ -99,8 +101,10 @@ export const questionsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Buscar perfil do usuário (assumindo que existe apenas um)
-      const profile = await ctx.prisma.profile.findFirst();
+      // Buscar perfil do usuário logado
+      const profile = await ctx.prisma.profile.findFirst({
+        where: { userId: ctx.userId },
+      });
 
       if (!profile) {
         throw new Error(

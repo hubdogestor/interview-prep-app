@@ -23,9 +23,16 @@ export function OKRClientBoard({
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const utils = trpc.useUtils();
 
   // Buscar dados salvos do usuário para este trimestre
-  const { data: savedOKR } = trpc.okrs.getByQuarter.useQuery({ quarter });
+  const { data: savedOKR } = trpc.okrs.getByQuarter.useQuery(
+    { quarter },
+    {
+      refetchOnWindowFocus: true,
+      refetchInterval: 5000, // Refetch a cada 5 segundos
+    }
+  );
 
   // Usar dados salvos ou dados iniciais
   const columns = useMemo(
@@ -40,6 +47,8 @@ export function OKRClientBoard({
     },
     onSuccess: () => {
       setIsSaving(false);
+      // Invalidar cache para refetch imediato
+      utils.okrs.getByQuarter.invalidate({ quarter });
       // Toast sutil de sucesso
       toast({
         title: "Salvo",

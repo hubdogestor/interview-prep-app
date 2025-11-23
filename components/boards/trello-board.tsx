@@ -701,14 +701,14 @@ function BoardColumnCard({
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">Flag (opcional)</Label>
               <Select
-                value={draft.selectedChip}
-                onValueChange={(value) => onDraftChange(column.id, "selectedChip", value)}
+                value={draft.selectedChip || "none"}
+                onValueChange={(value) => onDraftChange(column.id, "selectedChip", value === "none" ? "" : value)}
               >
                 <SelectTrigger className="bg-background/40">
                   <SelectValue placeholder="Sem flag" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Sem flag</SelectItem>
+                  <SelectItem value="none">Sem flag</SelectItem>
                   {AVAILABLE_CHIPS.map((chip) => (
                     <SelectItem key={chip.label} value={chip.label}>
                       <div className="flex items-center gap-2">

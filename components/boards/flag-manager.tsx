@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/lib/trpc/client";
 import type { BoardCardChip } from "@/types/boards";
+import { Badge } from "@/components/ui/badge";
 
 const DEFAULT_CHIPS: BoardCardChip[] = [
   { label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" },
@@ -57,59 +59,63 @@ interface FlagManagerSelectProps {
   className?: string;
 }
 
-const STORAGE_KEY = "trello-custom-flags";
-
 export function useCustomFlags() {
-  const [customFlags, setCustomFlags] = useState<BoardCardChip[]>([]);
+  const { data: customFlags = [], isLoading } = trpc.customFlags.list.useQuery(undefined, {
+    refetchInterval: 5000, // Auto-sync a cada 5 segundos
+  });
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setCustomFlags(JSON.parse(stored));
-      } catch {
-        setCustomFlags([]);
-      }
-    }
-  }, []);
+  const customChips: BoardCardChip[] = customFlags.map((flag) => ({
+    label: flag.label,
+    colorClass: flag.colorClass,
+  }));
 
-  const saveFlags = (flags: BoardCardChip[]) => {
-    setCustomFlags(flags);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(flags));
-  };
+  const allFlags = [...DEFAULT_CHIPS, ...customChips];
 
-  const allFlags = [...DEFAULT_CHIPS, ...customFlags];
-
-  return { allFlags, customFlags, saveFlags };
+  return { allFlags, customFlags, isLoading };
 }
 
 export function FlagManagerSelect({ value, onValueChange, className }: FlagManagerSelectProps) {
-  const { allFlags, customFlags, saveFlags } = useCustomFlags();
+  const { allFlags, customFlags } = useCustomFlags();
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [newFlagLabel, setNewFlagLabel] = useState("");
   const [newFlagColor, setNewFlagColor] = useState(COLOR_OPTIONS[0].value);
 
-  const handleDeleteFlag = (label: string) => {
-    const updated = customFlags.filter((f) => f.label !== label);
-    saveFlags(updated);
+  const utils = trpc.useUtils();
+
+  const createMutation = trpc.customFlags.create.useMutation({
+    onSuccess: () => {
+      utils.customFlags.list.invalidate();
+      setNewFlagLabel("");
+      setNewFlagColor(COLOR_OPTIONS[0].value);
+      setShowNewDialog(false);
+    },
+  });
+
+  const deleteMutation = trpc.customFlags.delete.useMutation({
+    onSuccess: () => {
+      utils.customFlags.list.invalidate();
+    },
+  });
+
+  const handleDeleteFlag = (id: string) => {
+    deleteMutation.mutate({ id });
   };
 
   const handleAddFlag = () => {
     if (!newFlagLabel.trim()) return;
 
-    const newFlag: BoardCardChip = {
+    createMutation.mutate({
       label: newFlagLabel.trim(),
       colorClass: newFlagColor,
-    };
-
-    saveFlags([...customFlags, newFlag]);
-    setNewFlagLabel("");
-    setNewFlagColor(COLOR_OPTIONS[0].value);
-    setShowNewDialog(false);
+    });
   };
 
   const isCustomFlag = (label: string) => {
     return customFlags.some((f) => f.label === label);
+  };
+
+  const getFlagId = (label: string) => {
+    return customFlags.find((f) => f.label === label)?.id || "";
   };
 
   return (
@@ -133,7 +139,7 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      handleDeleteFlag(chip.label);
+                      handleDeleteFlag(getFlagId(chip.label));
                     }}
                     className="ml-auto text-muted-foreground hover:text-destructive"
                   >
@@ -214,8 +220,11 @@ export function FlagManagerSelect({ value, onValueChange, className }: FlagManag
             <Button variant="ghost" onClick={() => setShowNewDialog(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleAddFlag} disabled={!newFlagLabel.trim()}>
-              Criar Flag
+            <Button 
+              onClick={handleAddFlag} 
+              disabled={!newFlagLabel.trim() || createMutation.isPending}
+            >
+              {createMutation.isPending ? "Criando..." : "Criar Flag"}
             </Button>
           </DialogFooter>
         </DialogContent>

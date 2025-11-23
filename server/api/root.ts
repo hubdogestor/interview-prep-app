@@ -1,5 +1,6 @@
 import { aiRouter } from "@/server/api/routers/ai";
 import { competenciasRouter } from "@/server/api/routers/competencias";
+import { customFlagsRouter } from "@/server/api/routers/custom-flags";
 import { dashboardRouter } from "@/server/api/routers/dashboard";
 import { experienciasRouter } from "@/server/api/routers/experiencias";
 import { icebreakersRouter } from "@/server/api/routers/icebreakers";
@@ -26,6 +27,7 @@ export const appRouter = createTRPCRouter({
   ai: aiRouter,
   okrs: okrsRouter,
   kanbans: kanbansRouter,
+  customFlags: customFlagsRouter,
 });
 
 // Export type definition of API

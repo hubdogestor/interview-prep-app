@@ -3,6 +3,7 @@
 import type * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -146,6 +147,7 @@ const data = {
 
 export function DashboardSidebar({ className, ...props }: React.ComponentProps<typeof Sidebar>) {
   const isV0 = useIsV0()
+  const pathname = usePathname()
 
   return (
     <Sidebar 
@@ -180,7 +182,7 @@ export function DashboardSidebar({ className, ...props }: React.ComponentProps<t
                   >
                     <SidebarMenuButton
                       asChild={!item.locked}
-                      isActive={item.isActive}
+                      isActive={pathname === item.url}
                       disabled={item.locked}
                       className={cn("disabled:cursor-not-allowed", item.locked && "pointer-events-none")}
                     >

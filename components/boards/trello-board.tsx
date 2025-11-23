@@ -57,19 +57,7 @@ import { SortableItem } from "@/components/ui/sortable-item"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import type { BoardCard, BoardCardChip, BoardColumn } from "@/types/boards"
-
-// Flags pré-definidas para cards
-const AVAILABLE_CHIPS: BoardCardChip[] = [
-  { label: "Novo", colorClass: "bg-primary/15 text-primary border-primary/20" },
-  { label: "OKR", colorClass: "bg-amber-500/15 text-amber-100 border-transparent" },
-  { label: "Urgente", colorClass: "bg-red-500/15 text-red-100 border-transparent" },
-  { label: "Importante", colorClass: "bg-orange-500/15 text-orange-100 border-transparent" },
-  { label: "Bug", colorClass: "bg-rose-500/15 text-rose-100 border-transparent" },
-  { label: "Feature", colorClass: "bg-green-500/15 text-green-100 border-transparent" },
-  { label: "Melhoria", colorClass: "bg-blue-500/15 text-blue-100 border-transparent" },
-  { label: "Pesquisa", colorClass: "bg-purple-500/15 text-purple-100 border-transparent" },
-  { label: "Bloqueado", colorClass: "bg-gray-500/15 text-gray-100 border-transparent" },
-]
+import { FlagManagerSelect, useCustomFlags } from "@/components/boards/flag-manager"
 
 interface TrelloBoardProps {
   initialColumns: BoardColumn[]
@@ -125,6 +113,8 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     cardId: string
     cardTitle: string
   } | null>(null)
+
+  const { allFlags } = useCustomFlags()
 
   useEffect(() => {
     setColumns(cloneColumns(initialColumns))
@@ -294,7 +284,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
 
     // Encontrar chip selecionado ou deixar vazio
     const selectedChipData = draft.selectedChip
-      ? AVAILABLE_CHIPS.find((chip) => chip.label === draft.selectedChip)
+      ? allFlags.find((chip) => chip.label === draft.selectedChip)
       : undefined
 
     const newCard: BoardCard = {
@@ -360,7 +350,7 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
 
     const normalizedKrs = normalizeKrs(editingCard.form.krs)
     const selectedChipData = editingCard.form.selectedChip
-      ? AVAILABLE_CHIPS.find((chip) => chip.label === editingCard.form.selectedChip)
+      ? allFlags.find((chip) => chip.label === editingCard.form.selectedChip)
       : undefined
 
     setColumns((prev) =>
@@ -543,25 +533,10 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
               </div>
               <div className="space-y-2">
                 <Label htmlFor="card-chip">Flag (opcional)</Label>
-                <Select
+                <FlagManagerSelect
                   value={editingCard.form.selectedChip ? editingCard.form.selectedChip : "none"}
                   onValueChange={(value) => handleEditChange("selectedChip", value === "none" ? "" : value)}
-                >
-                  <SelectTrigger id="card-chip">
-                    <SelectValue placeholder="Sem flag" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sem flag</SelectItem>
-                    {AVAILABLE_CHIPS.map((chip) => (
-                      <SelectItem key={chip.label} value={chip.label}>
-                        <div className="flex items-center gap-2">
-                          <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
-                          {chip.label}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
               </div>
               {showKRs && (
                 <div className="space-y-2">
@@ -728,25 +703,11 @@ function BoardColumnCard({
             />
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">Flag (opcional)</Label>
-              <Select
+              <FlagManagerSelect
                 value={draft.selectedChip ? draft.selectedChip : "none"}
                 onValueChange={(value) => onDraftChange(column.id, "selectedChip", value === "none" ? "" : value)}
-              >
-                <SelectTrigger className="bg-background/40">
-                  <SelectValue placeholder="Sem flag" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Sem flag</SelectItem>
-                  {AVAILABLE_CHIPS.map((chip) => (
-                    <SelectItem key={chip.label} value={chip.label}>
-                      <div className="flex items-center gap-2">
-                        <div className={cn("h-2 w-2 rounded-full", chip.colorClass)} />
-                        {chip.label}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                className="bg-background/40"
+              />
             </div>
             {showKRs && (
               <div className="space-y-2">

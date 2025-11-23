@@ -5,52 +5,58 @@ import { ArrowRightIcon } from "lucide-react";
 
 const sections = [
   {
-    id: "leadership-principles",
-    title: "Leadership Principles",
-    description: "Os 16 princípios de liderança da Amazon com exemplos práticos",
-    status: "Em Progresso",
-    color: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-    items: 16,
-  },
-  {
     id: "technical-deep-dive",
     title: "Technical Deep Dive",
-    description: "Arquitetura de pagamentos, AWS services e fraud detection",
-    status: "Planejado",
-    color: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-    items: 8,
+    description: "Domine a arquitetura de sistemas de pagamento, AWS services essenciais, segurança PCI-DSS e integração de APIs. Prepare-se para discussões técnicas profundas sobre escalabilidade e resiliência.",
+    status: "Completo",
+    color: "bg-blue-500",
+    icon: "⚙️",
+    items: 4,
   },
   {
     id: "market-knowledge",
     title: "Market Knowledge",
-    description: "PIX, mercado brasileiro e regulamentação LATAM",
-    status: "Planejado",
-    color: "bg-green-500/10 text-green-500 border-green-500/20",
-    items: 5,
+    description: "Entenda o ecossistema completo de pagamentos no Brasil e LATAM: PIX, cartões, fintechs e regulamentação. Dados atualizados e insights sobre tendências do mercado.",
+    status: "Completo",
+    color: "bg-green-500",
+    icon: "📊",
+    items: 4,
   },
   {
     id: "program-management",
     title: "Program Management",
-    description: "6-Pagers, Working Backwards, KPIs e Lean/Six Sigma",
-    status: "Planejado",
-    color: "bg-orange-500/10 text-orange-500 border-orange-500/20",
-    items: 12,
+    description: "Aprenda as metodologias Amazon (Working Backwards, 6-Pagers), KPIs críticos de pagamentos e frameworks Lean/Six Sigma para excelência operacional.",
+    status: "Completo",
+    color: "bg-purple-500",
+    icon: "📋",
+    items: 3,
   },
   {
     id: "stakeholders",
-    title: "Stakeholder Analysis",
-    description: "Perfis de Andreia Guarino e Sujash Biswas",
-    status: "Planejado",
-    color: "bg-pink-500/10 text-pink-500 border-pink-500/20",
+    title: "Stakeholders",
+    description: "Conheça profundamente seus futuros gestores: Andreia Guarino (Manager direto) e Sujash Biswas (Head LATAM). Background, estilo de liderança e perguntas estratégicas.",
+    status: "Completo",
+    color: "bg-orange-500",
+    icon: "👥",
     items: 2,
+  },
+  {
+    id: "leadership-principles",
+    title: "Leadership Principles",
+    description: "Os 16 princípios que definem a cultura Amazon. Cada um com exemplos STAR estruturados, perguntas típicas de entrevista e pontos-chave para demonstração.",
+    status: "Completo",
+    color: "bg-red-500",
+    icon: "⭐",
+    items: 16,
   },
   {
     id: "interview-prep",
     title: "Interview Preparation",
-    description: "Mock interviews, perguntas e plano 30-60-90 dias",
-    status: "Planejado",
-    color: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20",
-    items: 6,
+    description: "Preparação final com mock interviews por Leadership Principle, perguntas técnicas de payment ops, case studies e plano detalhado para os primeiros 90 dias.",
+    status: "Completo",
+    color: "bg-indigo-500",
+    icon: "🎯",
+    items: 3,
   },
 ];
 
@@ -157,27 +163,38 @@ export default function AmazonPrepPage() {
       {/* Sections Grid */}
       <div className="space-y-6">
         <h2 className="text-3xl font-bold">Módulos de Preparação</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p className="text-muted-foreground text-lg">
+          Explore cada categoria para acessar conteúdo detalhado e preparação focada
+        </p>
+        <div className="grid md:grid-cols-2 gap-6">
           {sections.map((section) => (
             <Link key={section.id} href={`/amazon-prep/${section.id}`}>
-              <Card className="h-full hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer group border-2 hover:border-primary/20">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <Badge className={`${section.color} px-3 py-1`} variant="outline">
-                      {section.status}
-                    </Badge>
-                    <ArrowRightIcon className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              <Card className="h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer group border-2 hover:border-primary/40 bg-gradient-to-br from-card to-card/50">
+                <CardHeader className="pb-6 space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div className={`p-4 rounded-xl ${section.color} bg-opacity-10`}>
+                      <div className="text-3xl">{section.icon}</div>
+                    </div>
+                    <ArrowRightIcon className="h-6 w-6 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all" />
                   </div>
-                  <CardTitle className="group-hover:text-primary transition-colors text-xl mb-2">
-                    {section.title}
-                  </CardTitle>
-                  <CardDescription className="line-clamp-2 text-base">
-                    {section.description}
-                  </CardDescription>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <CardTitle className="group-hover:text-primary transition-colors text-2xl">
+                        {section.title}
+                      </CardTitle>
+                      <Badge className={`${section.color} px-3 py-1 text-sm`} variant="secondary">
+                        {section.status}
+                      </Badge>
+                    </div>
+                    <CardDescription className="text-base leading-relaxed min-h-[60px]">
+                      {section.description}
+                    </CardDescription>
+                  </div>
                 </CardHeader>
-                <CardContent className="pt-4">
-                  <div className="flex items-center text-base text-muted-foreground">
-                    <span>{section.items} tópicos</span>
+                <CardContent className="pt-4 border-t">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground font-medium">{section.items} tópicos disponíveis</span>
+                    <span className="text-primary font-semibold group-hover:underline">Explorar →</span>
                   </div>
                 </CardContent>
               </Card>

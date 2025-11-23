@@ -33,8 +33,10 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
   const [syncing, setSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
 
-  const { data: syncStatus } = trpc.contextSync.getStatus.useQuery(undefined, {
+  const { data: syncStatus, isError } = trpc.contextSync.getStatus.useQuery(undefined, {
     refetchInterval: 5 * 60 * 1000, // Refetch a cada 5 minutos
+    retry: false,
+    refetchOnWindowFocus: false,
   });
   const updateLastSync = trpc.contextSync.updateLastSync.useMutation();
   const dismissFiles = trpc.contextSync.dismissFiles.useMutation();
@@ -89,18 +91,19 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
       setSyncProgress(100);
 
       if (response.ok) {
-        // Update last sync time no banco de dados
-        updateLastSync.mutate(undefined, {
-          onSuccess: () => {
-            utils.contextSync.getStatus.invalidate();
-            setTimeout(() => {
-              setOutdatedFiles([]);
-              setVisible(false);
-              setSyncing(false);
-              setSyncProgress(0);
-            }, 1000);
-          },
-        });
+        // Update last sync time no banco de dados ou localStorage
+        if (!isError) {
+          updateLastSync.mutate(undefined, {
+            onSuccess: () => {
+              utils.contextSync.getStatus.invalidate();
+              finalizeSyncSuccess();
+            },
+          });
+        } else {
+          // Fallback para localStorage
+          localStorage.setItem("context-files-last-sync", JSON.stringify(new Date()));
+          finalizeSyncSuccess();
+        }
       } else {
         throw new Error("Erro ao sincronizar");
       }
@@ -111,17 +114,35 @@ export function ContextFilesSync({ className }: ContextFilesSyncProps) {
     }
   };
 
+  const finalizeSyncSuccess = () => {
+    setTimeout(() => {
+      setOutdatedFiles([]);
+      setVisible(false);
+      setSyncing(false);
+      setSyncProgress(0);
+    }, 1000);
+  };
+
   const handleDismiss = () => {
     // Mark as seen but don't update sync time
-    dismissFiles.mutate(
-      { files: outdatedFiles },
-      {
-        onSuccess: () => {
-          utils.contextSync.getStatus.invalidate();
-          setVisible(false);
-        },
-      }
-    );
+    if (!isError) {
+      dismissFiles.mutate(
+        { files: outdatedFiles },
+        {
+          onSuccess: () => {
+            utils.contextSync.getStatus.invalidate();
+            setVisible(false);
+          },
+        }
+      );
+    } else {
+      // Fallback para localStorage
+      localStorage.setItem(
+        "context-files-dismissed",
+        JSON.stringify({ files: outdatedFiles, date: new Date() })
+      );
+      setVisible(false);
+    }
   };
 
   if (!visible || outdatedFiles.length === 0) {

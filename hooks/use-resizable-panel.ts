@@ -17,18 +17,41 @@ export function useResizablePanel({
   defaultWidth,
   side,
 }: UseResizablePanelProps) {
-  // Busca preferências do banco de dados
-  const { data: preferences } = trpc.userPreferences.get.useQuery(undefined, {
+  // Busca preferências do banco de dados (opcional - pode falhar se não autenticado)
+  const { data: preferences, isError } = trpc.userPreferences.get.useQuery(undefined, {
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
-  const updateLeftWidth = trpc.userPreferences.updateLeftPanelWidth.useMutation();
-  const updateRightWidth = trpc.userPreferences.updateRightPanelWidth.useMutation();
+  const utils = trpc.useUtils();
+  const updateLeftWidth = trpc.userPreferences.updateLeftPanelWidth.useMutation({
+    onSuccess: () => {
+      utils.userPreferences.get.invalidate();
+    },
+  });
+  const updateRightWidth = trpc.userPreferences.updateRightPanelWidth.useMutation({
+    onSuccess: () => {
+      utils.userPreferences.get.invalidate();
+    },
+  });
 
-  // Inicializa a largura do painel com valor do banco ou padrão
-  const [width, setWidth] = useState<number>(defaultWidth);
+  // Inicializa a largura do painel
+  const [width, setWidth] = useState<number>(() => {
+    // Tenta carregar do localStorage como fallback
+    if (typeof window !== "undefined") {
+      const key = side === "left" ? "interview-prep-left-panel-width" : "interview-prep-right-panel-width";
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= minWidth && parsed <= maxWidth) {
+          return parsed;
+        }
+      }
+    }
+    return defaultWidth;
+  });
 
-  // Atualiza width quando preferences carregam
+  // Atualiza width quando preferences carregam do banco de dados
   useEffect(() => {
     if (preferences) {
       const savedWidth = side === "left" ? preferences.leftPanelWidth : preferences.rightPanelWidth;
@@ -42,10 +65,12 @@ export function useResizablePanel({
   const startXRef = useRef<number>(0);
   const startWidthRef = useRef<number>(0);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSavedWidthRef = useRef<number>(defaultWidth);
 
-  // Salva a largura no banco de dados com debounce
+  // Salva a largura (localStorage como fallback + banco se autenticado)
   useEffect(() => {
-    if (!preferences) return; // Aguarda carregar preferências
+    // Não salva se é o mesmo valor
+    if (width === lastSavedWidthRef.current) return;
 
     // Limpa timeout anterior
     if (saveTimeoutRef.current) {
@@ -54,10 +79,26 @@ export function useResizablePanel({
 
     // Salva após 500ms de inatividade
     saveTimeoutRef.current = setTimeout(() => {
-      if (side === "left") {
-        updateLeftWidth.mutate({ width });
-      } else {
-        updateRightWidth.mutate({ width });
+      lastSavedWidthRef.current = width;
+      
+      // Sempre salva no localStorage como fallback
+      if (typeof window !== "undefined") {
+        const key = side === "left" ? "interview-prep-left-panel-width" : "interview-prep-right-panel-width";
+        localStorage.setItem(key, width.toString());
+      }
+      
+      // Tenta salvar no banco se autenticado (ignora erro se não autenticado)
+      if (!isError) {
+        try {
+          if (side === "left") {
+            updateLeftWidth.mutate({ width });
+          } else {
+            updateRightWidth.mutate({ width });
+          }
+        } catch (e) {
+          // Ignora erro se não autenticado
+          console.debug("Não foi possível salvar preferência no banco (usuário não autenticado)");
+        }
       }
     }, 500);
 
@@ -66,7 +107,7 @@ export function useResizablePanel({
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [width, side]); // Removido preferences, updateLeftWidth, updateRightWidth das dependências
+  }, [width, side, isError, updateLeftWidth, updateRightWidth]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {

@@ -68,22 +68,45 @@ export function AIContextualSuggestions({
 }: AIContextualSuggestionsProps) {
   const [visible, setVisible] = useState(true);
   
-  // Busca sugestões dismissadas do banco de dados
-  const { data: dismissedIds = [] } = trpc.dismissedSuggestions.list.useQuery({ pageContext });
+  // Busca sugestões dismissadas do banco de dados (com fallback localStorage)
+  const { data: dismissedIds = [], isError } = trpc.dismissedSuggestions.list.useQuery(
+    { pageContext },
+    { retry: false, refetchOnWindowFocus: false }
+  );
+  
   const dismissMutation = trpc.dismissedSuggestions.dismiss.useMutation();
   const utils = trpc.useUtils();
 
-  const dismissed = new Set(dismissedIds);
+  // Fallback: carregar do localStorage se não autenticado
+  const [localDismissed, setLocalDismissed] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set();
+    const stored = localStorage.getItem(`ai-suggestions-dismissed-${pageContext}`);
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  });
+
+  const dismissed = isError ? localDismissed : new Set(dismissedIds);
 
   const handleDismiss = (id: string) => {
-    dismissMutation.mutate(
-      { suggestionId: id, pageContext },
-      {
-        onSuccess: () => {
-          utils.dismissedSuggestions.list.invalidate({ pageContext });
-        },
-      }
+    // Sempre salva no localStorage como fallback
+    const newDismissed = new Set(localDismissed);
+    newDismissed.add(id);
+    setLocalDismissed(newDismissed);
+    localStorage.setItem(
+      `ai-suggestions-dismissed-${pageContext}`,
+      JSON.stringify(Array.from(newDismissed))
     );
+
+    // Tenta salvar no banco se autenticado
+    if (!isError) {
+      dismissMutation.mutate(
+        { suggestionId: id, pageContext },
+        {
+          onSuccess: () => {
+            utils.dismissedSuggestions.list.invalidate({ pageContext });
+          },
+        }
+      );
+    }
   };
 
   const visibleSuggestions = suggestions.filter((s) => !dismissed.has(s.id));

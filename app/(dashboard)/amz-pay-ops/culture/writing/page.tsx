@@ -1,5 +1,5 @@
-import { ArrowLeft, FileText, PenTool } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft, PenTool } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ export default function WritingPage() {
           </Link>
         </Button>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+        <div className="grid gap-6 lg:grid-cols-[1.5fr_0.8fr]">
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -38,9 +38,9 @@ export default function WritingPage() {
                   Na Amazon, escrevemos para sermos entendidos, não para impressionar.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+              <CardContent className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
                 {principles.map((principle, i) => (
-                  <div key={i} className="rounded-lg border p-4">
+                  <div key={i} className="rounded-xl border bg-muted/40 p-4">
                     <h4 className="font-semibold mb-1">{principle.title}</h4>
                     <p className="text-sm text-muted-foreground">{principle.desc}</p>
                   </div>
@@ -94,10 +94,22 @@ export default function WritingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Antes de enviar qualquer documento, faça o "So What?" test.
+                  Antes de enviar qualquer documento, faça o &quot;So What?&quot; test.
                   <br /><br />
-                  Para cada parágrafo, pergunte-se: "E daí?". Se a resposta não for óbvia, reescreva ou apague.
+                  Para cada parágrafo, pergunte-se: &quot;E daí?&quot;. Se a resposta não for óbvia, reescreva ou apague.
                 </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Checklist &quot;Send&quot;</CardTitle>
+                <CardDescription>3 minutos antes de compartilhar qualquer narrativa.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <p>1. BLUF no primeiro parágrafo?</p>
+                <p>2. Métricas com números e fonte?</p>
+                <p>3. Perguntas antecipadas respondidas na seção FAQ?</p>
               </CardContent>
             </Card>
           </div>

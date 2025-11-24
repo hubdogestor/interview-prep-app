@@ -1,7 +1,8 @@
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Activity, ArrowLeft } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { domainData } from "@/data/amazon/domain";
@@ -24,8 +25,18 @@ export default function OpsExcellencePage() {
           </Link>
         </Button>
 
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="size-5 text-primary" />
+              Operar = medir + corrigir
+            </CardTitle>
+            <CardDescription>Priorize resultados antes de narrativas. KPIs conectados ao cliente.</CardDescription>
+          </CardHeader>
+        </Card>
+
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
+          <Card className="border-border/70">
             <CardHeader>
               <CardTitle>Metodologias</CardTitle>
               <CardDescription>Ferramentas para melhoria contínua.</CardDescription>
@@ -40,18 +51,19 @@ export default function OpsExcellencePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-border/70">
             <CardHeader>
               <CardTitle>KPIs Críticos</CardTitle>
               <CardDescription>O que você vai medir no Day 1.</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4">
+            <CardContent className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
               {kpis.map((kpi, i) => (
-                <div key={i} className="flex items-start justify-between gap-4 p-3 rounded-lg bg-muted/50">
-                  <div>
-                    <h4 className="font-bold text-sm">{kpi.name}</h4>
-                    <p className="text-xs text-muted-foreground">{kpi.desc}</p>
+                <div key={i} className="rounded-xl border bg-muted/40 p-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold">{kpi.name}</h4>
+                    <Badge variant="outline" className="rounded-full text-[10px]">Monitor</Badge>
                   </div>
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{kpi.desc}</p>
                 </div>
               ))}
             </CardContent>

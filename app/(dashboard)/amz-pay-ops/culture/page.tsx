@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,11 @@ import { cn } from "@/lib/utils";
 
 export default function CulturePage() {
   const { hero, sections } = cultureData;
+  const focusHighlights = [
+    "Dominar 2 histórias de LP para cada mecanismo",
+    "Converter insights em ações concretas para Day 1",
+    "Praticar escrita narrativa com feedback rápido",
+  ];
 
   return (
     <DashboardPageLayout
@@ -17,38 +22,74 @@ export default function CulturePage() {
         description: hero.subtitle,
       }}
     >
-      <div className="space-y-8">
-        <div className="rounded-xl border bg-card p-8 shadow-sm">
-          <p className="text-lg text-muted-foreground max-w-3xl">
-            {hero.description}
-          </p>
-        </div>
+      <div className="space-y-10">
+        <section className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+          <Card className="border-border/70">
+            <CardHeader>
+              <CardTitle className="text-2xl">Sistema operacional Amazoniano</CardTitle>
+              <CardDescription className="text-base leading-relaxed">
+                {hero.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 md:grid-cols-3">
+                {focusHighlights.map((item) => (
+                  <div key={item} className="rounded-lg border bg-muted/40 px-3 py-2 text-sm font-medium text-muted-foreground">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/10 via-background to-background">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="size-5 text-primary" />
+                Ritual diário
+              </CardTitle>
+              <CardDescription>
+                Escolha um princípio de liderança, escreva um parágrafo relacionando com sua experiência e compartilhe com um mentor.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Objetivo: criar um banco de histórias autênticas e atualizadas para entrevistas internas, avaliações e WBRs.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <div className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
           {sections.map((section) => {
             const Icon = section.icon;
             return (
-              <Card key={section.id} className="flex flex-col overflow-hidden transition-all hover:shadow-lg hover:border-primary/20 group">
-                <div className={cn("h-2 w-full", section.bgColor.replace("/10", ""))}></div>
-                <CardHeader>
-                  <div className={cn("mb-4 flex size-12 items-center justify-center rounded-lg", section.bgColor, section.color)}>
+                <Card
+                  key={section.id}
+                  className="flex flex-col overflow-hidden border-border/70 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
+                >
+                  <div className={cn("h-1.5 w-full", section.bgColor.replace("/10", ""))}></div>
+                  <CardHeader className="flex-1">
+                    <div className={cn("mb-4 flex size-12 items-center justify-center rounded-xl", section.bgColor, section.color)}>
                     <Icon className="size-6" />
                   </div>
-                  <CardTitle className="text-xl">{section.title}</CardTitle>
-                  <CardDescription>{section.description}</CardDescription>
+                    <CardTitle className="text-lg">{section.title}</CardTitle>
+                    <CardDescription className="leading-relaxed">{section.description}</CardDescription>
                 </CardHeader>
-                <CardFooter className="mt-auto pt-0">
-                  <Button asChild variant="ghost" className="w-full justify-between group-hover:bg-accent">
-                    <Link href={section.href}>
-                      Explorar
-                      <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </Button>
-                </CardFooter>
+                  <CardFooter className="mt-auto pt-0">
+                    <Button asChild variant="secondary" className="w-full group">
+                      <Link href={section.href}>
+                        Explorar trilha
+                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </Button>
+                  </CardFooter>
               </Card>
             );
           })}
-        </div>
+          </div>
+        </section>
       </div>
     </DashboardPageLayout>
   );

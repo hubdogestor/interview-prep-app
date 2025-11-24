@@ -1,7 +1,8 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft, Gauge } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { domainData } from "@/data/amazon/domain";
@@ -24,21 +25,39 @@ export default function FundamentalsPage() {
           </Link>
         </Button>
 
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Gauge className="size-5 text-primary" />
+              Latência importa
+            </CardTitle>
+            <CardDescription>
+              Cada etapa abaixo tem proprietários distintos. Documente quem aciona quem e qual SLA deve ser medido.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
         {/* Transaction Flow */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">The Four-Party Model Flow</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
             {flow.map((step, i) => (
-              <Card key={i} className="relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full bg-primary/50" />
+              <Card key={i} className="relative flex h-full flex-col overflow-hidden border-border/70">
+                <div className="absolute inset-y-0 left-0 w-1 bg-primary/40" />
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{step.step}</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base">{step.step}</CardTitle>
+                    <Badge variant="outline" className="rounded-full text-[11px]">Etapa {i + 1}</Badge>
+                  </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">{step.desc}</p>
+                <CardContent className="flex flex-1 flex-col justify-between">
+                  <p className="mb-4 text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
                   <div className="flex flex-wrap gap-1">
                     {step.actors.map((actor, j) => (
-                      <span key={j} className="text-[10px] uppercase tracking-wider font-bold bg-muted px-2 py-1 rounded">
+                      <span
+                        key={j}
+                        className="rounded-full bg-muted px-2 py-1 text-[11px] font-semibold uppercase tracking-wide"
+                      >
                         {actor}
                       </span>
                     ))}
@@ -52,12 +71,12 @@ export default function FundamentalsPage() {
         {/* Key Players */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold tracking-tight">Key Players</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
             {players.map((player, i) => {
               const Icon = player.icon;
               return (
-                <Card key={i} className="flex items-center p-4 gap-4">
-                  <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+                <Card key={i} className="flex items-center gap-4 p-4">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Icon className="size-6" />
                   </div>
                   <div>

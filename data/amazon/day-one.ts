@@ -1,14 +1,10 @@
 import {
   BookOpen,
   Briefcase,
-  CheckCircle2,
   FileText,
-  GraduationCap,
   LayoutDashboard,
   Lightbulb,
-  Rocket,
   ShieldCheck,
-  Users,
 } from "lucide-react";
 
 export const dayOneData = {
@@ -67,18 +63,21 @@ export const dayOneData = {
       icon: BookOpen,
       href: "/amz-pay-ops/wiki",
       description: "Internal Knowledge Base",
+      status: "Em breve",
     },
     {
       label: "Simulate Quip",
       icon: FileText,
       href: "/amz-pay-ops/quip",
       description: "Collaborative Docs",
+      status: "Em breve",
     },
     {
       label: "Simulate JIRA",
       icon: LayoutDashboard,
       href: "/amz-pay-ops/jira",
       description: "Task Tracking",
+      status: "Em breve",
     },
   ],
   dayOneChecklist: [

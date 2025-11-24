@@ -1,4 +1,4 @@
-import { Activity, Banknote, BarChart3, CreditCard, Globe, Lock, RefreshCw, ShieldAlert, Wallet } from "lucide-react";
+import { Activity, Banknote, CreditCard, Globe, Lock, RefreshCw, ShieldAlert, Wallet } from "lucide-react";
 
 export const domainData = {
   hero: {

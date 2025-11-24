@@ -1,5 +1,5 @@
-import { ArrowLeft, User } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft, User } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,9 +25,18 @@ export default function StakeholdersPage() {
           </Link>
         </Button>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
+          <CardHeader>
+            <CardTitle>Playbook de influência</CardTitle>
+            <CardDescription>
+              Releia antes das reuniões 1:1. Entre com dados (Andreia), visão (Sujash) e clareza técnica (Eng).
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
           {stakeholders.map((person, i) => (
-            <Card key={i}>
+            <Card key={i} className="flex h-full flex-col">
               <CardHeader className="flex flex-row items-center gap-4 pb-2">
                 <Avatar className="size-12">
                   <AvatarImage src={`/avatars/${person.name.split(" ")[0].toLowerCase()}.png`} />

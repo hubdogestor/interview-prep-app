@@ -1,4 +1,4 @@
-import { BookOpen, BrainCircuit, FileText, Lightbulb, Target, Users } from "lucide-react";
+import { FileText, Target, Users } from "lucide-react";
 
 export const cultureData = {
   hero: {

@@ -1,5 +1,5 @@
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,12 @@ import { domainData } from "@/data/amazon/domain";
 
 export default function AmazonPayPage() {
   const { products } = domainData.amazonPay;
+  const badgeVariant: Record<string, "default" | "secondary" | "outline"> = {
+    Global: "default",
+    "Strategic Growth": "secondary",
+    Innovation: "secondary",
+    Localization: "outline",
+  };
 
   return (
     <DashboardPageLayout
@@ -25,19 +31,19 @@ export default function AmazonPayPage() {
           </Link>
         </Button>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
           {products.map((product, i) => (
-            <Card key={i}>
+            <Card key={i} className="flex h-full flex-col border-border/70">
               <CardHeader>
-                <div className="flex justify-between items-start mb-2">
-                  <Badge variant={product.status === "Global" ? "default" : "secondary"}>
+                <div className="mb-3 flex justify-between">
+                  <Badge variant={badgeVariant[product.status] ?? "secondary"} className="rounded-full">
                     {product.status}
                   </Badge>
                 </div>
-                <CardTitle>{product.title}</CardTitle>
+                <CardTitle className="text-lg">{product.title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{product.desc}</p>
+              <CardContent className="flex-1">
+                <CardDescription className="text-sm leading-relaxed">{product.desc}</CardDescription>
               </CardContent>
             </Card>
           ))}

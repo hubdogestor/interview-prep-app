@@ -1,5 +1,5 @@
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft, Info } from "lucide-react";
 
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,19 @@ export default function RoleClarityPage() {
           </Link>
         </Button>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Info className="size-5 text-primary" />
+              Mandato do PgM
+            </CardTitle>
+            <CardDescription>
+              PgM conecta estratégia ao chão da fábrica. Pense em riscos, dependências e narrativa única para todas as equipes.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
           {comparison.map((role, i) => (
             <Card key={i} className={role.role.includes("Program") ? "border-primary shadow-md" : ""}>
               <CardHeader>

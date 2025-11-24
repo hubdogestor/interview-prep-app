@@ -235,7 +235,7 @@ export default function WritingPage() {
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-base">
                     <PenTool className="size-4 text-primary" />
-                    Checklist "Send"
+                    Checklist &quot;Send&quot;
                   </CardTitle>
                   <CardDescription className="text-xs">3 minutos antes de compartilhar qualquer narrativa.</CardDescription>
                 </CardHeader>

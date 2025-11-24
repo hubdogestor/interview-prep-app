@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 
+import { AmazonHubShell } from "@/components/amazon/hub-shell";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,15 +15,16 @@ export default function RiskFraudPage() {
         description: "Protegendo a confiança do cliente.",
       }}
     >
-      <div className="space-y-8">
-        <Button asChild variant="ghost" className="pl-0 text-sm">
-          <Link href="/amz-pay-ops/domain">
-            <ArrowLeft className="mr-2 size-4" />
-            Voltar para Domain
-          </Link>
-        </Button>
+      <AmazonHubShell>
+        <div className="space-y-8">
+          <Button asChild variant="ghost" className="pl-0 text-sm">
+            <Link href="/amz-pay-ops/domain">
+              <ArrowLeft className="mr-2 size-4" />
+              Voltar para Domain
+            </Link>
+          </Button>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-3 border-red-500/20 bg-gradient-to-br from-red-500/5 to-background">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
@@ -55,7 +57,7 @@ export default function RiskFraudPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/70">
+            <Card className="border-border/70">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Chargeback</CardTitle>
             </CardHeader>
@@ -71,7 +73,7 @@ export default function RiskFraudPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/70 lg:col-span-2">
+            <Card className="border-border/70 lg:col-span-2">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">False Positives</CardTitle>
             </CardHeader>
@@ -95,9 +97,10 @@ export default function RiskFraudPage() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
-      </div>
+      </AmazonHubShell>
     </DashboardPageLayout>
   );
 }

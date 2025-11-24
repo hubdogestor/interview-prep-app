@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Gauge } from "lucide-react";
 
+import { AmazonHubShell } from "@/components/amazon/hub-shell";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,13 +18,14 @@ export default function FundamentalsPage() {
         description: "O ciclo de vida de uma transação.",
       }}
     >
-      <div className="space-y-8">
-        <Button asChild variant="ghost" className="pl-0 text-sm">
-          <Link href="/amz-pay-ops/domain">
-            <ArrowLeft className="mr-2 size-4" />
-            Voltar para Domain
-          </Link>
-        </Button>
+      <AmazonHubShell>
+        <div className="space-y-8">
+          <Button asChild variant="ghost" className="pl-0 text-sm">
+            <Link href="/amz-pay-ops/domain">
+              <ArrowLeft className="mr-2 size-4" />
+              Voltar para Domain
+            </Link>
+          </Button>
 
         <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
           <CardHeader className="pb-3">
@@ -38,7 +40,7 @@ export default function FundamentalsPage() {
         </Card>
 
         {/* Transaction Flow */}
-        <section className="space-y-5">
+          <section className="space-y-5">
           <h2 className="text-xl font-bold tracking-tight">The Four-Party Model Flow</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {flow.map((step, i) => (
@@ -66,10 +68,10 @@ export default function FundamentalsPage() {
               </Card>
             ))}
           </div>
-        </section>
+          </section>
 
-        {/* Key Players */}
-        <section className="space-y-5">
+          {/* Key Players */}
+          <section className="space-y-5">
           <h2 className="text-xl font-bold tracking-tight">Key Players</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {players.map((player, i) => {
@@ -86,9 +88,10 @@ export default function FundamentalsPage() {
                 </Card>
               );
             })}
-          </div>
-        </section>
-      </div>
+            </div>
+          </section>
+        </div>
+      </AmazonHubShell>
     </DashboardPageLayout>
   );
 }

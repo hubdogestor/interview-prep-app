@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 
+import { AmazonHubShell } from "@/components/amazon/hub-shell";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,8 +23,9 @@ export default function CulturePage() {
         description: hero.subtitle,
       }}
     >
-      <div className="space-y-8">
-        <section className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+      <AmazonHubShell>
+        <div className="space-y-8">
+          <section className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
           <Card className="border-border/70">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">Sistema operacional Amazoniano</CardTitle>
@@ -89,8 +91,9 @@ export default function CulturePage() {
             );
           })}
           </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      </AmazonHubShell>
     </DashboardPageLayout>
   );
 }

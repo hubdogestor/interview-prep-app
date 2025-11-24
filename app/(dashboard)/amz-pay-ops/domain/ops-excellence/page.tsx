@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Activity, ArrowLeft } from "lucide-react";
 
+import { AmazonHubShell } from "@/components/amazon/hub-shell";
 import DashboardPageLayout from "@/components/dashboard/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,15 +18,16 @@ export default function OpsExcellencePage() {
         description: "A arte de fazer mais com menos (Frugality).",
       }}
     >
-      <div className="space-y-8">
-        <Button asChild variant="ghost" className="pl-0 text-sm">
-          <Link href="/amz-pay-ops/domain">
-            <ArrowLeft className="mr-2 size-4" />
-            Voltar para Domain
-          </Link>
-        </Button>
+      <AmazonHubShell>
+        <div className="space-y-8">
+          <Button asChild variant="ghost" className="pl-0 text-sm">
+            <Link href="/amz-pay-ops/domain">
+              <ArrowLeft className="mr-2 size-4" />
+              Voltar para Domain
+            </Link>
+          </Button>
 
-        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
               <Activity className="size-5 text-primary flex-shrink-0" />
@@ -35,7 +37,7 @@ export default function OpsExcellencePage() {
           </CardHeader>
         </Card>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
           <Card className="border-border/70">
             <CardHeader className="pb-4">
               <CardTitle className="text-base">Metodologias</CardTitle>
@@ -67,9 +69,10 @@ export default function OpsExcellencePage() {
                 </div>
               ))}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
-      </div>
+      </AmazonHubShell>
     </DashboardPageLayout>
   );
 }

@@ -59,7 +59,7 @@ export default function AmazonPrepPage() {
 
             <div className="flex flex-wrap gap-4">
               <Button size="xl" asChild>
-                <Link href="/amazon-prep/interview-prep">
+                <Link href="/amazon-prep/operating-rhythm">
                   Abrir plano 30·60·90
                   <ArrowUpRight className="size-4" />
                 </Link>

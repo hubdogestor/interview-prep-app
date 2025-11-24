@@ -66,7 +66,7 @@ export const amazonHubData = {
       icon: Target,
       topics: 3,
       status: "Em curso",
-      href: "/amazon-prep/interview-prep",
+      href: "/amazon-prep/operating-rhythm",
       focus: "30·60·90 · cadência",
       gradient: "from-indigo-500/25 via-indigo-500/5 to-transparent",
       accent: "text-indigo-200 border-indigo-400/30",
@@ -586,7 +586,7 @@ export const programOfficeData = {
     "Validar com Andreia antes de enviar para Sujash.",
   ],
   quickLinks: [
-    { label: "Plano 30·60·90", href: "/amazon-prep/interview-prep" },
+    { label: "Plano 30·60·90", href: "/amazon-prep/operating-rhythm" },
     { label: "Runbooks técnicos", href: "/amazon-prep/technical-deep-dive" },
     { label: "Radar de mercado", href: "/amazon-prep/market-knowledge" },
   ],

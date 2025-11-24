@@ -155,7 +155,7 @@ export function generateProfessionalPDF(
       { align: "center" }
     );
     doc.text(
-      "Gerado por Interview Prep App",
+      "Gerado por leomds-app",
       pageWidth - margin,
       pageHeight - 10,
       { align: "right" }
@@ -277,7 +277,7 @@ export function exportToPDF(items: ExportItem[], filename: string) {
 
   htmlContent += `
       <div class="footer">
-        Gerado por Interview Prep App
+        Gerado por leomds-app
       </div>
     </body>
     </html>

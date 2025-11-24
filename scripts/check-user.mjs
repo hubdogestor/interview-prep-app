@@ -19,7 +19,7 @@ async function checkUser() {
     await client.connect();
     console.log("✅ Conectado ao MongoDB Atlas!");
 
-    const db = client.db("interview-prep");
+    const db = client.db("leomds-app");
     const users = db.collection("users");
 
     // Lista todos os usuários

@@ -27,8 +27,8 @@ export default async function QuestionsPage() {
   return (
     <DashboardPageLayout
       header={{
-        title: "My Questions",
-        description: "Questions for interviewers",
+        title: "Perguntas-chave",
+        description: "Perguntas para stakeholders e revisões",
         icon: QuestionIcon,
         action: <ExportButton items={exportItems} filename="questions" />,
       }}

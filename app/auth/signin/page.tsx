@@ -48,7 +48,7 @@ export default function SignInPage() {
         <div className="space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-display uppercase tracking-wide">
-              Interview Prep
+              leomds-app
             </h1>
             <p className="text-sm text-muted-foreground">
               Entre com suas credenciais

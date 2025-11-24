@@ -14,7 +14,7 @@ async function main() {
 
   const defaultUser = await prisma.user.create({
     data: {
-      email: "default@interview-prep.local",
+      email: "default@leomds-app.local",
       name: "Usuário Default",
       emailVerified: new Date(),
     },

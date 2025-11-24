@@ -92,7 +92,7 @@ const data = {
       ],
     },
     {
-      title: "Interview Prep",
+      title: "LEOMDS Hub",
       items: [
         {
           title: "Icebreakers",

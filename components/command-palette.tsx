@@ -124,7 +124,7 @@ export function CommandPalette() {
     {
       id: "questions",
       label: "Questions",
-      description: "Questions for interviewers",
+      description: "Perguntas para stakeholders",
       icon: HelpCircle,
       action: () => router.push("/questions"),
       keywords: ["questions", "perguntas"],

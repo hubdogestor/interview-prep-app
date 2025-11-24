@@ -1,5 +1,5 @@
 /**
- * Central type definitions for the interview-prep-app
+ * Central type definitions for leomds-app
  * These types extend Prisma models with proper TypeScript types
  */
 

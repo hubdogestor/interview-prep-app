@@ -36,11 +36,11 @@ const isV0 = process.env["VERCEL_URL"]?.includes("vusercontent.net") ?? false;
 export const metadata: Metadata = {
   metadataBase: new URL(appBaseUrl),
   title: {
-    template: "%s | Interview Prep",
-    default: "Interview Prep App",
+    template: "%s | leomds-app",
+    default: "leomds-app",
   },
   description:
-    "Prepare-se para entrevistas de emprego com IA. Organize icebreakers, speeches, experiências e competências.",
+    "Hub pessoal do Leonardo para conteúdos, automações e operações.",
   generator: "v0.app",
 };
 

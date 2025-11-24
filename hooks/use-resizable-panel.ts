@@ -20,7 +20,7 @@ export function useResizablePanel({
   // Inicializa a largura do painel a partir do localStorage
   const [width, setWidth] = useState<number>(() => {
     if (typeof window !== "undefined") {
-      const key = side === "left" ? "interview-prep-left-panel-width" : "interview-prep-right-panel-width";
+      const key = side === "left" ? "leomds-app-left-panel-width" : "leomds-app-right-panel-width";
       const saved = localStorage.getItem(key);
       if (saved) {
         const parsed = parseInt(saved, 10);
@@ -53,7 +53,7 @@ export function useResizablePanel({
       lastSavedWidthRef.current = width;
       
       if (typeof window !== "undefined") {
-        const key = side === "left" ? "interview-prep-left-panel-width" : "interview-prep-right-panel-width";
+        const key = side === "left" ? "leomds-app-left-panel-width" : "leomds-app-right-panel-width";
         localStorage.setItem(key, width.toString());
       }
     }, 500);

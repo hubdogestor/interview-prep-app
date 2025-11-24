@@ -1,17 +1,17 @@
-# Interview Prep App
+# leomds-app
 
-Personal interview preparation application.
+Aplicação pessoal centralizada para os fluxos de trabalho do Leonardo.
 
 ## Development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ## Build
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```

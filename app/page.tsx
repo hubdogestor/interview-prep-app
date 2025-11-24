@@ -81,7 +81,7 @@ export default async function DashboardOverview() {
         <DashboardStat
           label="QUESTIONS"
           value={String(dashboard.totals.questions)}
-          description="FOR INTERVIEWERS"
+          description="STAKEHOLDERS"
           icon={StarIcon}
           intent="neutral"
         />

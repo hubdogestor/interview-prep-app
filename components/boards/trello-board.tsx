@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   closestCorners,
   DndContext,
@@ -21,7 +21,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { Edit3, Plus, Trash2 } from "lucide-react"
+import { Edit3, Minus, Plus, Trash2 } from "lucide-react"
 
 import { FlagManagerSelect, useCustomFlags } from "@/components/boards/flag-manager"
 import {
@@ -106,11 +106,35 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
     cardId: string
     cardTitle: string
   } | null>(null)
+  const [collapsedColumns, setCollapsedColumns] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(initialColumns.map((column) => [column.id, column.id === "backlog"]))
+  )
 
   const { allFlags } = useCustomFlags()
 
   useEffect(() => {
     setColumns(cloneColumns(initialColumns))
+  }, [initialColumns])
+
+  useEffect(() => {
+    setCollapsedColumns((prev) => {
+      const next: Record<string, boolean> = { ...prev }
+      const allowed = new Set(initialColumns.map((column) => column.id))
+
+      initialColumns.forEach((column) => {
+        if (!(column.id in next)) {
+          next[column.id] = column.id === "backlog"
+        }
+      })
+
+      Object.keys(next).forEach((key) => {
+        if (!allowed.has(key)) {
+          delete next[key]
+        }
+      })
+
+      return next
+    })
   }, [initialColumns])
 
   // Notificar parent quando colunas mudarem (apenas mudanças reais)
@@ -134,6 +158,14 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   )
+
+  const handleToggleColumn = useCallback((columnId: string) => {
+    setCollapsedColumns((prev) => {
+      const current = prev[columnId] ?? (columnId === "backlog")
+      return { ...prev, [columnId]: !current }
+    })
+    setComposerColumn((prev) => (prev === columnId ? null : prev))
+  }, [])
 
   const handleDragStart = (event: DragStartEvent) => {
     const cardId = String(event.active.id)
@@ -405,9 +437,11 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
             <BoardColumnCard
               key={column.id}
               column={column}
+              isCollapsed={collapsedColumns[column.id] ?? (column.id === "backlog")}
               isComposerOpen={composerColumn === column.id}
               addCardLabel={addCardLabel}
               showKRs={showKRs}
+              onToggleCollapse={() => handleToggleColumn(column.id)}
               onOpenComposer={() => setComposerColumn(column.id)}
               onCloseComposer={() => {
                 resetDraft(column.id)
@@ -596,9 +630,11 @@ export function TrelloBoard({ initialColumns, addCardLabel = "Adicionar card", c
 interface BoardColumnCardProps {
   column: BoardColumn
   children: ReactNode
+  isCollapsed: boolean
   isComposerOpen: boolean
   addCardLabel: string
   showKRs: boolean
+  onToggleCollapse: () => void
   onOpenComposer: () => void
   onCloseComposer: () => void
   onSaveCard: () => void
@@ -623,9 +659,11 @@ interface BoardColumnCardProps {
 function BoardColumnCard({
   column,
   children,
+  isCollapsed,
   isComposerOpen,
   addCardLabel,
   showKRs,
+  onToggleCollapse,
   onOpenComposer,
   onCloseComposer,
   onSaveCard,
@@ -638,6 +676,29 @@ function BoardColumnCard({
     id: column.id,
   })
 
+  if (isCollapsed) {
+    return (
+      <div
+        ref={setNodeRef}
+        className="flex min-w-[72px] max-w-[72px] flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 bg-background/40 px-3 py-6 text-muted-foreground"
+      >
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          className="flex flex-col items-center gap-4 text-xs uppercase tracking-[0.2em]"
+        >
+          <Plus className="h-5 w-5" />
+          <span
+            className="font-display text-sm"
+            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+          >
+            {column.title}
+          </span>
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -647,11 +708,23 @@ function BoardColumnCard({
       )}
     >
       <div className="space-y-1">
-        <div className="text-center">
-          {column.subtitle && (
-            <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{column.subtitle}</p>
-          )}
-          <h3 className="text-2xl font-display tracking-[0.1em]">{column.title}</h3>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 text-center">
+            {column.subtitle && (
+              <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{column.subtitle}</p>
+            )}
+            <h3 className="text-2xl font-display tracking-[0.1em]">{column.title}</h3>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-7 rounded-full text-muted-foreground hover:text-foreground"
+            onClick={onToggleCollapse}
+          >
+            <Minus className="h-4 w-4" />
+            <span className="sr-only">Recolher coluna {column.title}</span>
+          </Button>
         </div>
         {column.accentColor && <div className={cn("h-1 rounded-full bg-gradient-to-r", column.accentColor)} />}
       </div>

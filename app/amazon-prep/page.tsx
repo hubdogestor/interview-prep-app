@@ -269,27 +269,31 @@ export default function AmazonPrepPage() {
               </Badge>
             </div>
             <div className="space-y-4">
-              {timeline.map((item) => (
-                <div key={item.label} className="rounded-2xl border border-white/10 bg-pop/40 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold">{item.label}</p>
-                      <p className="text-[0.65rem] uppercase tracking-[0.35em] text-muted-foreground">
-                        {item.focus}
-                      </p>
+              {timeline.map((item) => {
+                const tone = statusTone[item.status as keyof typeof statusTone] ?? "";
+                const label = statusLabel[item.status as keyof typeof statusLabel] ?? item.status;
+                return (
+                  <div key={item.label} className="rounded-2xl border border-white/10 bg-pop/40 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold">{item.label}</p>
+                        <p className="text-[0.65rem] uppercase tracking-[0.35em] text-muted-foreground">
+                          {item.focus}
+                        </p>
+                      </div>
+                      <span
+                        className={cn(
+                          "rounded-full border px-3 py-1 text-[0.65rem] uppercase tracking-[0.3em]",
+                          tone
+                        )}
+                      >
+                        {label}
+                      </span>
                     </div>
-                    <span
-                      className={cn(
-                        "rounded-full border px-3 py-1 text-[0.65rem] uppercase tracking-[0.3em]",
-                        statusTone[item.status]
-                      )}
-                    >
-                      {statusLabel[item.status]}
-                    </span>
+                    <p className="mt-3 text-sm text-muted-foreground">{item.deliverable}</p>
                   </div>
-                  <p className="mt-3 text-sm text-muted-foreground">{item.deliverable}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>

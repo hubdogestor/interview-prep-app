@@ -58,8 +58,13 @@ export default async function DashboardOverview() {
       }}
     >
       {/* Quick Actions */}
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <QuickActions />
+        {dashboard === dashboardOverviewFallback && (
+          <div className="rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-500 border border-amber-500/20">
+            Demo Data
+          </div>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -86,14 +91,14 @@ export default async function DashboardOverview() {
           intent="neutral"
         />
         <DashboardStat
-          label="EXPERIÊNCIAS"
+          label="EXPERIENCES"
           value={String(dashboard.totals.experiencias)}
           description="JOURNEY"
           icon={BriefcaseIcon}
           intent="positive"
         />
         <DashboardStat
-          label="COMPETÊNCIAS"
+          label="COMPETENCIES"
           value={String(dashboard.totals.competencias)}
           description="SKILLS"
           icon={ProcessorIcon}

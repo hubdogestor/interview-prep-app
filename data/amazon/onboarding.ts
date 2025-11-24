@@ -46,6 +46,17 @@ export const amazonHubData = {
     jobId: "3059488",
     partnership: "Oakberry Strategic Partnership",
   },
+  heroMeta: [
+    { label: "Escopo", value: "LATAM Payment Ops" },
+    { label: "Metodologias", value: "Lean · Six Sigma · Working Backwards" },
+    { label: "Foco", value: "Onboarding + AI/ML" },
+  ],
+  healthCheck: {
+    title: "Health Check",
+    summary: "Contexto 65% · Sistemas 40% · Resultados 35%",
+    detail:
+      "Concluído discovery com stakeholders. Em andamento: fechamento dos alarmes críticos e primeira rodada de scorecards compartilhados.",
+  },
   modules: [
     {
       id: "operating-rhythm",
@@ -222,6 +233,11 @@ export const amazonHubData = {
       anchor: "Oak",
     },
   ],
+  docsInFlight: [
+    { name: "6-Pager Payment Ops", status: "Draft" },
+    { name: "Plano 30·60·90", status: "Draft" },
+    { name: "Mapa de riscos PCI", status: "Draft" },
+  ],
   metaCards: [
     {
       label: "Ramp Plan",
@@ -394,6 +410,12 @@ export const operatingRhythmData = {
       detail: "Revisar perguntas frequentes com Sujash e anexar estimativa de investimento.",
     },
   ],
+  reviewChecklist: [
+    "Validar métricas no Looker e anexar screenshots no doc de suporte.",
+    "Atualizar riscos/decisões do log compartilhado com Andreia.",
+    "Enviar agenda e materiais com antecedência mínima de 12h.",
+    "Registrar decisões tomadas em até 2h pós-meeting.",
+  ],
   readinessStatusTone: {
     done: "amazon-portal-status-done",
     "in-progress": "text-sky-300",
@@ -556,6 +578,18 @@ export const programOfficeData = {
       audience: "Sujash + parceiros globais",
     },
   ],
+  writingChecklist: [
+    "Começar com o cliente (qual dor resolvemos?).",
+    "Listar métricas e fontes que comprovam o problema.",
+    "Descrever solução simples + trade-offs.",
+    "Incluir riscos, investimentos e plano de rollout.",
+    "Validar com Andreia antes de enviar para Sujash.",
+  ],
+  quickLinks: [
+    { label: "Plano 30·60·90", href: "/amazon-prep/interview-prep" },
+    { label: "Runbooks técnicos", href: "/amazon-prep/technical-deep-dive" },
+    { label: "Radar de mercado", href: "/amazon-prep/market-knowledge" },
+  ],
 };
 
 export const stakeholdersData = {
@@ -666,6 +700,11 @@ export const stakeholdersData = {
     { signal: "Risco de SLA ou incidente crítico", path: "Andreia imediatamente + PagerDuty + nota pós incidente." },
     { signal: "Mudança estratégica ou investimento", path: "Draft 6-pager → revisão com Sujash → fórum executivo." },
     { signal: "Dependência Oakberry", path: "Canal compartilhado + resumo diário até resolução." },
+  ],
+  relationshipSignals: [
+    "Andreia pergunta pelo próximo passo antes mesmo de você apresentar → confiança alta.",
+    "Sujash faz paralelos com outros países e pede replicação → mensagem escalável.",
+    "Oakberry compartilha dados de maneira proativa → parceria equilibrada.",
   ],
 };
 

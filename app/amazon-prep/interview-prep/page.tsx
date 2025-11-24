@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { operatingRhythmData } from "@/data/amazon/onboarding";
 
 import "../styles.css";
-const { cadenceRows, rampPlan, reviewKits, readinessList, commitments, readinessStatusTone } = operatingRhythmData;
+const { cadenceRows, rampPlan, reviewKits, readinessList, commitments, readinessStatusTone, reviewChecklist } =
+  operatingRhythmData;
 
 export default function OperatingRhythmPage() {
   return (
@@ -190,10 +191,9 @@ export default function OperatingRhythmPage() {
           <h3 className="amazon-prep-section-title">Checklist antes de cada review</h3>
         </div>
         <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-          <li>Validar métricas no Looker e anexar screenshots no doc de suporte.</li>
-          <li>Atualizar riscos/decisões do log compartilhado com Andreia.</li>
-          <li>Enviar agenda e materiais com antecedência mínima de 12h.</li>
-          <li>Registrar decisões tomadas em até 2h pós-meeting.</li>
+          {reviewChecklist.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
         </ol>
       </section>
     </AmazonPortalSection>

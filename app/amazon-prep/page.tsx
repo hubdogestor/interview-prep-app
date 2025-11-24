@@ -10,7 +10,20 @@ import { Progress } from "@/components/ui/progress";
 import { amazonHubData } from "@/data/amazon/onboarding";
 import { cn } from "@/lib/utils";
 
-const { jobInfo, modules, progressTracks, runwayActions, timeline, statusTone, statusLabel, stakeholders, metaCards } = amazonHubData;
+const {
+  jobInfo,
+  modules,
+  progressTracks,
+  runwayActions,
+  timeline,
+  statusTone,
+  statusLabel,
+  stakeholders,
+  metaCards,
+  heroMeta,
+  healthCheck,
+  docsInFlight,
+} = amazonHubData;
 
 export default function AmazonPrepPage() {
   return (
@@ -57,18 +70,7 @@ export default function AmazonPrepPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
-              {[{
-                label: "Escopo",
-                value: "LATAM Payment Ops",
-              },
-              {
-                label: "Metodologias",
-                value: "Lean · Six Sigma · Working Backwards",
-              },
-              {
-                label: "Foco",
-                value: "Onboarding + AI/ML",
-              }].map((meta) => (
+              {heroMeta.map((meta) => (
                 <div key={meta.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
                   <p className="text-[0.65rem] uppercase tracking-[0.35em] text-muted-foreground">{meta.label}</p>
                   <p className="text-lg font-semibold leading-snug">{meta.value}</p>
@@ -95,12 +97,10 @@ export default function AmazonPrepPage() {
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.35em] text-muted-foreground">
                 <LineChart className="size-4 text-primary" />
-                Health Check
+                {healthCheck.title}
               </div>
-              <p className="text-2xl font-semibold">Contexto 65% · Sistemas 40% · Resultados 35%</p>
-              <p className="text-sm text-muted-foreground">
-                Concluído discovery com stakeholders. Em andamento: fechamento dos alarmes críticos e primeira rodada de scorecards compartilhados.
-              </p>
+              <p className="text-2xl font-semibold">{healthCheck.summary}</p>
+              <p className="text-sm text-muted-foreground">{healthCheck.detail}</p>
             </CardContent>
           </Card>
         </div>
@@ -304,11 +304,11 @@ export default function AmazonPrepPage() {
               </div>
             </div>
             <div className="space-y-4">
-              {["6-Pager Payment Ops", "Plano 30·60·90", "Mapa de riscos PCI"].map((doc) => (
-                <div key={doc} className="flex items-center justify-between rounded-2xl border border-white/10 bg-pop/40 px-4 py-3">
-                  <p className="text-sm font-medium">{doc}</p>
+              {docsInFlight.map((doc) => (
+                <div key={doc.name} className="flex items-center justify-between rounded-2xl border border-white/10 bg-pop/40 px-4 py-3">
+                  <p className="text-sm font-medium">{doc.name}</p>
                   <Badge variant="outline" className="border-white/20 text-[0.65rem] uppercase tracking-[0.3em]">
-                    Draft
+                    {doc.status}
                   </Badge>
                 </div>
               ))}

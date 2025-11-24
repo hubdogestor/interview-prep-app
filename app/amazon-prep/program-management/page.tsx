@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { programOfficeData } from "@/data/amazon/onboarding";
 
 import "../styles.css";
-const { docPipelines, governance, kpiStacks, reportingCadence } = programOfficeData;
+const { docPipelines, governance, kpiStacks, reportingCadence, writingChecklist, quickLinks } = programOfficeData;
 
 export default function ProgramOfficePage() {
   return (
@@ -131,11 +131,9 @@ export default function ProgramOfficePage() {
           </CardHeader>
           <CardContent>
             <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Começar com o cliente (qual dor resolvemos?).</li>
-              <li>Listar métricas e fontes que comprovam o problema.</li>
-              <li>Descrever solução simples + trade-offs.</li>
-              <li>Incluir riscos, investimentos e plano de rollout.</li>
-              <li>Validar com Andreia antes de enviar para Sujash.</li>
+              {writingChecklist.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ol>
           </CardContent>
         </Card>
@@ -147,24 +145,14 @@ export default function ProgramOfficePage() {
           <h3 className="amazon-prep-section-title">Links rápidos</h3>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Badge asChild variant="outline">
-            <a href="/amazon-prep/interview-prep" className="inline-flex items-center gap-2 text-sm">
-              Plano 30·60·90
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-          </Badge>
-          <Badge asChild variant="outline">
-            <a href="/amazon-prep/technical-deep-dive" className="inline-flex items-center gap-2 text-sm">
-              Runbooks técnicos
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-          </Badge>
-          <Badge asChild variant="outline">
-            <a href="/amazon-prep/market-knowledge" className="inline-flex items-center gap-2 text-sm">
-              Radar de mercado
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-          </Badge>
+          {quickLinks.map((link) => (
+            <Badge key={link.href} asChild variant="outline">
+              <a href={link.href} className="inline-flex items-center gap-2 text-sm">
+                {link.label}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </Badge>
+          ))}
         </div>
       </section>
     </AmazonPortalSection>

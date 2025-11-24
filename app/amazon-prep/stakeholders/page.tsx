@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { stakeholdersData } from "@/data/amazon/onboarding";
 
 import "../styles.css";
-const { stakeholderProfiles, alignmentChecklist, escalationMatrix } = stakeholdersData;
+const { stakeholderProfiles, alignmentChecklist, escalationMatrix, relationshipSignals } = stakeholdersData;
 
 export default function StakeholdersPage() {
   return (
@@ -135,9 +135,9 @@ export default function StakeholdersPage() {
           </div>
         </div>
         <ul className="amazon-portal-list list-disc list-inside">
-          <li>Andreia pergunta pelo próximo passo antes mesmo de você apresentar → confiança alta.</li>
-          <li>Sujash faz paralelos com outros países e pede replicação → mensagem escalável.</li>
-          <li>Oakberry compartilha dados de maneira proativa → parceria equilibrada.</li>
+          {relationshipSignals.map((signal) => (
+            <li key={signal}>{signal}</li>
+          ))}
         </ul>
       </section>
     </AmazonPortalSection>

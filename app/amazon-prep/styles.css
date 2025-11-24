@@ -1,159 +1,268 @@
-@reference "tailwindcss";
-
 /* Amazon Prep - Enhanced Spacing & Typography */
 
-/* Improve card spacing */
 .amazon-prep-card .card-header {
-  @apply pb-6;
+  padding-bottom: 1.5rem;
 }
 
 .amazon-prep-card .card-content {
-  @apply pt-2;
+  padding-top: 0.5rem;
 }
 
-/* Better typography hierarchy */
 .amazon-prep-section-title {
-  @apply text-2xl font-bold mb-6;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
 }
 
 .amazon-prep-subsection-title {
-  @apply text-xl font-semibold text-primary mb-4;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
 }
 
-/* Content blocks with better spacing */
 .amazon-prep-content-block {
-  @apply p-5 border-2 rounded-lg hover:border-primary/30 transition-colors;
+  padding: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg, 0.5rem);
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.amazon-prep-content-block:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .amazon-prep-code-block {
-  @apply bg-muted p-4 rounded-lg text-sm font-mono;
+  background-color: var(--color-muted);
+  padding: 1rem;
+  border-radius: var(--radius-lg, 0.5rem);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
 }
 
-/* Lists with better spacing */
-.amazon-prep-list {
-  @apply space-y-3;
+.amazon-prep-list > * + * {
+  margin-top: 0.75rem;
 }
 
 .amazon-prep-list-item {
-  @apply text-base text-muted-foreground;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--color-muted-foreground);
 }
 
-/* Stats/metrics display */
 .amazon-prep-stat {
-  @apply p-5 border-2 rounded-lg space-y-2;
+  padding: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+.amazon-prep-stat > * + * {
+  margin-top: 0.5rem;
 }
 
 .amazon-prep-stat-label {
-  @apply text-sm font-medium text-muted-foreground;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
 }
 
 .amazon-prep-stat-value {
-  @apply text-2xl font-bold;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
 }
 
-/* Improved accordion items */
 .amazon-prep-accordion-item {
-  @apply border-2 rounded-lg px-6 data-[state=open]:border-primary/30 transition-colors mb-4;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-bottom: 1rem;
+  transition: border-color 150ms ease;
+}
+
+.amazon-prep-accordion-item[data-state="open"] {
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .amazon-prep-accordion-trigger {
-  @apply py-6 hover:no-underline;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  display: block;
+}
+
+.amazon-prep-accordion-trigger:hover {
+  text-decoration: none;
 }
 
 .amazon-prep-accordion-content {
-  @apply pt-2 pb-6;
+  padding-top: 0.5rem;
+  padding-bottom: 1.5rem;
 }
 
-/* Tab improvements */
 .amazon-prep-tabs-list {
-  @apply h-14;
+  height: 3.5rem;
 }
 
 .amazon-prep-tabs-trigger {
-  @apply text-base;
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
 
 .amazon-prep-tabs-content {
-  @apply space-y-6 mt-6;
+  margin-top: 1.5rem;
 }
 
-/* Shared onboarding portal layout */
+.amazon-prep-tabs-content > * + * {
+  margin-top: 1.5rem;
+}
+
 .amazon-portal-shell {
-  @apply container max-w-6xl py-10 px-6 space-y-10;
+  width: min(100%, 72rem);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2.5rem 1.5rem;
 }
 
-.amazon-portal-hero {
-  @apply space-y-4;
+.amazon-portal-shell > * + * {
+  margin-top: 2.5rem;
+}
+
+.amazon-portal-hero > * + * {
+  margin-top: 1rem;
 }
 
 .amazon-portal-back {
-  @apply inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-muted-foreground);
+  transition: color 150ms ease;
+}
+
+.amazon-portal-back:hover {
+  color: var(--color-primary);
 }
 
 .amazon-portal-kicker {
-  @apply text-xs uppercase tracking-[0.35em] text-muted-foreground;
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
 }
 
 .amazon-portal-title {
-  @apply text-4xl md:text-5xl font-display font-semibold;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  line-height: 1.2;
+  font-weight: 600;
+  font-family: var(--font-display, var(--font-sans));
 }
 
 .amazon-portal-description {
-  @apply text-lg text-muted-foreground max-w-3xl;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: var(--color-muted-foreground);
+  max-width: 48rem;
 }
 
 .amazon-portal-badge {
-  @apply text-[0.65rem] tracking-[0.3em] uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
 }
 
-.amazon-portal-body {
-  @apply space-y-8;
+.amazon-portal-body > * + * {
+  margin-top: 2rem;
 }
 
 .amazon-portal-grid {
-  @apply grid gap-4 md:grid-cols-2;
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .amazon-portal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .amazon-portal-card {
-  @apply rounded-2xl border border-white/10 bg-pop/40 p-5 space-y-3;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.04);
+  padding: 1.25rem;
+}
+
+.amazon-portal-card > * + * {
+  margin-top: 0.75rem;
 }
 
 .amazon-portal-card-title {
-  @apply text-base font-semibold;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .amazon-portal-chip {
-  @apply inline-flex items-center rounded-full border border-white/20 px-3 py-1 text-xs uppercase tracking-[0.3em];
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
 }
 
 .amazon-portal-list {
-  @apply space-y-2 text-sm text-muted-foreground;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-muted-foreground);
+}
+
+.amazon-portal-list > * + * {
+  margin-top: 0.5rem;
 }
 
 .amazon-portal-divider {
-  @apply h-px bg-white/10 my-4;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 1rem 0;
 }
 
 .amazon-portal-table {
-  @apply w-full text-sm;
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
 }
 
 .amazon-portal-table th {
-  @apply text-left text-muted-foreground font-medium pb-2;
+  text-align: left;
+  color: var(--color-muted-foreground);
+  font-weight: 500;
+  padding-bottom: 0.5rem;
 }
 
 .amazon-portal-table td {
-  @apply py-3 align-top border-t border-white/10;
+  padding: 0.75rem 0;
+  vertical-align: top;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .amazon-portal-status-done {
-  @apply text-emerald-300;
+  color: rgb(52, 211, 153);
 }
 
 .amazon-portal-status-risk {
-  @apply text-amber-300;
+  color: rgb(251, 191, 36);
 }
 
 .amazon-portal-status-blocked {
-  @apply text-rose-300;
+  color: rgb(244, 63, 94);
 }

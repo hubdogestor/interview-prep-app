@@ -240,6 +240,51 @@ export default function RolePage() {
               })}
             </div>
           </section>
+
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">Stakeholder Bridge</h2>
+              <p className="text-sm text-muted-foreground">Conecte cultura, domínio e ferramentas antes de qualquer review.</p>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-3">
+              {[{ label: "Culture OS", href: "/amz-pay-ops/culture", description: "Escolha narrativas e LPs que reforcem decisões" }, { label: "Domain Deep Dive", href: "/amz-pay-ops/domain", description: "Valide métricas e fluxos que suportem suas recomendações" }, { label: "Practice Prompts", href: "/questions", description: "Ensaios rápidos antes de WBR/MBR" }].map((link) => (
+                <Card key={link.label} className="flex h-full flex-col border-border/70">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">{link.label}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-sm text-muted-foreground flex-1">
+                    {link.description}
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    <Button asChild variant="ghost" className="px-0 text-sm text-primary justify-start">
+                      <Link href={link.href}>Abrir hub</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">Mechanism Alignment</h2>
+              <p className="text-sm text-muted-foreground">Checklist rápido para apresentar um mecanismo pronto.</p>
+            </div>
+            <Card className="border-border/70">
+              <CardContent className="grid gap-4 md:grid-cols-4 p-4 text-sm text-muted-foreground">
+                {[
+                  "Inputs: métricas e narrativas revisadas",
+                  "Owners: confirmados e disponíveis",
+                  "Risks: plano de COE pronto",
+                  "Follow-ups: enviar em 12h",
+                ].map((item) => (
+                  <div key={item} className="rounded-lg border bg-muted/40 px-3 py-2 leading-relaxed">
+                    {item}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
         </div>
       </AmazonHubShell>
     </DashboardPageLayout>

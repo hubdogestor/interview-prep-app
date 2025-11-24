@@ -227,6 +227,28 @@ export default function CulturePage() {
               ))}
             </div>
           </section>
+
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">Cultura em outros hubs</h2>
+              <p className="text-sm text-muted-foreground">Continue a jornada conectando cultura com domínio e execução.</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              {[{ label: "Domain Playbook", href: "/amz-pay-ops/domain", description: "Mapeie Auth Rate, CoP e Amazon Pay LATAM" }, { label: "PgM Toolkit", href: "/amz-pay-ops/role", description: "Artefatos, stakeholders e mecanismos" }, { label: "Practice Prompts", href: "/questions", description: "Ensaios contínuos para entrevistas e WBR" }].map((link) => (
+                <Card key={link.label} className="border-border/70">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">{link.label}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-sm text-muted-foreground">
+                    <p className="mb-2 leading-relaxed">{link.description}</p>
+                    <Button asChild variant="secondary" size="sm">
+                      <Link href={link.href}>Abrir hub</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
         </div>
       </AmazonHubShell>
     </DashboardPageLayout>

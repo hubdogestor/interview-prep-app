@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Gauge } from "lucide-react";
+import { ArrowLeft, Gauge, Radar } from "lucide-react";
 
 import { AmazonHubShell } from "@/components/amazon/hub-shell";
 import DashboardPageLayout from "@/components/dashboard/layout";
@@ -10,6 +10,34 @@ import { domainData } from "@/data/amazon/domain";
 
 export default function FundamentalsPage() {
   const { flow, players } = domainData.fundamentals;
+  const criticalSignals = [
+    {
+      label: "Auth Rate",
+      value: "97.1%",
+      meta: "Meta 98% · Priorizar emissores críticos",
+    },
+    {
+      label: "Latency P99",
+      value: "420 ms",
+      meta: "Monitorar variação em horários de pico",
+    },
+    {
+      label: "Chargebacks",
+      value: "0.21%",
+      meta: "Acima de 0.25% dispara COE imediato",
+    },
+  ];
+  const primerNotes = [
+    "Documente qual player aciona cada etapa e os SLAs",
+    "Mapeie quais adquirentes suportam fallback",
+    "Liste perguntas padrão para Tech (latência, retries)",
+  ];
+  const ownershipMap = [
+    { label: "Gateway", owner: "Tech Pods", focus: "Latency & retries" },
+    { label: "Adquirente", owner: "Vendor Mgmt", focus: "Rates & incidentes" },
+    { label: "Bandeira", owner: "Payments Strategy", focus: "Regulatórios" },
+    { label: "Emissor", owner: "Partner Ops", focus: "Playbooks por banco" },
+  ];
 
   return (
     <DashboardPageLayout
@@ -27,17 +55,44 @@ export default function FundamentalsPage() {
             </Link>
           </Button>
 
-        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Gauge className="size-5 text-primary flex-shrink-0" />
-              Latência importa
-            </CardTitle>
-            <CardDescription className="text-sm leading-relaxed">
-              Cada etapa abaixo tem proprietários distintos. Documente quem aciona quem e qual SLA deve ser medido.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <section className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Gauge className="size-5 text-primary flex-shrink-0" />
+                Latência importa
+              </CardTitle>
+              <CardDescription className="text-sm leading-relaxed">
+                Cada etapa abaixo tem proprietários distintos. Documente quem aciona quem e qual SLA deve ser medido.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-3">
+              {criticalSignals.map((signal) => (
+                <div key={signal.label} className="rounded-xl border border-primary/30 bg-background/80 p-3">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">{signal.label}</p>
+                  <p className="text-lg font-semibold">{signal.value}</p>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">{signal.meta}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/70">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                <Radar className="size-4" />
+                Primer rápido
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-xs text-muted-foreground">
+              {primerNotes.map((note) => (
+                <div key={note} className="rounded-lg border bg-muted/40 px-3 py-2 leading-relaxed">
+                  {note}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
 
         {/* Transaction Flow */}
           <section className="space-y-5">
@@ -89,6 +144,21 @@ export default function FundamentalsPage() {
               );
             })}
             </div>
+          </section>
+
+          <section className="space-y-5">
+            <h2 className="text-xl font-bold tracking-tight">Ownership Map</h2>
+            <Card className="border-border/70">
+              <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 p-4">
+                {ownershipMap.map((row) => (
+                  <div key={row.label} className="rounded-lg border bg-muted/40 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{row.label}</p>
+                    <p className="text-sm font-medium">{row.owner}</p>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">{row.focus}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </section>
         </div>
       </AmazonHubShell>

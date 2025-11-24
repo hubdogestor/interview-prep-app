@@ -1,6 +1,6 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
-import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 

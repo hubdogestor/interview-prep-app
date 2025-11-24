@@ -1,10 +1,334 @@
-/* eslint-disable react/no-unescaped-entities */
-
+import AmazonPortalSection from "@/components/amazon/portal-section";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-import AmazonPortalSection from "@/components/amazon/portal-section";
+import "../styles.css";
+
+type Principle = {
+  id: number;
+  title: string;
+  description: string;
+  color: string;
+  relevance: string;
+  keyPoints: string[];
+  starExample: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  };
+};
+
+const principles: Principle[] = [
+  {
+    id: 1,
+    title: "Customer Obsession",
+    description: "Comece por Andreia, Sujash e merchants: métricas de aprovação, NPS e segurança ancoram cada priorização.",
+    color: "bg-amber-500",
+    relevance: "North Star do Payment Ops",
+    keyPoints: [
+      "Transformar feedback do cliente em backlog acionável",
+      "Observar sinais de Oakberry e sellers antes de indicadores internos",
+      "Documentar aprendizados em WBR/PRFAQ",
+    ],
+    starExample: {
+      situation: "Oakberry reportou queda de 6pp em aprovação PIX durante almoço.",
+      task: "Isolar impacto real para evitar perda de receita.",
+      action: "Escutei o merchant ao vivo, coletei logs, montei task-force com Eng + Science e criei workaround temporário.",
+      result: "Recuperamos aprovação em 8h, reduzimos churn potencial de R$ 1.4M e adicionamos métricas de cliente no scorecard.",
+    },
+  },
+  {
+    id: 2,
+    title: "Ownership",
+    description: "Assuma scorecard LATAM end-to-end, mesmo quando depende de Engenharia, Finance ou parceiros externos.",
+    color: "bg-slate-600",
+    relevance: "Responsabilidade total",
+    keyPoints: [
+      "Resolver gaps sem esperar direcionamento",
+      "Conectar decisões locais a impactos globais",
+      "Registrar compromissos e follow-ups no log",
+    ],
+    starExample: {
+      situation: "Monitoramento de reconciliação estava com alertas falsos e ninguém era owner claro.",
+      task: "Tomar posse do processo e estabilizar em 2 semanas.",
+      action: "Mapeei fluxo ponta a ponta, reescrevi playbook, alinhei SLO com Finance e institui on-call compartilhado.",
+      result: "Alertas falsos caíram 78%, reconciliação diária passou de 86% para 99% e Andreia delegou o domínio oficialmente.",
+    },
+  },
+  {
+    id: 3,
+    title: "Invent and Simplify",
+    description: "Automatize rotinas (approval review, alarmes, status Oakberry) para liberar tempo estratégico.",
+    color: "bg-purple-500",
+    relevance: "Escala com menos atrito",
+    keyPoints: [
+      "Eliminar passos manuais no runbook",
+      "Usar IA/LLMs apenas onde há dados confiáveis",
+      "Compartilhar templates com outras regiões",
+    ],
+    starExample: {
+      situation: "Processo de RCA levava 5 dias e 12 stakeholders.",
+      task: "Criar mecanismo simples que coubesse no Friday Reset.",
+      action: "Desenhei formulário único com automação no Quip + webhook para Jira e dashboards no Looker.",
+      result: "Tempo médio caiu para 36h, Andreia usa o template em toda LATAM e India adotou igual.",
+    },
+  },
+  {
+    id: 4,
+    title: "Are Right, A Lot",
+    description: "Decisões sobre rollouts, mitigação e investimentos precisam equilibrar dados, faro e intuição técnica.",
+    color: "bg-blue-500",
+    relevance: "Credibilidade com VP",
+    keyPoints: [
+      "Testar hipóteses antes do WBR",
+      "Buscar disconfirming evidence",
+      "Atualizar narrativa quando fatos mudam",
+    ],
+    starExample: {
+      situation: "Discussão sobre investir em antifraude third-party vs. solução interna.",
+      task: "Emitir recomendação em 48h.",
+      action: "Rodamos análise de custo total, simulamos impacto no approval e entrevistei 3 parceiros.",
+      result: "Escolhemos modelo híbrido que economizou US$ 2.2M/ano e ganhou elogio do diretor financeiro.",
+    },
+  },
+  {
+    id: 5,
+    title: "Learn and Be Curious",
+    description: "Dedique horas semanais a AI/ML, Open Finance e regulações brasileiras para antecipar riscos.",
+    color: "bg-emerald-500",
+    relevance: "Atualização constante",
+    keyPoints: [
+      "Rodar deep dives mensais com Tech/Legal",
+      "Documentar aprendizados no Confluence",
+      "Trazer referências de Índia/EUA para LATAM",
+    ],
+    starExample: {
+      situation: "Time precisava de visão sobre algoritmos anti-fricção em PIX.",
+      task: "Aprender rápido e orientar Engenharia.",
+      action: "Estudei papers do BCB, conversei com India Payments e criei doc com 3 padrões arquiteturais.",
+      result: "Time implementou solução baseada em fecho criptográfico, reduzindo latência média em 14%.",
+    },
+  },
+  {
+    id: 6,
+    title: "Hire and Develop the Best",
+    description: "Elevar a barra em contratações e formalizar planos de desenvolvimento desde o onboarding.",
+    color: "bg-pink-500",
+    relevance: "Escala sustentável",
+    keyPoints: [
+      "Definir rubrica específica para Payment Ops",
+      "Promover mentoring cruzado com Andreia e Science",
+      "Criar pipeline para contractors críticos",
+    ],
+    starExample: {
+      situation: "Precisávamos dobrar headcount em 6 meses sem perder qualidade.",
+      task: "Conduzir hiring bar-raiser e plano de crescimento.",
+      action: "Atualizei rubrica, treinei entrevistadores e criei onboarding de 60 dias com buddy técnico.",
+      result: "Contratamos 5 PMs, retention 100% em 12 meses, dois promovidos a Senior.",
+    },
+  },
+  {
+    id: 7,
+    title: "Insist on the Highest Standards",
+    description: "Runbooks, PR/FAQ e alarmes precisam estar auditáveis e prontos para OP1 a qualquer momento.",
+    color: "bg-indigo-500",
+    relevance: "Qualidade operacional",
+    keyPoints: [
+      "Auditar documentação a cada sprint",
+      "Medir SLAs e corrigir desvios imediatamente",
+      "Evitar atalhos que criem dívida",
+    ],
+    starExample: {
+      situation: "SLA de disponibilidade era 99.5% e atendia contrato, mas caía em picos.",
+      task: "Elevar padrão para 99.95% antes da Black Friday.",
+      action: "Liderei revisão arquitetural, ativei multi-região e institui chaos game mensal.",
+      result: "BF passou com 0 incidentes críticos e uptime 99.97%.",
+    },
+  },
+  {
+    id: 8,
+    title: "Think Big",
+    description: "Desenhe visão LATAM para PIX automático, Oakberry e futura carteira Amazon",
+    color: "bg-cyan-500",
+    relevance: "Direção de 3 anos",
+    keyPoints: [
+      "Traduzir ambição em roadmap trimestral",
+      "Criar mecanismos replicáveis para outros países",
+      "Narrar a visão em docs curtos",
+    ],
+    starExample: {
+      situation: "Operação era reativa a incidentes.",
+      task: "Criar plataforma preditiva em 18 meses.",
+      action: "Desenhei roadmap trienal, garanti budget com Sujash e formei squad dedicado.",
+      result: "82% das rotinas automatizadas e 91% dos incidentes previstos antes de impactar clientes.",
+    },
+  },
+  {
+    id: 9,
+    title: "Bias for Action",
+    description: "Decisões reversíveis (roteamento, incentivos, limites) devem sair em <24h com telemetria.",
+    color: "bg-orange-500",
+    relevance: "Velocidade controlada",
+    keyPoints: [
+      "Definir guardrails de risco",
+      "Executar pilotos limitados",
+      "Medir impacto e reverter rápido",
+    ],
+    starExample: {
+      situation: "Nova regra do BCB precisava ser implementada em 45 dias.",
+      task: "Adequar stack sem parar o checkout.",
+      action: "Modelei MVP compliant, criei war room diário e lancei rollout progressivo (1→10→50→100%).",
+      result: "Regra ativa 7 dias antes do deadline, zero downtime e evitamos multa potencial.",
+    },
+  },
+  {
+    id: 10,
+    title: "Frugality",
+    description: "Cada melhoria precisa reduzir COGS ou liberar capacidade sem inflar headcount.",
+    color: "bg-lime-500",
+    relevance: "Custo por transação",
+    keyPoints: [
+      "Comparar build vs. buy continuamente",
+      "Reaproveitar assets da Índia/EUA",
+      "Criar métricas de payback",
+    ],
+    starExample: {
+      situation: "Ferramenta de analytics custaria R$ 450K/ano.",
+      task: "Criar alternativa 70% mais barata.",
+      action: "Combinei stack open-source + AWS gerenciado, com squad part-time.",
+      result: "Economia de 85% e dashboards customizados para Andreia.",
+    },
+  },
+  {
+    id: 11,
+    title: "Earn Trust",
+    description: "Transparência radical em riscos, erros e decisões fortalece relação com Andreia/Sujash.",
+    color: "bg-teal-500",
+    relevance: "Relacionamentos sólidos",
+    keyPoints: [
+      "Compartilhar planos de mitigação junto com problemas",
+      "Pedir feedback mensalmente",
+      "Fechar loops em até 24h",
+    ],
+    starExample: {
+      situation: "Migração de gateway atrasou 3 semanas e extrapolou budget.",
+      task: "Comunicar e recuperar confiança.",
+      action: "Montei doc franco com root causes, plano revisado e cadência semanal aberta.",
+      result: "Projeto recuperado, excesso de custo caiu para 8% e recebi elogio público do VP.",
+    },
+  },
+  {
+    id: 12,
+    title: "Dive Deep",
+    description: "Operar em múltiplos níveis — do PR/FAQ ao log de transação — para destravar investigações.",
+    color: "bg-rose-500",
+    relevance: "Diagnóstico rápido",
+    keyPoints: [
+      "Auditar métricas vs. anedotas",
+      "Ler dashboards e logs pessoalmente",
+      "Questionar suposições do time",
+    ],
+    starExample: {
+      situation: "Approval rate global parecia saudável, mas sellers reclamavam.",
+      task: "Encontrar discrepância real.",
+      action: "Analisei dados brutos, incluí timeouts e identifiquei bandeira específica às sextas.",
+      result: "Fix elevou aprovação real de 78% para 94% e evitou perda de R$ 2.8M/mês.",
+    },
+  },
+  {
+    id: 13,
+    title: "Have Backbone; Disagree and Commit",
+    description: "Desafie decisões com dados, documente trade-offs e comprometa-se totalmente pós-alinhamento.",
+    color: "bg-violet-500",
+    relevance: "Coragem + execução",
+    keyPoints: [
+      "Registrar discordâncias no decision log",
+      "Trazer alternativas concretas",
+      "Executar com excelência mesmo quando não era sua opção preferida",
+    ],
+    starExample: {
+      situation: "Marketing queria lançar parcelado em 4 semanas com alto risco.",
+      task: "Defender soft launch sem atrasar meta.",
+      action: "Escrevi doc com riscos quantificados e proposta híbrida; fui overruled e liderei o launch mesmo assim.",
+      result: "Feature saiu no prazo e riscos previstos foram mitigados em 72h graças aos planos preparados.",
+    },
+  },
+  {
+    id: 14,
+    title: "Deliver Results",
+    description: "Conectar inputs críticos (approval, custo, SLA) a entregas trimestrais mesmo com ruído de mercado.",
+    color: "bg-emerald-500",
+    relevance: "Expectativa básica",
+    keyPoints: [
+      "Desdobrar metas em iniciativas",
+      "Monitorar progresso semanalmente",
+      "Remover bloqueios rápido",
+    ],
+    starExample: {
+      situation: "Meta Q4 exigia -15% custo/txn e +3pp approval em meio à recessão.",
+      task: "Entregar ambos resultados.",
+      action: "Renegociei MDR, implementei roteamento inteligente e reduzi falsos positivos.",
+      result: "Custo caiu 17.3%, approval +3.3pp e evitamos R$ 4.2M em despesas.",
+    },
+  },
+  {
+    id: 15,
+    title: "Strive to be Earth's Best Employer",
+    description: "Manter o squad saudável, com rituais de energia e plano de crescimento claro.",
+    color: "bg-sky-500",
+    relevance: "Time sustentável",
+    keyPoints: [
+      "Monitorar carga e eNPS",
+      "Criar mecanismos de reconhecimento",
+      "Garantir espaço para aprendizado",
+    ],
+    starExample: {
+      situation: "Burnout elevado após ciclo de incidentes.",
+      task: "Recuperar moral sem perder entrega.",
+      action: "Implementei no-meeting Friday, rotação de guardas e programa de reconhecimento trimestral.",
+      result: "eNPS subiu de 3.2 para 8.4 e produtividade +35%.",
+    },
+  },
+  {
+    id: 16,
+    title: "Success and Scale Bring Broad Responsibility",
+    description: "Considerar impactos secundários (inclusão financeira, compliance, dados) antes de automatizar.",
+    color: "bg-yellow-600",
+    relevance: "Responsabilidade regional",
+    keyPoints: [
+      "Medir fairness e impacto social",
+      "Criar salvaguardas de IA",
+      "Compartilhar aprendizados com o ecossistema",
+    ],
+    starExample: {
+      situation: "Modelo antifraude reduziu perdas mas penalizou clientes de baixa renda.",
+      task: "Corrigir viés sem abrir brechas.",
+      action: "Adicionei features alternativas, human-in-loop e métricas de fairness por região.",
+      result: "Falsos positivos -67% e aprovação de novos clientes +28% mantendo segurança.",
+    },
+  },
+];
+
+const firstQuarterFocus: Record<number, string> = {
+  1: "Mapear três jornadas prioritárias (Prime, Oakberry, Marketplace) e converter feedback em melhorias mensuráveis.",
+  2: "Assumir ownership do scorecard LATAM e liderar comunicações mesmo quando o tema cruza outras áreas.",
+  3: "Entregar pelo menos uma automação que reduza esforço operacional com métricas claras de impacto.",
+  4: "Criar doc semanal com hipóteses e dados para decisões rápidas sobre incidentes ou investimentos.",
+  5: "Reservar horas recorrentes para estudos de AI/ML e compartilhar aprendizados com o time.",
+  6: "Montar plano de desenvolvimento para cada membro do squad e preparar pipeline de talentos.",
+  7: "Atualizar runbooks e SLAs garantindo auditoria impecável e zero dívida operacional escondida.",
+  8: "Desenhar visão LATAM para pagamentos instantâneos e conectar com OKRs regionais.",
+  9: "Estabelecer mecanismo de decisão rápida (<24h) para incidentes reversíveis, com métricas pós-ação.",
+ 10: "Revisar contratos/processos e propor pelo menos um ajuste que reduza custo por transação.",
+ 11: "Implementar rituais de transparência (logs de decisões, follow-ups rápidos) e pedir feedback ativo.",
+ 12: "Rodar auditorias surpresa em métricas críticas (approval, reconciliação) para evitar gaps.",
+ 13: "Documentar desacordos relevantes, alinhar trade-offs e registrar compromissos após decisão.",
+ 14: "Vincular cada iniciativa a inputs-chave e reportar progresso semanalmente com métricas.",
+ 15: "Configurar rituais de energia do time (retros, office hours) e monitorar carga de trabalho.",
+ 16: "Mapear impactos secundários de automações/AI e criar métricas de fairness e compliance.",
+};
 
 export default function LeadershipPrinciplesPage() {
   return (
@@ -27,7 +351,7 @@ export default function LeadershipPrinciplesPage() {
             </div>
             <div>
               <Badge variant="outline">2 · Aplicar princípio</Badge>
-              <p className="text-sm text-muted-foreground mt-2">Escolha o comportamento dominante (ex: Dive Deep) e detalhe ações.</p>
+              <p className="text-sm text-muted-foreground mt-2">Escolha o comportamento dominante e detalhe ações concretas.</p>
             </div>
             <div>
               <Badge variant="outline">3 · Registrar impacto</Badge>
@@ -69,10 +393,18 @@ export default function LeadershipPrinciplesPage() {
                         Ver detalhes
                       </AccordionTrigger>
                       <AccordionContent className="amazon-prep-accordion-content text-sm space-y-2 text-muted-foreground">
-                        <p><strong>Situation:</strong> {principle.starExample.situation}</p>
-                        <p><strong>Task:</strong> {principle.starExample.task}</p>
-                        <p><strong>Action:</strong> {principle.starExample.action}</p>
-                        <p><strong>Result:</strong> {principle.starExample.result}</p>
+                        <p>
+                          <strong>Situation:</strong> {principle.starExample.situation}
+                        </p>
+                        <p>
+                          <strong>Task:</strong> {principle.starExample.task}
+                        </p>
+                        <p>
+                          <strong>Action:</strong> {principle.starExample.action}
+                        </p>
+                        <p>
+                          <strong>Result:</strong> {principle.starExample.result}
+                        </p>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -83,453 +415,5 @@ export default function LeadershipPrinciplesPage() {
         ))}
       </div>
     </AmazonPortalSection>
-  );
-}
-      situation: "Time de payments operations precisava crescer de 3 para 8 pessoas em 6 meses mantendo alta qualidade.",
-      task: "Liderar processo de hiring e estabelecer programa de desenvolvimento.",
-      action: "Criei rubrica de avaliação específica (skills técnicos + cultural fit), treinei 5 interviewers, participei de 23 entrevistas, implementei onboarding estruturado de 60 dias. Estabeleci mentoring 1:1, rotação de projetos e training budget de R$ 5K/pessoa.",
-      result: "Contratamos 5 pessoas excelentes (retention 100% após 12 meses), 2 promovidos em 18 meses. eNPS do time subiu de 7.2 para 8.9. Time entregou 40% mais projetos com mesma qualidade.",
-    },
-    interviewQuestions: [
-      "Descreva seu processo de hiring. Como você garante que está elevando o bar?",
-      "Conte sobre alguém que você desenvolveu que foi promovido ou teve crescimento significativo.",
-    ],
-  },
-  {
-    id: 7,
-    title: "Insist on the Highest Standards",
-    description: "Leaders have relentlessly high standards. Many people may think these standards are unreasonably high. Leaders are continually raising the bar and drive their teams to deliver high quality products, services, and processes.",
-    color: "bg-indigo-500",
-    relevance: "Essencial para Payment Operations",
-    keyPoints: [
-      "Standards altíssimos de qualidade",
-      "Não aceitar mediocridade",
-      "Elevar o bar continuamente",
-    ],
-    starExample: {
-      situation: "Sistema de pagamento tinha SLA de 99.5% uptime, que estava sendo cumprido, mas ainda causava problemas em momentos críticos.",
-      task: "Elevar padrão para 99.95% (3x menos downtime permitido).",
-      action: "Implementei arquitetura multi-region active-active, automated failover em <30s, chaos engineering mensal, monitoring em 5 camadas, runbooks para 100% dos cenários de incidente. Estabeleci cultura de blameless post-mortems.",
-      result: "Alcançamos 99.97% uptime (melhor que target). Downtime anual caiu de 43h para 2.6h. Durante Black Friday, absorvemos pico de 12x volume normal sem incidente. Time recebeu reconhecimento de VP.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma vez que você recusou aceitar um resultado que outros consideravam 'bom o suficiente'.",
-      "Descreva como você elevou os standards de qualidade em um projeto ou processo.",
-    ],
-  },
-  {
-    id: 8,
-    title: "Think Big",
-    description: "Thinking small is a self-fulfilling prophecy. Leaders create and communicate a bold direction that inspires results. They think differently and look around corners for ways to serve customers.",
-    color: "bg-cyan-500",
-    relevance: "Para visão de LATAM",
-    keyPoints: [
-      "Pensar grande e ousado",
-      "Visão de longo prazo",
-      "Inspirar o time com direção clara",
-    ],
-    starExample: {
-      situation: "Payment ops da empresa era reativa e manual, gerenciando problemas conforme apareciam.",
-      task: "Transformar de operação reativa para plataforma preditiva e automatizada.",
-      action: "Propus roadmap de 18 meses: Fase 1 - Observabilidade total, Fase 2 - Automação de 80% das operações rotineiras, Fase 3 - ML preditivo para prevenir problemas. Evangelizei visão com stakeholders, consegui budget de R$ 3.2M, montei squad dedicado.",
-      result: "Após 18 meses: 82% de automação, MTTR reduzido 73%, prevenimos 91% dos incidentes antes de impactar clientes. Operação se tornou benchmark interno. Modelo replicado em 3 outras regiões.",
-    },
-    interviewQuestions: [
-      "Qual é a coisa mais ambiciosa que você já liderou? Qual foi o resultado?",
-      "Descreva uma visão de longo prazo que você criou e como você a executou.",
-    ],
-  },
-  {
-    id: 9,
-    title: "Bias for Action",
-    description: "Speed matters in business. Many decisions and actions are reversible and do not need extensive study. We value calculated risk taking.",
-    color: "bg-orange-500",
-    relevance: "Critical em ambiente dinâmico",
-    keyPoints: [
-      "Agir rapidamente",
-      "Decisões reversíveis não precisam de análise exaustiva",
-      "Aceitar risco calculado",
-    ],
-    starExample: {
-      situation: "Nova regulamentação do Banco Central seria implementada em 45 dias, impactando nosso fluxo de pagamentos PIX.",
-      task: "Adequar sistema em tempo recorde sem parar operação.",
-      action: "Organizei war room, daily standups, decisões rápidas sobre trade-offs. Priorizei MVP que atendia regulação com 'tech debt' documentado para refatorar depois. Deploy incremental em produção testando com 1%, 10%, 50%, 100% do tráfego.",
-      result: "Entregamos em 38 dias (7 dias de buffer). Zero downtime. Compliance 100% desde dia 1 da nova regra. Refatoração de tech debt feita em sprint seguinte. Salvamos potencial multa de R$ 500K e mantivemos operação sem interrupções.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma vez que você teve que tomar uma decisão importante rapidamente com informação incompleta.",
-      "Descreva um risco calculado que você tomou. O resultado foi positivo ou negativo? O que você aprendeu?",
-    ],
-  },
-  {
-    id: 10,
-    title: "Frugality",
-    description: "Accomplish more with less. Constraints breed resourcefulness, self-sufficiency, and invention. There are no extra points for growing headcount, budget size, or fixed expense.",
-    color: "bg-lime-500",
-    relevance: "Para otimização de custos",
-    keyPoints: [
-      "Fazer mais com menos",
-      "Constraints geram criatividade",
-      "Não há pontos extras por budget maior",
-    ],
-    starExample: {
-      situation: "Precisávamos de solução de analytics avançado para payment operations mas vendor quotava R$ 450K/ano.",
-      task: "Encontrar alternativa com 1/3 do custo sem comprometer capacidades essenciais.",
-      action: "Construímos solução interna usando ferramentas open-source (Grafana, Prometheus, ELK Stack) + AWS managed services (Athena, QuickSight). 2 engenheiros part-time por 6 semanas. Documentação detalhada para manutenção.",
-      result: "Custo total: R$ 89K (setup) + R$ 65K/ano (infra). Economia de 85% no primeiro ano. Bonus: customização infinita, dados sensíveis ficam internos, time desenvolveu expertise. Solução ainda em uso 3 anos depois.",
-    },
-    interviewQuestions: [
-      "Descreva uma situação onde você conseguiu um resultado significativo com recursos muito limitados.",
-      "Conte sobre uma vez que você encontrou uma forma criativa de economizar custos sem sacrificar qualidade.",
-    ],
-  },
-  {
-    id: 11,
-    title: "Earn Trust",
-    description: "Leaders listen attentively, speak candidly, and treat others respectfully. They are vocally self-critical, even when doing so is awkward or embarrassing. Leaders do not believe their or their team's body odor smells of perfume.",
-    color: "bg-teal-500",
-    relevance: "Para stakeholder management",
-    keyPoints: [
-      "Ouvir atentamente",
-      "Falar com franqueza",
-      "Ser auto-crítico",
-    ],
-    starExample: {
-      situation: "Projeto de migração de gateway de pagamento que eu liderava atrasou 3 semanas e estava 30% acima do budget.",
-      task: "Comunicar situação para stakeholders e recuperar confiança.",
-      action: "Agendei meeting com todos stakeholders, apresentei análise honesta dos problemas (incluindo meus erros de planning), compartilhei plano de recuperação detalhado, estabeleci checkpoint semanais com métricas transparentes, pedi feedback sobre meu leadership.",
-      result: "Recuperamos timeline, finalizamos apenas 8% acima do budget. Stakeholders apreciaram transparência - recebi feedback que 'aumentou confiança ao invés de diminuir'. Promoted para Senior PM 6 meses depois.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma vez que você teve que admitir um erro significativo. Como você lidou?",
-      "Descreva uma situação onde você teve que dar feedback difícil a alguém mais sênior.",
-    ],
-  },
-  {
-    id: 12,
-    title: "Dive Deep",
-    description: "Leaders operate at all levels, stay connected to the details, audit frequently, and are skeptical when metrics and anecdotes differ. No task is beneath them.",
-    color: "bg-rose-500",
-    relevance: "Para troubleshooting complexo",
-    keyPoints: [
-      "Conhecer os detalhes",
-      "Auditar e questionar métricas",
-      "Nenhuma tarefa é inferior",
-    ],
-    starExample: {
-      situation: "Taxa de autorização estava reportada em 92% (dentro do target) mas merchants reclamavam de problemas.",
-      task: "Investigar discrepância entre métrica e feedback qualitativo.",
-      action: "Mergulhei nos dados brutos: descobri que métrica excluía timeouts (15% das transações). Analisei logs linha por linha, identifiquei que problema era específico de uma bandeira + issuer específico às sextas 18-20h. Colaborei com engenheiro para entender root cause (retry logic defeituoso).",
-      result: "Fix implementado aumentou taxa real de 78% para 94%. Mudamos definição de métrica para incluir timeouts (transparência). Evitamos perda estimada de R$ 2.8M/mês em transações. Merchant satisfaction score aumentou 23 pontos.",
-    },
-    interviewQuestions: [
-      "Descreva a situação mais complexa que você teve que investigar em detalhe. Como você abordou?",
-      "Conte sobre uma vez que você descobriu que uma métrica estava enganando a organização.",
-    ],
-  },
-  {
-    id: 13,
-    title: "Have Backbone; Disagree and Commit",
-    description: "Leaders are obligated to respectfully challenge decisions when they disagree, even when doing so is uncomfortable or exhausting. Leaders have conviction and are tenacious. They do not compromise for the sake of social cohesion. Once a decision is determined, they commit wholly.",
-    color: "bg-violet-500",
-    relevance: "Para decisões críticas",
-    keyPoints: [
-      "Desafiar decisões respeitosamente",
-      "Ter convicção",
-      "Comprometer totalmente após decisão",
-    ],
-    starExample: {
-      situation: "Liderança queria lançar nova feature de pagamento parcelado em 4 semanas para campanha de marketing, mas eu via riscos técnicos sérios.",
-      task: "Expressar discordância sem bloquear progresso.",
-      action: "Preparei documento detalhado: riscos identificados (fraud, compliance, tech debt), impact quantificado, alternativa de soft launch com 10% dos usuários. Apresentei em meeting com VP, defendi posição com dados. Fui overruled. Comprometi 100%: mobilizei time, trabalhamos noites/finais de semana, implementei todos mitigations possíveis.",
-      result: "Lançamos no prazo. Tivemos problema de fraude previsto (mas mitigado em 72h devido a preparação). Feature gerou R$ 8M em GMV no primeiro mês. VP reconheceu publicamente que meus concerns eram válidos e preparação salvou o launch.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma vez que você discordou fortemente de seu gestor. Como você lidou?",
-      "Descreva uma situação onde você teve que executar uma decisão com a qual não concordava. Como você se comprometeu?",
-    ],
-  },
-  {
-    id: 14,
-    title: "Deliver Results",
-    description: "Leaders focus on the key inputs for their business and deliver them with the right quality and in a timely fashion. Despite setbacks, they rise to the occasion and never settle.",
-    color: "bg-emerald-500",
-    relevance: "Core expectation",
-    keyPoints: [
-      "Focar em inputs críticos",
-      "Entregar com qualidade e no prazo",
-      "Superar obstáculos",
-    ],
-    starExample: {
-      situation: "Q4 com meta de reduzir custo por transação em 15% e aumentar approval rate em 3pp, mas economia estava em recessão afetando mix.",
-      task: "Entregar ambas as metas mesmo com headwinds.",
-      action: "Desdobrei metas em iniciativas: 1) Renegociação de MDR com top 3 adquirentes (R$ 380K/mês economia), 2) Roteamento inteligente por approval rate histórico (+1.8pp), 3) Otimização de retries (+0.9pp), 4) Redução de fraude falso-positivo (+0.6pp). Weekly tracking com time, ajustes quinzenais.",
-      result: "Fim Q4: Custo/transação -17.3% (superou meta), Approval rate +3.3pp (superou meta). Adicionais: R$ 4.2M em custo evitado, R$ 12M em revenue adicional. Time recebeu stock grant award. 2 iniciativas viraram padrão global.",
-    },
-    interviewQuestions: [
-      "Conte sobre a meta mais difícil que você teve que entregar. Como você a alcançou?",
-      "Descreva uma situação onde você teve múltiplos obstáculos mas ainda assim entregou resultados.",
-    ],
-  },
-  {
-    id: 15,
-    title: "Strive to be Earth's Best Employer",
-    description: "Leaders work every day to create a safer, more productive, higher performing, more diverse, and more just work environment. They lead with empathy, have fun at work, and make it easy for others to have fun.",
-    color: "bg-sky-500",
-    relevance: "Para criar time de alta performance",
-    keyPoints: [
-      "Criar ambiente seguro e inclusivo",
-      "Liderar com empatia",
-      "Tornar trabalho gratificante",
-    ],
-    starExample: {
-      situation: "Time de payment ops com burnout alto (2 saídas em 3 meses), projetos atrasando, moral baixo.",
-      task: "Reverter situação e criar ambiente de alta performance sustentável.",
-      action: "Conduzi 1:1s com cada pessoa (listening tour), identifiquei problemas: sobrecarga, falta de reconhecimento, trabalho repetitivo. Implementei: automação de 60% tarefas manuais, rotação de projetos, recognition program mensal, flex time, no-meeting Fridays, budget para team building, career development plans individualizados.",
-      result: "Em 6 meses: eNPS de 3.2 → 8.4, attrition zerado, delivery melhorou 35%. Team ganhou 'Best Team Culture Award' interno. 3 pessoas promovidas. Múltiplos candidatos citaram 'cultura do time' como razão para aceitar oferta.",
-    },
-    interviewQuestions: [
-      "Como você cria um ambiente onde as pessoas fazem seu melhor trabalho?",
-      "Conte sobre uma vez que você identificou e resolveu um problema de moral/cultura no time.",
-    ],
-  },
-  {
-    id: 16,
-    title: "Success and Scale Bring Broad Responsibility",
-    description: "We started in a garage, but we're not there anymore. We are big, we impact the world, and we are far from perfect. We must be humble and thoughtful about even the secondary effects of our actions.",
-    color: "bg-amber-500",
-    relevance: "Para impacto em LATAM",
-    keyPoints: [
-      "Pensar em impactos secundários",
-      "Ser humilde",
-      "Responsabilidade social",
-    ],
-    starExample: {
-      situation: "Implementação de novo algoritmo de fraud detection reduziu fraude mas aumentou falsos positivos em comunidades de baixa renda (sem histórico de crédito).",
-      task: "Balance segurança com inclusão financeira.",
-      action: "Reconheci problema após analisar dados demográficos. Trabalhei com data science para criar modelo com features alternativas (padrão de compra, device, etc) além de score de crédito. Implementei review manual human-in-loop para casos borderline. Criei métricas de fairness (análise por faixa de renda/região).",
-      result: "Redução de 67% em falsos positivos para grupo afetado, mantendo mesma eficácia contra fraude real. Aumentamos aprovação de primeiras compras em 28%. Documentamos approach e compartilhamos com indústria via paper técnico. Feature tornou-se padrão de fairness interno.",
-    },
-    interviewQuestions: [
-      "Descreva uma situação onde você considerou impactos secundários ou não-intencionais de uma decisão.",
-      "Como você balance objetivos de negócio com responsabilidade social?",
-    ],
-  },
-];
-
-const firstQuarterFocus: Record<number, string> = {
-  1: "Mapear três jornadas prioritárias (Prime, Oakberry, Marketplace) e converter feedback em melhorias mensuráveis.",
-  2: "Assumir ownership do scorecard LATAM e liderar comunicações mesmo quando o tema cruza outras áreas.",
-  3: "Entregar pelo menos uma automação que reduza esforço operacional com métricas claras de impacto.",
-  4: "Criar doc semanal com hipóteses e dados para decisões rápidas sobre incidentes ou investimentos.",
-  5: "Reservar horas recorrentes para estudos de AI/ML e compartilhar aprendizados com o time.",
-  6: "Montar plano de desenvolvimento para cada membro do squad e preparar pipeline de talentos.",
-  7: "Atualizar runbooks e SLAs garantindo auditoria impecável e zero dívida operacional escondida.",
-  8: "Desenhar visão LATAM para pagamentos instantâneos e conectar com OKRs regionais.",
-  9: "Estabelecer mecanismo de decisão rápida (<24h) para incidentes reversíveis, com métricas pós-ação.",
- 10: "Revisar contratos/processos e propor pelo menos um ajuste que reduza custo por transação.",
- 11: "Implementar rituais de transparência (logs de decisões, follow-ups rápidos) e pedir feedback ativo.",
- 12: "Rodar auditorias surpresa em métricas críticas (approval, reconciliação) para evitar gaps.",
- 13: "Documentar desacordos relevantes, alinhar trade-offs e registrar compromissos após decisão.",
- 14: "Vincular cada iniciativa a inputs-chave e reportar progresso semanalmente com métricas.",
- 15: "Configurar rituais de energia do time (retros, office hours) e monitorar carga de trabalho.",
- 16: "Mapear impactos secundários de automações/AI e criar métricas de fairness e compliance.",
-};
-
-export default function LeadershipPrinciplesPage() {
-  return (
-    <div className="container max-w-6xl py-8 space-y-6">
-      <Link href="/amazon-prep" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <ArrowLeftIcon className="h-4 w-4 mr-2" />
-        Voltar para Amazon Prep
-      </Link>
-
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Leadership Principles</h1>
-        <p className="text-muted-foreground text-lg">
-          Os 16 princípios de liderança da Amazon com exemplos STAR
-        </p>
-      </div>
-
-      <Card className="border-2 border-primary/20">
-        <CardHeader>
-          <CardTitle>Como usar os Leadership Principles</CardTitle>
-          <CardDescription>Guia prático para entrevistas na Amazon</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-              <h3 className="font-semibold mb-2">📖 Para Estudo</h3>
-              <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
-                <li>Memorize os 16 princípios</li>
-                <li>Prepare 2-3 histórias para cada</li>
-                <li>Use o método STAR sempre</li>
-                <li>Quantifique resultados</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-              <h3 className="font-semibold mb-2">💬 Na Entrevista</h3>
-              <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
-                <li>Identifique qual LP está sendo testado</li>
-                <li>Seja específico, não genérico</li>
-                <li>Admita erros quando relevante</li>
-                <li>Mostre aprendizado e crescimento</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="p-4 border rounded-lg">
-            <h3 className="font-semibold mb-2">Método STAR</h3>
-            <div className="grid grid-cols-4 gap-3 text-sm">
-              <div>
-                <Badge className="mb-1 bg-blue-500">S</Badge>
-                <div className="text-xs text-muted-foreground">
-                  <strong>Situation:</strong> Contexto específico
-                </div>
-              </div>
-              <div>
-                <Badge className="mb-1 bg-green-500">T</Badge>
-                <div className="text-xs text-muted-foreground">
-                  <strong>Task:</strong> Seu objetivo/responsabilidade
-                </div>
-              </div>
-              <div>
-                <Badge className="mb-1 bg-orange-500">A</Badge>
-                <div className="text-xs text-muted-foreground">
-                  <strong>Action:</strong> O que VOCÊ fez (detalhe)
-                </div>
-              </div>
-              <div>
-                <Badge className="mb-1 bg-purple-500">R</Badge>
-                <div className="text-xs text-muted-foreground">
-                  <strong>Result:</strong> Resultado quantificado
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Os 16 Princípios</h2>
-        <Accordion type="single" collapsible className="space-y-2">
-          {principles.map((principle) => (
-            <AccordionItem key={principle.id} value={`principle-${principle.id}`} className="border rounded-lg px-4">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-3 text-left">
-                  <Badge className={`${principle.color} shrink-0`}>
-                    {principle.id}
-                  </Badge>
-                  <div>
-                    <div className="font-semibold text-lg">{principle.title}</div>
-                    <div className="text-xs text-muted-foreground">{principle.relevance}</div>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="space-y-4 pt-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm italic">{principle.description}</p>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-2">🎯 Pontos-Chave</h4>
-                  <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
-                    {principle.keyPoints.map((point, idx) => (
-                      <li key={idx}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="p-4 border-2 border-primary/20 rounded-lg bg-gradient-to-br from-primary/5 to-transparent">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Badge variant="outline">Exemplo STAR</Badge>
-                  </h4>
-                  <div className="space-y-3 text-sm">
-                    <div className="p-3 bg-background rounded border-l-4 border-blue-500">
-                      <div className="font-semibold mb-1 flex items-center gap-2">
-                        <Badge className="bg-blue-500">S</Badge>
-                        Situation
-                      </div>
-                      <p className="text-muted-foreground">{principle.starExample.situation}</p>
-                    </div>
-                    <div className="p-3 bg-background rounded border-l-4 border-green-500">
-                      <div className="font-semibold mb-1 flex items-center gap-2">
-                        <Badge className="bg-green-500">T</Badge>
-                        Task
-                      </div>
-                      <p className="text-muted-foreground">{principle.starExample.task}</p>
-                    </div>
-                    <div className="p-3 bg-background rounded border-l-4 border-orange-500">
-                      <div className="font-semibold mb-1 flex items-center gap-2">
-                        <Badge className="bg-orange-500">A</Badge>
-                        Action
-                      </div>
-                      <p className="text-muted-foreground">{principle.starExample.action}</p>
-                    </div>
-                    <div className="p-3 bg-background rounded border-l-4 border-purple-500">
-                      <div className="font-semibold mb-1 flex items-center gap-2">
-                        <Badge className="bg-purple-500">R</Badge>
-                        Result
-                      </div>
-                      <p className="text-muted-foreground">{principle.starExample.result}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-2">❓ Perguntas Típicas</h4>
-                  <div className="space-y-2">
-                    {principle.interviewQuestions.map((question, idx) => (
-                      <div key={idx} className="p-3 border rounded-lg text-sm">
-                        {question}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Dicas Finais para Entrevistas</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid md:grid-cols-2 gap-3">
-            <div className="p-3 border rounded-lg border-green-500/50 bg-green-500/5">
-              <h4 className="font-semibold mb-2 text-green-600">✓ Faça</h4>
-              <ul className="text-sm space-y-1 list-disc list-inside">
-                <li>Seja específico com números e datas</li>
-                <li>Fale sobre VOCÊ, não "nós" genérico</li>
-                <li>Admita erros e mostre aprendizado</li>
-                <li>Conecte suas histórias aos LPs</li>
-                <li>Prepare perguntas inteligentes</li>
-              </ul>
-            </div>
-            <div className="p-3 border rounded-lg border-red-500/50 bg-red-500/5">
-              <h4 className="font-semibold mb-2 text-red-600">✗ Evite</h4>
-              <ul className="text-sm space-y-1 list-disc list-inside">
-                <li>Respostas vagas ou genéricas</li>
-                <li>Culpar outros por fracassos</li>
-                <li>Histórias sem resultado mensurável</li>
-                <li>Tentar encaixar LP forçadamente</li>
-                <li>Mentir ou exagerar</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <h4 className="font-semibold mb-2">💡 Pro Tip: Bar Raiser</h4>
-            <p className="text-sm text-muted-foreground">
-              Uma das suas entrevistas será com um "Bar Raiser" - um entrevistador sênior de outra área que tem 
-              poder de veto. Eles são treinados especificamente para avaliar cultural fit e LPs. Trate todas as 
-              entrevistas com máxima seriedade, mas saiba que o Bar Raiser é especialmente crítico.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
   );
 }

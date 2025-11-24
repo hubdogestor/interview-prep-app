@@ -37,22 +37,22 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [targetDate]);
 
   return (
-    <div className="grid grid-cols-4 gap-4 text-center">
-      <div className="flex flex-col">
-        <span className="text-4xl font-bold font-mono">{timeLeft.days}</span>
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">Days</span>
+    <div className="grid grid-cols-4 gap-2 text-center">
+      <div className="flex flex-col gap-1">
+        <span className="text-2xl md:text-3xl font-bold font-mono tabular-nums">{timeLeft.days}</span>
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Days</span>
       </div>
-      <div className="flex flex-col">
-        <span className="text-4xl font-bold font-mono">{timeLeft.hours}</span>
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">Hours</span>
+      <div className="flex flex-col gap-1">
+        <span className="text-2xl md:text-3xl font-bold font-mono tabular-nums">{timeLeft.hours}</span>
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Hours</span>
       </div>
-      <div className="flex flex-col">
-        <span className="text-4xl font-bold font-mono">{timeLeft.minutes}</span>
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">Mins</span>
+      <div className="flex flex-col gap-1">
+        <span className="text-2xl md:text-3xl font-bold font-mono tabular-nums">{timeLeft.minutes}</span>
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Mins</span>
       </div>
-      <div className="flex flex-col">
-        <span className="text-4xl font-bold font-mono">{timeLeft.seconds}</span>
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">Secs</span>
+      <div className="flex flex-col gap-1">
+        <span className="text-2xl md:text-3xl font-bold font-mono tabular-nums">{timeLeft.seconds}</span>
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Secs</span>
       </div>
     </div>
   );

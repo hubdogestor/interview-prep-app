@@ -22,8 +22,8 @@ export default function MechanismsPage() {
         description: "Rituais de gestão e controle.",
       }}
     >
-      <div className="space-y-6">
-        <Button asChild variant="ghost" className="pl-0">
+      <div className="space-y-8">
+        <Button asChild variant="ghost" className="pl-0 text-sm">
           <Link href="/amz-pay-ops/role">
             <ArrowLeft className="mr-2 size-4" />
             Voltar para Toolkit
@@ -31,36 +31,36 @@ export default function MechanismsPage() {
         </Button>
 
         <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Timer className="size-5 text-primary" />
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Timer className="size-5 text-primary flex-shrink-0" />
               Ritmo operacional
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm leading-relaxed">
               Adicione todos os mecanismos ao seu calendário e defina checklist (inputs/outputs) antes de aceitar convites.
             </CardDescription>
           </CardHeader>
         </Card>
 
-        <div className="grid gap-6">
+        <div className="grid gap-5">
           {mechanisms.map((mech, i) => (
             <Card key={i} className="border-border/70">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="size-5 text-primary" />
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between gap-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <FileText className="size-5 text-primary flex-shrink-0" />
                     {mech.name}
                   </CardTitle>
-                  <Badge variant="outline" className="rounded-full text-[10px]">
+                  <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0.5 flex-shrink-0">
                     {cadence[mech.name] ?? ""}
                   </Badge>
                 </div>
-                <CardDescription>{mech.desc}</CardDescription>
+                <CardDescription className="text-sm">{mech.desc}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-                  <span className="mb-1 block text-sm font-semibold text-primary">Dica prática</span>
-                  <p className="text-sm text-muted-foreground">{mech.tip}</p>
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <span className="mb-1.5 block text-xs font-semibold text-primary">Dica prática</span>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{mech.tip}</p>
                 </div>
               </CardContent>
             </Card>

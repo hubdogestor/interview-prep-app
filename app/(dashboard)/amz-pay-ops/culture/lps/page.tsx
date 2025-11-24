@@ -16,7 +16,7 @@ export default function LPsPage() {
       }}
     >
       <div className="space-y-8">
-        <Button asChild variant="ghost" className="pl-0">
+        <Button asChild variant="ghost" className="pl-0 text-sm">
           <Link href="/amz-pay-ops/culture">
             <ArrowLeft className="mr-2 size-4" />
             Voltar para Cultura
@@ -24,34 +24,34 @@ export default function LPsPage() {
         </Button>
 
         <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="size-5 text-primary" />
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Star className="size-5 text-primary flex-shrink-0" />
               Como usar este painel
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm leading-relaxed">
               Escolha 4 LPs para serem seu &quot;core&quot; e mapeie histórias recentes. Releia semanalmente antes de entrevistas internas, WBR e mecanismos.
             </CardDescription>
           </CardHeader>
         </Card>
 
-        <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {cultureData.lps.map((lp, index) => (
             <Card key={index} className="flex h-full flex-col border-border/70 transition-all hover:-translate-y-1 hover:border-primary/50">
-              <CardHeader>
-                <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              <CardHeader className="pb-4">
+                <div className="mb-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                   <span>Princípio #{index + 1}</span>
-                  <Badge variant="secondary" className="rounded-full">Ops Lens</Badge>
+                  <Badge variant="secondary" className="rounded-full text-[10px] px-2 py-0.5">Ops Lens</Badge>
                 </div>
-                <CardTitle className="text-lg">{lp.title}</CardTitle>
-                <CardDescription className="mt-2 text-sm leading-relaxed">
+                <CardTitle className="text-base mb-2">{lp.title}</CardTitle>
+                <CardDescription className="text-sm leading-relaxed">
                   &quot;{lp.description}&quot;
                 </CardDescription>
               </CardHeader>
-              <CardContent className="mt-auto pt-0">
-                <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
-                  <span className="font-semibold text-primary block mb-1">Aplicação em Ops</span>
-                  {lp.opsApplication}
+              <CardContent className="mt-auto pt-0 pb-4">
+                <div className="rounded-xl border bg-muted/40 p-3 text-sm leading-relaxed">
+                  <span className="font-semibold text-primary block mb-1.5 text-xs">Aplicação em Ops</span>
+                  <span className="text-xs">{lp.opsApplication}</span>
                 </div>
               </CardContent>
             </Card>

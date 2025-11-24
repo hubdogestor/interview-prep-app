@@ -22,19 +22,19 @@ export default function DomainPage() {
         description: hero.subtitle,
       }}
     >
-      <div className="space-y-10">
-        <section className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+      <div className="space-y-8">
+        <section className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
           <Card className="border-border/70">
-            <CardHeader>
-              <CardTitle className="text-2xl">Playbook de domínio</CardTitle>
-              <CardDescription className="text-base leading-relaxed">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl">Playbook de domínio</CardTitle>
+              <CardDescription className="text-sm leading-relaxed">
                 {hero.description}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-3 md:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {domainSignals.map((signal) => (
-                  <div key={signal} className="rounded-lg border bg-muted/40 px-3 py-2 text-sm font-medium text-muted-foreground">
+                  <div key={signal} className="rounded-lg border bg-muted/40 px-3 py-2.5 text-xs font-medium text-muted-foreground leading-relaxed">
                     {signal}
                   </div>
                 ))}
@@ -43,12 +43,12 @@ export default function DomainPage() {
           </Card>
 
           <Card className="border-primary/30 bg-gradient-to-br from-primary/10 via-background to-background">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Radar className="size-5 text-primary" />
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Radar className="size-5 text-primary flex-shrink-0" />
                 Radar de riscos
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-sm leading-relaxed">
                 Atualize semanalmente os riscos por produto (Wallet, BNPL, Amazon One) e amarre correções ao roadmap.
               </CardDescription>
             </CardHeader>
@@ -56,7 +56,7 @@ export default function DomainPage() {
         </section>
 
         <section>
-          <div className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {sections.map((section) => {
             const Icon = section.icon;
             return (
@@ -65,15 +65,15 @@ export default function DomainPage() {
                   className="flex flex-col overflow-hidden border-border/70 transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
                 >
                   <div className={cn("h-1.5 w-full", section.bgColor.replace("/10", ""))}></div>
-                  <CardHeader className="flex-1">
-                    <div className={cn("mb-4 flex size-12 items-center justify-center rounded-xl", section.bgColor, section.color)}>
+                  <CardHeader className="flex-1 pb-4">
+                    <div className={cn("mb-3 flex size-12 items-center justify-center rounded-xl flex-shrink-0", section.bgColor, section.color)}>
                       <Icon className="size-6" />
                     </div>
-                    <CardTitle className="text-base">{section.title}</CardTitle>
-                    <CardDescription className="leading-relaxed text-sm">{section.description}</CardDescription>
+                    <CardTitle className="text-sm font-semibold mb-2">{section.title}</CardTitle>
+                    <CardDescription className="text-sm leading-relaxed line-clamp-3">{section.description}</CardDescription>
                   </CardHeader>
-                  <CardFooter className="mt-auto pt-0">
-                    <Button asChild variant="secondary" className="w-full group">
+                  <CardFooter className="mt-auto pt-0 pb-4">
+                    <Button asChild variant="secondary" className="w-full group text-sm">
                       <Link href={section.href}>
                         Acessar trilha
                         <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />

@@ -46,150 +46,150 @@ type ModuleTile = {
 
 const modules: ModuleTile[] = [
   {
-    id: "technical-deep-dive",
-    title: "Technical Deep Dive",
+    id: "operating-rhythm",
+    title: "Operating Rhythm",
     description:
-      "Domine a arquitetura de sistemas de pagamento, AWS services essenciais, segurança PCI-DSS e integração de APIs.",
-    icon: Cpu,
-    topics: 4,
-    status: "Completo",
-    href: "/amazon-prep/technical-deep-dive",
-    focus: "Sistemas · AWS · PCI",
-    gradient: "from-sky-500/20 via-sky-500/5 to-transparent",
-    accent: "text-sky-200 border-sky-400/30",
-  },
-  {
-    id: "market-knowledge",
-    title: "Market Knowledge",
-    description:
-      "Entenda o ecossistema completo de pagamentos no Brasil e LATAM: PIX, cartões, fintechs e regulamentação.",
-    icon: Globe2,
-    topics: 4,
-    status: "Completo",
-    href: "/amazon-prep/market-knowledge",
-    focus: "PIX · fintechs · regulação",
-    gradient: "from-emerald-400/20 via-emerald-500/5 to-transparent",
-    accent: "text-emerald-200 border-emerald-400/30",
-  },
-  {
-    id: "program-management",
-    title: "Program Management",
-    description:
-      "Aprenda as metodologias Amazon, KPIs críticos de pagamentos e frameworks Lean/Six Sigma para excelência operacional.",
-    icon: ClipboardList,
+      "Cadência semanal, 30·60·90 e rituais LIVE com Andreia/Sujash para manter o pulso da operação.",
+    icon: Target,
     topics: 3,
-    status: "Completo",
-    href: "/amazon-prep/program-management",
-    focus: "Working Backwards · KPIs",
-    gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
-    accent: "text-purple-200 border-purple-400/30",
+    status: "Em curso",
+    href: "/amazon-prep/interview-prep",
+    focus: "30·60·90 · cadência",
+    gradient: "from-indigo-500/25 via-indigo-500/5 to-transparent",
+    accent: "text-indigo-200 border-indigo-400/30",
   },
   {
     id: "stakeholders",
-    title: "Stakeholders",
+    title: "Stakeholder Playbooks",
     description:
-      "Conheça profundamente seus futuros gestores: Andreia Guarino e Sujash Biswas. Background, estilo de liderança e perguntas estratégicas.",
+      "Expectativas, estilo de decisão e rotinas de comunicação para Andreia, Sujash e parceiros Oakberry.",
     icon: Users2,
-    topics: 2,
-    status: "Completo",
+    topics: 3,
+    status: "Atualizado",
     href: "/amazon-prep/stakeholders",
-    focus: "Andreia · Sujash",
+    focus: "Andreia · Sujash · Oakberry",
     gradient: "from-amber-400/25 via-amber-400/5 to-transparent",
     accent: "text-amber-100 border-amber-300/30",
   },
   {
-    id: "leadership-principles",
-    title: "Leadership Principles",
+    id: "systems-tooling",
+    title: "Systems & Tooling",
     description:
-      "Os 16 princípios que definem a cultura Amazon. Cada um com exemplos STAR estruturados e perguntas típicas de entrevista.",
-    icon: Star,
-    topics: 16,
-    status: "Completo",
-    href: "/amazon-prep/leadership-principles",
-    focus: "LPs · narrativas",
-    gradient: "from-rose-500/20 via-rose-500/5 to-transparent",
-    accent: "text-rose-200 border-rose-400/30",
+      "Arquitetura AWS, alarmes críticos, runbooks e padrões de integração para Payment Ops LATAM.",
+    icon: Cpu,
+    topics: 4,
+    status: "Live",
+    href: "/amazon-prep/technical-deep-dive",
+    focus: "AWS · Resiliência",
+    gradient: "from-sky-500/20 via-sky-500/5 to-transparent",
+    accent: "text-sky-200 border-sky-400/30",
   },
   {
-    id: "interview-prep",
-    title: "Interview Preparation",
+    id: "market-intelligence",
+    title: "Market Intelligence",
     description:
-      "Preparação final com mock interviews por Leadership Principle, perguntas técnicas de payment ops e plano para os primeiros 90 dias.",
-    icon: Target,
-    topics: 3,
-    status: "Completo",
-    href: "/amazon-prep/interview-prep",
-    focus: "Mock · 90 days",
-    gradient: "from-indigo-500/25 via-indigo-500/5 to-transparent",
-    accent: "text-indigo-200 border-indigo-400/30",
+      "Radar contínuo de PIX, cartões, fintechs e regulação para guiar roadmaps e narrativas de expansão.",
+    icon: Globe2,
+    topics: 4,
+    status: "Atual",
+    href: "/amazon-prep/market-knowledge",
+    focus: "PIX · Open Finance",
+    gradient: "from-emerald-400/20 via-emerald-500/5 to-transparent",
+    accent: "text-emerald-200 border-emerald-400/30",
+  },
+  {
+    id: "program-office",
+    title: "Program Office",
+    description:
+      "Documentos, KPIs e governança: PR/FAQ, 6-pagers, scorecards e ciclos de decisão regionais.",
+    icon: ClipboardList,
+    topics: 4,
+    status: "Em escrita",
+    href: "/amazon-prep/program-management",
+    focus: "Docs · KPIs",
+    gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
+    accent: "text-purple-200 border-purple-400/30",
+  },
+  {
+    id: "leadership-playbook",
+    title: "Leadership Playbook",
+    description:
+      "Como ativar cada Leadership Principle nos primeiros 90 dias, com sinais, riscos e métricas.",
+    icon: Star,
+    topics: 16,
+    status: "Live",
+    href: "/amazon-prep/leadership-principles",
+    focus: "LPs · operações",
+    gradient: "from-rose-500/20 via-rose-500/5 to-transparent",
+    accent: "text-rose-200 border-rose-400/30",
   },
 ];
 
 const progressTracks = [
   {
-    label: "Estrutura Base",
-    detail: "Roteiro, frameworks e arquitetura do material",
-    value: 100,
+    label: "Contexto & Pessoas",
+    detail: "Stakeholders, narrativas e mapa de decisão",
+    value: 65,
     tone: "from-emerald-400/30 via-transparent to-transparent",
   },
   {
-    label: "Conteúdo Principal",
-    detail: "Narrativas, docs de apoio e métricas",
-    value: 0,
+    label: "Sistemas & Runbooks",
+    detail: "Alarmes, integrações e playbooks",
+    value: 40,
     tone: "from-sky-400/30 via-transparent to-transparent",
   },
   {
-    label: "Preparação Prática",
-    detail: "Mock interviews, drills e simulações",
-    value: 0,
+    label: "Resultados & Aprendizado",
+    detail: "KPIs, cadência de review e PR/FAQ",
+    value: 35,
     tone: "from-purple-500/30 via-transparent to-transparent",
   },
 ];
 
-const quickWins = [
+const runwayActions = [
   {
-    title: "Leadership Principles Review",
-    description: "Atualizar as 16 narrativas STAR com métricas frescas",
-    href: "/amazon-prep/leadership-principles",
-    tag: "LP",
-  },
-  {
-    title: "Mock Interview · Payment Ops",
-    description: "Simular perguntas técnicas sobre SLAs, PCI e automações",
-    href: "/amazon-prep/interview-prep",
-    tag: "Mock",
-  },
-  {
-    title: "Stakeholder Profiles",
-    description: "Refinar discovery questions para Andreia e Sujash",
+    title: "Planejar reviews com Andreia",
+    description: "Fechar pauta dos rituais semanais e definir SLAs de resposta.",
     href: "/amazon-prep/stakeholders",
     tag: "People",
   },
   {
-    title: "Technical Deep Dive",
-    description: "Revisar diagramas e playbooks de resiliência",
+    title: "Publicar scorecard LATAM",
+    description: "Conectar dashboards de approval rate e custo por transação.",
+    href: "/amazon-prep/program-management",
+    tag: "KPI",
+  },
+  {
+    title: "Atualizar playbook PIX",
+    description: "Adicionar PIX Automático, NFC e impactos de Open Finance.",
+    href: "/amazon-prep/market-knowledge",
+    tag: "Radar",
+  },
+  {
+    title: "Testar alarmes críticos",
+    description: "Rodar game day com runbooks de incidentes e failovers.",
     href: "/amazon-prep/technical-deep-dive",
-    tag: "Tech",
+    tag: "Ops",
   },
 ];
 
 const timeline = [
   {
-    label: "Semana 01",
-    focus: "Fundamentos técnicos",
-    deliverable: "Mapear arquitetura atual + riscos de escala",
+    label: "Semana 01-02",
+    focus: "Imersão & relacionamentos",
+    deliverable: "1:1s com Andreia, Sujash e parceiros Oakberry",
     status: "done",
   },
   {
-    label: "Semana 02",
-    focus: "Stakeholders & KPIs",
-    deliverable: "Discovery questions + métricas para LATAM",
+    label: "Semana 03-06",
+    focus: "Sistemas e KPIs",
+    deliverable: "Auditar alarmes críticos + consolidar scorecard",
     status: "in-progress",
   },
   {
-    label: "Semana 03",
-    focus: "Mock Interviews",
-    deliverable: "LPs, payment ops drills e plano 90 dias",
+    label: "Semana 07-12",
+    focus: "Roadmap & PR/FAQ",
+    deliverable: "Publicar plano trimestral com narrativas aprovadas",
     status: "up-next",
   },
 ];
@@ -211,15 +211,22 @@ const stakeholders = [
     name: "Andreia Guarino",
     title: "Sr. Manager · LATAM Payment Ops",
     signal:
-      "Busca automação, redução de custo operacional e playbooks defensáveis para auditores.",
+      "Prioriza eficiência operacional, Six Sigma e ciclos semanais de decisão com dados.",
     anchor: "Andreia",
   },
   {
     name: "Sujash Biswas",
     title: "Head LATAM Payments",
     signal:
-      "Foco em métricas de escala regional, AWS-first mindset e visão de AI/ML.",
+      "Olha para escala regional, replicabilidade e como LATAM influencia roadmaps globais.",
     anchor: "Sujash",
+  },
+  {
+    name: "Equipe Oakberry",
+    title: "Parceiro estratégico",
+    signal:
+      "Precisa de visibilidade sobre rollouts, SLAs e integrações conjuntas com Amazon Pay.",
+    anchor: "Oak",
   },
 ];
 
@@ -230,22 +237,22 @@ const metaCards: Array<{
   footnote?: string;
 }> = [
   {
-    label: "Timeline",
-    value: "Nov · Jan",
+    label: "Ramp Plan",
+    value: "30 · 60 · 90",
     icon: CalendarDays,
-    footnote: "Semana 02 inicia discovery com Andreia",
+    footnote: "Semana 05 review com Andreia",
   },
   {
     label: "Stakeholders",
-    value: "Andreia · Sujash",
+    value: "Andreia · Sujash · Oak",
     icon: Users2,
-    footnote: "Alinhar perguntas abertas antes do mock",
+    footnote: "OKRs compartilhados por sprint",
   },
   {
     label: "Parceria",
     value: jobInfo.partnership,
     icon: ShieldCheck,
-    footnote: "Contrato estratégico com Oakberry",
+    footnote: "Modelo Oakberry + Payment Ops",
   },
 ];
 
@@ -274,17 +281,17 @@ export default function AmazonPrepPage() {
                 Program Manager · {jobInfo.company}
               </p>
               <h1 className="text-4xl sm:text-5xl font-display leading-tight">
-                Mission Control da preparação do Payment Business Operation
+                Mission Control do onboarding e operação do Payment Business Operation
               </h1>
               <p className="text-base text-muted-foreground">
-                Base única para frameworks, roteiros e indicadores que sustentam o loop Amazon. Design inspirado no dashboard MONKY para manter ritmo moderno, minimalista e consistente com o restante do app.
+                Hub para decisões pós-assinatura: rituais, stakeholders, sistemas e narrativas que mantêm a operação LATAM em ritmo Amazon. Tudo sincronizado com o que Andreia e Sujash esperam nas primeiras 12 semanas.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-4">
               <Button size="xl" asChild>
                 <Link href="/amazon-prep/interview-prep">
-                  Abrir roteiro final
+                  Abrir plano 30·60·90
                   <ArrowUpRight className="size-4" />
                 </Link>
               </Button>
@@ -304,7 +311,7 @@ export default function AmazonPrepPage() {
               },
               {
                 label: "Foco",
-                value: "Transformação com AI/ML",
+                value: "Onboarding + AI/ML",
               }].map((meta) => (
                 <div key={meta.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
                   <p className="text-[0.65rem] uppercase tracking-[0.35em] text-muted-foreground">{meta.label}</p>
@@ -334,9 +341,9 @@ export default function AmazonPrepPage() {
                 <LineChart className="size-4 text-primary" />
                 Health Check
               </div>
-              <p className="text-2xl font-semibold">0% conteúdo · 0% prática</p>
+              <p className="text-2xl font-semibold">Contexto 65% · Sistemas 40% · Resultados 35%</p>
               <p className="text-sm text-muted-foreground">
-                Conteúdo principal e preparação prática aguardando input das descobertas com stakeholders.
+                Concluído discovery com stakeholders. Em andamento: fechamento dos alarmes críticos e primeira rodada de scorecards compartilhados.
               </p>
             </CardContent>
           </Card>
@@ -350,7 +357,7 @@ export default function AmazonPrepPage() {
             <h2 className="text-3xl font-display">Trilha de progresso</h2>
           </div>
           <Badge variant="outline" className="border-white/30 text-[0.65rem] uppercase tracking-[0.3em]">
-            Sprint atual · Mock Interview
+            Sprint atual · Operação
           </Badge>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -431,15 +438,15 @@ export default function AmazonPrepPage() {
           <CardContent className="p-6 space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Sprints de foco</p>
-                <h3 className="text-2xl font-display">Próximas ações</h3>
+                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Runway imediato</p>
+                <h3 className="text-2xl font-display">Blocos prioritários</h3>
               </div>
               <Badge variant="outline" className="border-white/20 text-[0.65rem] uppercase tracking-[0.35em]">
-                Prioridade alta
+                Semana atual
               </Badge>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
-              {quickWins.map((action) => (
+              {runwayActions.map((action) => (
                 <Link
                   key={action.title}
                   href={action.href}
@@ -498,8 +505,8 @@ export default function AmazonPrepPage() {
           <CardContent className="p-6 space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Timeline tática</p>
-                <h3 className="text-2xl font-display">Runway até o loop</h3>
+                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Ramp plan</p>
+                <h3 className="text-2xl font-display">Runway até o primeiro OP1</h3>
               </div>
               <Badge variant="outline" className="border-white/30 text-[0.65rem] uppercase tracking-[0.3em]">
                 Atualizado 23·11·2025
@@ -536,12 +543,12 @@ export default function AmazonPrepPage() {
             <div className="flex items-center gap-3">
               <Layers3 className="size-5 text-primary" />
               <div>
-                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Playbooks essenciais</p>
-                <h3 className="text-xl font-display">Documentos críticos</h3>
+                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Docs em andamento</p>
+                <h3 className="text-xl font-display">Narrativas e playbooks</h3>
               </div>
             </div>
             <div className="space-y-4">
-              {["6-Pager Payment Ops", "Plano 90 dias", "Mapa de riscos PCI"].map((doc) => (
+              {["6-Pager Payment Ops", "Plano 30·60·90", "Mapa de riscos PCI"].map((doc) => (
                 <div key={doc} className="flex items-center justify-between rounded-2xl border border-white/10 bg-pop/40 px-4 py-3">
                   <p className="text-sm font-medium">{doc}</p>
                   <Badge variant="outline" className="border-white/20 text-[0.65rem] uppercase tracking-[0.3em]">

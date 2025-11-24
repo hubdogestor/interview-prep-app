@@ -1,135 +1,90 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const principles = [
-  {
-    id: 1,
-    title: "Customer Obsession",
-    description: "Leaders start with the customer and work backwards. They work vigorously to earn and keep customer trust. Although leaders pay attention to competitors, they obsess over customers.",
-    color: "bg-red-500",
-    relevance: "Critical para Payment Ops",
-    keyPoints: [
-      "Começar pelo cliente, não pela tecnologia",
-      "Trabalhar 'backwards' das necessidades do cliente",
-      "Medir sucesso pelo impacto no cliente",
-    ],
-    starExample: {
-      situation: "Cliente relatando alta taxa de falhas no checkout durante Black Friday no e-commerce anterior.",
-      task: "Investigar e resolver problemas de performance que afetavam conversão.",
-      action: "Implementei monitoramento em tempo real, identifiquei gargalos na API de pagamento, otimizei conexões com gateway e criei fallback automático para processadores secundários.",
-      result: "Taxa de sucesso aumentou de 87% para 96%, resultando em R$ 2.3M adicional em GMV durante o evento. NPS de checkout melhorou 15 pontos.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma vez em que você teve que escolher entre o que era mais fácil tecnicamente e o que era melhor para o cliente.",
-      "Descreva uma situação onde você usou dados de clientes para mudar completamente a direção de um projeto.",
-    ],
-  },
-  {
-    id: 2,
-    title: "Ownership",
-    description: "Leaders are owners. They think long term and don't sacrifice long-term value for short-term results. They act on behalf of the entire company, beyond just their own team.",
-    color: "bg-blue-500",
-    relevance: "Essencial para Program Managers",
-    keyPoints: [
-      "Pensar no longo prazo, não apenas no trimestre",
-      "Agir em nome da empresa inteira",
-      "Nunca dizer 'não é minha responsabilidade'",
-    ],
-    starExample: {
-      situation: "Notei que nossa taxa de chargeback estava aumentando 0.3% ao mês, mas não estava no escopo do meu projeto atual.",
-      task: "Apesar de não ser minha responsabilidade direta, sabia que impactava toda a operação e a receita.",
-      action: "Investiguei causas-raiz, descobri que 60% dos chargebacks vinham de produtos não entregues devido a problema de integração com logística. Coordenei com 4 times diferentes, criei task force, implementei alertas proativos para clientes.",
-      result: "Redução de 45% em chargebacks em 3 meses, economia de R$ 480K/mês. Solução foi adotada como padrão para toda empresa.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma vez em que você tomou ownership de algo que não era formalmente sua responsabilidade.",
-      "Descreva um trade-off entre resultado de curto prazo vs longo prazo que você teve que fazer.",
-    ],
-  },
-  {
-    id: 3,
-    title: "Invent and Simplify",
-    description: "Leaders expect and require innovation and invention from their teams and always find ways to simplify. They are externally aware, look for new ideas from everywhere, and are not limited by 'not invented here.'",
-    color: "bg-purple-500",
-    relevance: "Core para transformação com AI/ML",
-    keyPoints: [
-      "Inovar constantemente",
-      "Simplificar processos complexos",
-      "Estar aberto a ideias de qualquer lugar",
-    ],
-    starExample: {
-      situation: "Processo de reconciliação manual de pagamentos tomava 4 horas/dia da equipe financeira, com 8-10% de erro.",
-      task: "Automatizar e simplificar o processo reduzindo tempo e erros.",
-      action: "Desenvolvi solução usando RPA + Machine Learning: bot baixava arquivos automaticamente, ML classificava transações ambíguas (treinado com dados históricos), sistema gerava relatório de exceções apenas. Piloto em 2 semanas, iterações baseadas em feedback.",
-      result: "Tempo reduzido para 20 minutos/dia, erros caíram para 0.8%. Equipe remanejada para análise estratégica. Solução custou 15% do valor de vendor tradicional.",
-    },
-    interviewQuestions: [
-      "Descreva uma inovação que você introduziu que simplificou significativamente um processo.",
-      "Conte sobre uma vez que você pegou uma ideia de outra indústria/empresa e adaptou para seu contexto.",
-    ],
-  },
-  {
-    id: 4,
-    title: "Are Right, A Lot",
-    description: "Leaders are right a lot. They have strong judgment and good instincts. They seek diverse perspectives and work to disconfirm their beliefs.",
-    color: "bg-green-500",
-    relevance: "Crítico para decisões estratégicas",
-    keyPoints: [
-      "Tomar decisões corretas consistentemente",
-      "Buscar perspectivas diversas",
-      "Questionar suas próprias crenças",
-    ],
-    starExample: {
-      situation: "Time queria implementar nova solução de fraud detection de vendor conhecido, mas eu tinha ressalvas sobre fit com nosso contexto.",
-      task: "Validar ou refutar minha intuição antes de decisão de R$ 800K/ano.",
-      action: "Organizei POC de 2 semanas com 3 vendors diferentes (incluindo o favorito do time). Testei com dados reais, envolvi 6 stakeholders de diferentes áreas, rodei análise quantitativa. Descobri que vendor 'favorito' tinha 12% falsos positivos no nosso perfil vs 3% do alternativo.",
-      result: "Escolhemos alternativa que economizou R$ 240K/ano e teve melhor performance (redução de 68% em fraude vs 41% da alternativa inicial). Time reconheceu valor de validação data-driven.",
-    },
-    interviewQuestions: [
-      "Conte sobre uma decisão importante onde você estava inicialmente errado, mas mudou de ideia com base em dados.",
-      "Descreva uma situação onde sua intuição estava contrária ao consenso, mas você estava correto.",
-    ],
-  },
-  {
-    id: 5,
-    title: "Learn and Be Curious",
-    description: "Leaders are never done learning and always seek to improve themselves. They are curious about new possibilities and act to explore them.",
-    color: "bg-yellow-500",
-    relevance: "Fundamental em tech/payments",
-    keyPoints: [
-      "Aprender constantemente",
-      "Curiosidade sobre novas tecnologias",
-      "Melhoramento contínuo",
-    ],
-    starExample: {
-      situation: "Amazon usa intensivamente AI/ML mas eu tinha conhecimento limitado em ML aplicado a pagamentos.",
-      task: "Desenvolver expertise rapidamente para contribuir efetivamente.",
-      action: "Fiz 3 cursos online (AWS ML Specialty, Fraud Detection with ML, Google's ML Crash Course), li 15+ papers acadêmicos sobre payment fraud, implementei 2 projetos práticos, participei de 4 conferências sobre payments. Criei knowledge base interno documentando aprendizados.",
-      result: "Em 6 meses, propus e liderei implementação de modelo de ML para otimizar roteamento de transações que aumentou approval rate em 2.3%. Treinei 8 colegas. Convidado para palestrar em evento interno.",
-    },
-    interviewQuestions: [
-      "Qual foi a última coisa nova e significativa que você aprendeu? Como você a aplicou?",
-      "Conte sobre uma vez que seu aprendizado autodirigido levou a um resultado de negócio mensurável.",
-    ],
-  },
-  {
-    id: 6,
-    title: "Hire and Develop the Best",
-    description: "Leaders raise the performance bar with every hire and promotion. They recognize exceptional talent, and willingly move them throughout the organization.",
-    color: "bg-pink-500",
-    relevance: "Para crescimento do time",
-    keyPoints: [
-      "Contratar acima do bar",
-      "Desenvolver talentos",
-      "Reconhecer e promover os melhores",
-    ],
-    starExample: {
+import AmazonPortalSection from "@/components/amazon/portal-section";
+
+export default function LeadershipPrinciplesPage() {
+  return (
+    <AmazonPortalSection
+      title="Leadership Playbook"
+      description="Guia para aplicar os 16 Leadership Principles durante o onboarding no Payment Business Operation. Cada princípio vem com exemplos reais, sinais e como ativá-lo nas primeiras 12 semanas."
+      kicker="LPs em operação"
+      updatedAt="23·11·2025"
+    >
+      <Card className="amazon-portal-card">
+        <div className="flex flex-col gap-2">
+          <h3 className="amazon-prep-section-title">Como usar</h3>
+          <p className="text-sm text-muted-foreground">
+            Antes de cada decisão ou ritual, valide quais princípios estão em jogo, quais métricas provam o impacto e o que precisa ser documentado para Andreia e Sujash.
+          </p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div>
+              <Badge variant="outline">1 · Preparar contexto</Badge>
+              <p className="text-sm text-muted-foreground mt-2">Use dados e sinais de cliente para ancorar a conversa.</p>
+            </div>
+            <div>
+              <Badge variant="outline">2 · Aplicar princípio</Badge>
+              <p className="text-sm text-muted-foreground mt-2">Escolha o comportamento dominante (ex: Dive Deep) e detalhe ações.</p>
+            </div>
+            <div>
+              <Badge variant="outline">3 · Registrar impacto</Badge>
+              <p className="text-sm text-muted-foreground mt-2">Documente o resultado no log de decisões e conecte ao scorecard.</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid gap-4">
+        {principles.map((principle) => (
+          <Card key={principle.id} className="border-white/10 bg-pop/40">
+            <CardHeader>
+              <div className="flex items-center gap-3 flex-wrap">
+                <Badge className={`${principle.color} text-white`}>{principle.title}</Badge>
+                <span className="text-sm text-muted-foreground">{principle.relevance}</span>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">{principle.description}</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="amazon-portal-card">
+                  <p className="amazon-portal-card-title">Como aparece no dia a dia</p>
+                  <ul className="amazon-portal-list list-disc list-inside">
+                    {principle.keyPoints.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="amazon-portal-card">
+                  <p className="amazon-portal-card-title">Foco nos primeiros 90 dias</p>
+                  <p className="text-sm text-muted-foreground">{firstQuarterFocus[principle.id]}</p>
+                </div>
+                <div className="amazon-portal-card">
+                  <p className="amazon-portal-card-title">Exemplo operacional (STAR)</p>
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value={`example-${principle.id}`}>
+                      <AccordionTrigger className="amazon-prep-accordion-trigger">
+                        Ver detalhes
+                      </AccordionTrigger>
+                      <AccordionContent className="amazon-prep-accordion-content text-sm space-y-2 text-muted-foreground">
+                        <p><strong>Situation:</strong> {principle.starExample.situation}</p>
+                        <p><strong>Task:</strong> {principle.starExample.task}</p>
+                        <p><strong>Action:</strong> {principle.starExample.action}</p>
+                        <p><strong>Result:</strong> {principle.starExample.result}</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </AmazonPortalSection>
+  );
+}
       situation: "Time de payments operations precisava crescer de 3 para 8 pessoas em 6 meses mantendo alta qualidade.",
       task: "Liderar processo de hiring e estabelecer programa de desenvolvimento.",
       action: "Criei rubrica de avaliação específica (skills técnicos + cultural fit), treinei 5 interviewers, participei de 23 entrevistas, implementei onboarding estruturado de 60 dias. Estabeleci mentoring 1:1, rotação de projetos e training budget de R$ 5K/pessoa.",
@@ -361,6 +316,25 @@ const principles = [
     ],
   },
 ];
+
+const firstQuarterFocus: Record<number, string> = {
+  1: "Mapear três jornadas prioritárias (Prime, Oakberry, Marketplace) e converter feedback em melhorias mensuráveis.",
+  2: "Assumir ownership do scorecard LATAM e liderar comunicações mesmo quando o tema cruza outras áreas.",
+  3: "Entregar pelo menos uma automação que reduza esforço operacional com métricas claras de impacto.",
+  4: "Criar doc semanal com hipóteses e dados para decisões rápidas sobre incidentes ou investimentos.",
+  5: "Reservar horas recorrentes para estudos de AI/ML e compartilhar aprendizados com o time.",
+  6: "Montar plano de desenvolvimento para cada membro do squad e preparar pipeline de talentos.",
+  7: "Atualizar runbooks e SLAs garantindo auditoria impecável e zero dívida operacional escondida.",
+  8: "Desenhar visão LATAM para pagamentos instantâneos e conectar com OKRs regionais.",
+  9: "Estabelecer mecanismo de decisão rápida (<24h) para incidentes reversíveis, com métricas pós-ação.",
+ 10: "Revisar contratos/processos e propor pelo menos um ajuste que reduza custo por transação.",
+ 11: "Implementar rituais de transparência (logs de decisões, follow-ups rápidos) e pedir feedback ativo.",
+ 12: "Rodar auditorias surpresa em métricas críticas (approval, reconciliação) para evitar gaps.",
+ 13: "Documentar desacordos relevantes, alinhar trade-offs e registrar compromissos após decisão.",
+ 14: "Vincular cada iniciativa a inputs-chave e reportar progresso semanalmente com métricas.",
+ 15: "Configurar rituais de energia do time (retros, office hours) e monitorar carga de trabalho.",
+ 16: "Mapear impactos secundários de automações/AI e criar métricas de fairness e compliance.",
+};
 
 export default function LeadershipPrinciplesPage() {
   return (

@@ -3,88 +3,12 @@ import { AlertTriangle, Cpu, Plug, ShieldCheck, Workflow } from "lucide-react";
 import AmazonPortalSection from "@/components/amazon/portal-section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { systemsToolingData } from "@/data/amazon/onboarding";
 
 import "../styles.css";
 
-const architectureLayers = [
-  {
-    name: "Entrada & Autorização",
-    details: "Amazon API Gateway + Lambda validam requests e fazem throttling por merchant.",
-    signals: "Latência <120ms, taxonomia correta por método de pagamento.",
-  },
-  {
-    name: "Fraude & Decisão",
-    details: "Amazon Fraud Detector + Step Functions orquestram regras e modelos customizados.",
-    signals: "Precisão >97%, falsos positivos <1.2%.",
-  },
-  {
-    name: "Processamento & Liquidação",
-    details: "EventBridge transmite eventos para serviços de captura, conciliação e ledger.",
-    signals: "Falhas <0.05% e reconciliação automática >92%.",
-  },
-  {
-    name: "Notificações & Insights",
-    details: "S3 + Athena + QuickSight alimentam dashboards e alertas de negócio.",
-    signals: "Dashboards atualizados a cada 15min, sem gaps de dados.",
-  },
-];
-
-const awsServices = [
-  { name: "Lambda", use: "Orquestra validações, cálculo de taxas e enrichment de eventos." },
-  { name: "EventBridge", use: "Barramento para PaymentInitiated, PaymentAuthorized, Settlement." },
-  { name: "DynamoDB", use: "Estados de transação e locks de idempotência." },
-  { name: "Step Functions", use: "Refunds, chargebacks e fluxos com rollback controlado." },
-  { name: "KMS / Payment Cryptography", use: "Gestão de chaves e HSM compliant com PCI." },
-  { name: "CloudWatch & X-Ray", use: "Observabilidade, dashboards e tracing de chamadas." },
-];
-
-const resiliencePlaybooks = [
-  {
-    title: "PIX Gateway",
-    steps: [
-      "Monitorar fila de autorização no EventBridge (lag >30s).",
-      "Acionar fallback para gateway secundário (Lambda switch).",
-      "Registrar incidente no PagerDuty e atualizar Andreia em 15min.",
-      "Rodar post-mortem em 24h com métricas e recomendações.",
-    ],
-  },
-  {
-    title: "Adquirente Cartões",
-    steps: [
-      "Verificar alarmes de latência no CloudWatch (p95 >500ms).",
-      "Habilitar roteamento dinâmico por approval histórica.",
-      "Comunicar merchants impactados via template pronto.",
-      "Atualizar dashboard de custo/approval após normalização.",
-    ],
-  },
-];
-
-const observability = [
-  {
-    category: "Alarmes críticos",
-    items: [
-      "Approval rate <92% (Looker + PagerDuty)",
-      "Latência PIX >200ms",
-      "Fila de reconciliação >15min",
-      "Erros 5xx API >0.2%",
-    ],
-  },
-  {
-    category: "Dashboards",
-    items: [
-      "Scorecard LATAM (Looker)",
-      "Operational Health (CloudWatch)",
-      "AI/ML Experiments (SageMaker Studio)",
-    ],
-  },
-];
-
-const integrationChecklist = [
-  "Confirmar contratos e chaves no AWS Secrets Manager.",
-  "Configurar alarmes de SLA específicos por parceiro.",
-  "Adicionar fluxos ao runbook compartilhado.",
-  "Realizar sandbox test + game day antes do rollout.",
-];
+const { architectureLayers, awsServices, resiliencePlaybooks, observability, integrationChecklist } =
+  systemsToolingData;
 
 export default function SystemsToolingPage() {
   return (

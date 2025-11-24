@@ -4,92 +4,10 @@ import AmazonPortalSection from "@/components/amazon/portal-section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { programOfficeData } from "@/data/amazon/onboarding";
 
 import "../styles.css";
-
-const docPipelines = [
-  {
-    name: "PR/FAQ · PIX Automático",
-    status: "Em edição",
-    nextStep: "Inserir respostas de Oakberry até 27/11",
-    owner: "Você",
-  },
-  {
-    name: "6-Pager · Scorecard LATAM",
-    status: "Outline aprovado",
-    nextStep: "Consolidar métricas Q4 com Data Eng",
-    owner: "Você + Data",
-  },
-  {
-    name: "Narrativa · Game Day",
-    status: "Rascunho",
-    nextStep: "Adicionar resultados do teste de failover",
-    owner: "Platform Eng",
-  },
-];
-
-const governance = [
-  {
-    title: "WBR (Weekly Business Review)",
-    detail: "Documento de 6 páginas lido em silêncio, atualiza KPIs e riscos.",
-    cadence: "Semanal | Liderado por você",
-    inputs: ["Scorecard LATAM", "Runbook de incidentes", "Plano Oakberry"],
-  },
-  {
-    title: "OBR (Operational Business Review)",
-    detail: "Foco em processos e automações, envolve Eng, Finance e CX.",
-    cadence: "Mensal | Co-liderado com Andreia",
-    inputs: ["Lista de automações", "KPIs de eficiência", "Pipeline AI/ML"],
-  },
-  {
-    title: "Quarterly Readout",
-    detail: "Documento consolidando OKRs, decisões e investimentos.",
-    cadence: "Trimestral | Liderado por Sujash",
-    inputs: ["Resultados financeiros", "Roadmap LATAM", "Riscos regulatórios"],
-  },
-];
-
-const kpiStacks = [
-  {
-    category: "Performance",
-    metrics: [
-      { label: "Approval rate", target: ">= 94%", tool: "Looker" },
-      { label: "Sucesso PIX", target: ">= 99.8%", tool: "CloudWatch" },
-    ],
-  },
-  {
-    category: "Custo & Eficiência",
-    metrics: [
-      { label: "Custo por transação", target: "-12% YoY", tool: "Finance DW" },
-      { label: "Automação de reconciliação", target: "90%", tool: "Ops Tracker" },
-    ],
-  },
-  {
-    category: "Risco",
-    metrics: [
-      { label: "Chargeback", target: "<0.5%", tool: "Fraud BI" },
-      { label: "Incidentes P1", target: "zero por trimestre", tool: "PagerDuty" },
-    ],
-  },
-];
-
-const reportingCadence = [
-  {
-    name: "Daily Pulse",
-    what: "Slack/Chime com desvios e incidentes.",
-    audience: "Andreia + Squad",
-  },
-  {
-    name: "Weekly Snapshot",
-    what: "Resumo em Notion + links para dashboards.",
-    audience: "Stakeholders LATAM",
-  },
-  {
-    name: "Monthly Narrative",
-    what: "Documento de 4 páginas com decisões, riscos e próximos passos.",
-    audience: "Sujash + parceiros globais",
-  },
-];
+const { docPipelines, governance, kpiStacks, reportingCadence } = programOfficeData;
 
 export default function ProgramOfficePage() {
   return (

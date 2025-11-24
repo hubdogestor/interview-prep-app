@@ -3,83 +3,10 @@ import { Globe2, Map, Newspaper, TrendingUp } from "lucide-react";
 import AmazonPortalSection from "@/components/amazon/portal-section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { marketKnowledgeData } from "@/data/amazon/onboarding";
 
 import "../styles.css";
-
-const marketSignals = [
-  {
-    title: "PIX Automático",
-    data: "Lançado em out/2024, meta BCB: 20M contratos recorrentes até 2026.",
-    implication: "Necessário suporte nativo para Prime, assinaturas e parceiros Oakberry.",
-  },
-  {
-    title: "PIX por Aproximação",
-    data: "Pilotos com NFC iniciam em 2025; varejo físico é prioridade.",
-    implication: "Preparar stack de hardware e roteamento híbrido PIX/cartão.",
-  },
-  {
-    title: "Cartões contactless",
-    data: ">60% das transações presenciais já usam NFC.",
-    implication: "Alavancar experiência Amazon One + Oakberry para diferenciação.",
-  },
-  {
-    title: "Open Finance",
-    data: "Fase de iniciação de pagamentos amadurecendo; 1.3B consentimentos.",
-    implication: "Explorar iniciação direta e scoring alternativo para BNPL/Prime.",
-  },
-];
-
-const regulatoryWatch = [
-  {
-    item: "Resolução BCB 315",
-    detail: "Regras para Instituições de Pagamento com foco em capital mínimo.",
-    action: "Validar impacto no modelo de parceria com Oakberry e novos merchants.",
-  },
-  {
-    item: "Open Finance Fase 4",
-    detail: "Compartilhamento de serviços agregados (seguros, investimentos).",
-    action: "Mapear oportunidades de cross-sell para Amazon Pay.",
-  },
-  {
-    item: "Regulação de IA",
-    detail: "PL brasileiro em debate (2025) exigindo transparência em modelos de crédito/fraude.",
-    action: "Documentar modelos usados em approval para auditorias futuras.",
-  },
-];
-
-const competitorMoves = [
-  {
-    name: "Mercado Pago",
-    moves: [
-      "Expansão de PIX parcelado em 5 países.",
-      "Oferta de SaaS antifraude para terceiros.",
-    ],
-    mitigation: "Destacar vantagem AWS + AI/ML e integrar PIX Automático mais cedo.",
-  },
-  {
-    name: "Nubank",
-    moves: [
-      "109M de clientes e forte penetração em PIX com cashback.",
-      "Investimentos em plataforma própria de adquirência.",
-    ],
-    mitigation: "Usar Prime + parceria Oakberry para oferecer benefícios exclusivos.",
-  },
-  {
-    name: "Stone/TON",
-    moves: [
-      "Novos POS com suporte PIX offline.",
-      "Oferta de capital de giro atrelada ao fluxo PIX.",
-    ],
-    mitigation: "Explorar soluções de working capital via Amazon Capital Services.",
-  },
-];
-
-const focusQuestions = [
-  "Como cada movimento regulatório impacta o custo por transação em 2025?",
-  "Qual parcela do GMV LATAM virá de PIX Automático e quando devemos ativar incentivos?",
-  "Quais aprendizados do UPI (Índia) aplicaremos para aprovação de pagamentos instantâneos?",
-  "Como Oakberry e demais parceiros enxergam o roadmap e quais métricas valorizam?",
-];
+const { marketSignals, regulatoryWatch, competitorMoves, focusQuestions } = marketKnowledgeData;
 
 export default function MarketIntelligencePage() {
   return (

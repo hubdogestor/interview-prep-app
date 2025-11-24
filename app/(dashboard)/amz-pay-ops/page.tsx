@@ -121,10 +121,10 @@ export default function AmazonHubPage() {
               {quickLinks.map((link) => {
                 const Icon = link.icon;
                 return (
-                  <Link
+                  <div
                     key={link.href}
-                    href={link.href}
-                    className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-accent/50"
+                    className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-accent/50 cursor-not-allowed opacity-70"
+                    title="Coming Soon"
                   >
                     <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <Icon className="size-5" />
@@ -134,7 +134,7 @@ export default function AmazonHubPage() {
                       <p className="text-xs text-muted-foreground">{link.description}</p>
                     </div>
                     <ArrowRight className="ml-auto size-4 text-muted-foreground" />
-                  </Link>
+                  </div>
                 );
               })}
             </div>

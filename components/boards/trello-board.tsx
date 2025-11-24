@@ -680,17 +680,17 @@ function BoardColumnCard({
     return (
       <div
         ref={setNodeRef}
-        className="flex min-w-[72px] max-w-[72px] flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 bg-background/40 px-3 py-6 text-muted-foreground"
+        className="flex min-w-[48px] max-w-[48px] flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 bg-background/40 px-2 py-6 text-muted-foreground"
       >
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="flex flex-col items-center gap-4 text-xs uppercase tracking-[0.2em]"
+          className="flex flex-col items-center gap-3 text-[10px] uppercase tracking-[0.2em]"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-4 w-4" />
           <span
-            className="font-display text-sm"
-            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+            className="font-display text-xs"
+            style={{ writingMode: "vertical-rl", textOrientation: "mixed", transform: "rotate(180deg)" }}
           >
             {column.title}
           </span>

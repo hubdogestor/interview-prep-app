@@ -127,11 +127,11 @@ const data = {
       ],
     },
     {
-      title: "Amazon Prep",
+      title: "Amazon Hub",
       items: [
         {
-          title: "Payment Ops Prep",
-          url: "/amazon-prep",
+          title: "Payment Ops Hub",
+          url: "/amz-pay-ops",
           icon: AtomIcon,
           isActive: false,
         },

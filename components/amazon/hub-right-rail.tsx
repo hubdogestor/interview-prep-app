@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Countdown } from "@/components/amazon/countdown";
+import { AmazonHubNavigator } from "@/components/amazon/hub-navigator";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { dayOneData } from "@/data/amazon/day-one";
@@ -10,7 +11,7 @@ export function AmazonHubRightRail() {
   const { hero } = dayOneData;
 
   return (
-    <aside className="hidden xl:flex flex-col gap-4 sticky top-[104px]">
+    <div className="space-y-4">
       <Card className="border-primary/30 bg-background/80">
         <CardHeader className="pb-3">
           <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -91,6 +92,7 @@ export function AmazonHubRightRail() {
           ))}
         </CardContent>
       </Card>
-    </aside>
+      <AmazonHubNavigator />
+    </div>
   );
 }

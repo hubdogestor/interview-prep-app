@@ -122,6 +122,15 @@ const sandboxLinks = dayOneData.quickLinks.map((link) => ({
   href: link.href,
 }));
 
+const sectionIndex = [
+  { label: "Missão", href: "#mission" },
+  { label: "Trilhas", href: "#pillars" },
+  { label: "Biblioteca", href: "#knowledge" },
+  { label: "Readiness", href: "#readiness" },
+  { label: "Anchors", href: "#anchors" },
+  { label: "Ferramentas", href: "#tools" },
+];
+
 export default function AmazonHubPage() {
   const { hero, modules } = dayOneData;
 
@@ -188,6 +197,24 @@ export default function AmazonHubPage() {
               })}
             </div>
           </div>
+
+          <nav
+            aria-label="Mapa rápido do hub"
+            className="rounded-2xl border border-dashed border-border/60 bg-background/60 px-4 py-3"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Seções</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {sectionIndex.map((section) => (
+                <Link
+                  key={section.label}
+                  href={section.href}
+                  className="rounded-full border border-border/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  {section.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
         </section>
 
         <section id="pillars" className="space-y-5">
@@ -291,10 +318,10 @@ export default function AmazonHubPage() {
           </div>
         </section>
 
-        <section id="capsules" className="space-y-5">
+        <section id="readiness" className="space-y-5">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">Capsulas de referência</h2>
-            <p className="text-sm text-muted-foreground">Use estas descrições para descobrir rapidamente onde cada assunto vive.</p>
+            <h2 className="text-xl font-semibold tracking-tight">Readiness path</h2>
+            <p className="text-sm text-muted-foreground">Entenda como navegar entre cultura, domínio e toolkit em uma sequência coerente.</p>
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
             {referenceCapsules.map((capsule) => (
@@ -317,12 +344,12 @@ export default function AmazonHubPage() {
           </div>
         </section>
 
-        <section id="anchors" className="grid gap-6 lg:grid-cols-2">
+        <section id="anchors" className="space-y-5">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">Day 1 anchors</h2>
+            <p className="text-sm text-muted-foreground">Documentos permanentes que ancoram decisões e comunicações.</p>
+          </div>
           <Card className="border-border/70">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Documentos essenciais</CardTitle>
-              <CardDescription className="text-sm">Referências permanentes para acessar sempre que precisar.</CardDescription>
-            </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
               {essentialDocs.map((doc) => (
                 <div key={doc.title} className="rounded-2xl border bg-muted/30 p-4">
@@ -332,12 +359,14 @@ export default function AmazonHubPage() {
               ))}
             </CardContent>
           </Card>
+        </section>
 
+        <section id="tools" className="space-y-5">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">Spaces & sandboxes</h2>
+            <p className="text-sm text-muted-foreground">Ambientes seguros para testar narrativas, mecanismos e fluxos internos.</p>
+          </div>
           <Card className="border-border/70">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Spaces & sandboxes</CardTitle>
-              <CardDescription className="text-sm">Links para explorar ferramentas internas simuladas.</CardDescription>
-            </CardHeader>
             <CardContent className="space-y-3">
               {sandboxLinks.map((link) => (
                 <div key={link.label} className="flex items-center justify-between rounded-2xl border px-4 py-3 text-sm">

@@ -11,51 +11,28 @@ import { cn } from "@/lib/utils";
 export default function CulturePage() {
   const { hero, sections } = cultureData;
   const focusHighlights = [
-    "Dominar 2 histórias de LP para cada mecanismo",
-    "Converter insights em ações concretas para Day 1",
-    "Praticar escrita narrativa com feedback rápido",
+    "Dominar LPs acionáveis em contextos de operações",
+    "Conectar narrativas a mecanismos e perguntas",
+    "Manter templates e referências de escrita sempre à mão",
   ];
-  const narrativePulse = [
+  const referenceNotes = [
     {
       label: "Story Bank",
-      value: "12 entradas",
-      meta: "Atualize 2 histórias por semana",
+      description: "Seleção curada de histórias por LP com ganchos para perguntas frequentes.",
       icon: BookMarked,
     },
     {
-      label: "Writing Cadence",
-      value: "3 rituais",
-      meta: "Daily Pulse · Weekly Remix · Monthly OP",
+      label: "Writing Rituals",
+      description: "Templates de 6-pager, PR/FAQ e checklists de narrativa.",
       icon: NotebookPen,
     },
     {
-      label: "PR/FAQ ativos",
-      value: "2 drafts",
-      meta: "Wallet LATAM · BNPL Ops",
+      label: "Narrativa em rede",
+      description: "Links diretos para domain playbooks, toolkit e practice prompts.",
       icon: MessageSquare,
     },
   ];
-  const cultureLoops = [
-    {
-      title: "Daily Pulse",
-      cadence: "Diário",
-      description: "Relacione um evento real com um LP antes das 10h.",
-      actions: ["Escreva 5 linhas", "Compartilhe em 1:1 ou no canal"],
-    },
-    {
-      title: "Weekly Remix",
-      cadence: "Sexta",
-      description: "Selecione 1 história e transforme em narrativa de 2 parágrafos.",
-      actions: ["Adicione métricas", "Liste próximos experimentos"],
-    },
-    {
-      title: "Monthly Calibration",
-      cadence: "Mensal",
-      description: "Revise com o gestor quais histórias contam melhor seu impacto.",
-      actions: ["Mapeie gaps", "Planeje novos contextos"],
-    },
-  ];
-  const microPractices = [
+  const referenceGuides = [
     {
       title: "Working Backwards Sprint",
       description: "30 minutos para escrever um parágrafo PR + 3 FAQs difíceis.",
@@ -121,18 +98,17 @@ export default function CulturePage() {
           </section>
 
           <section className="grid gap-4 sm:grid-cols-3">
-            {narrativePulse.map((signal) => {
-              const Icon = signal.icon;
+            {referenceNotes.map((note) => {
+              const Icon = note.icon;
               return (
-                <Card key={signal.label} className="border-border/70">
+                <Card key={note.label} className="border-border/70">
                   <CardContent className="flex items-start gap-3 p-4">
                     <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
                       <Icon className="size-5" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{signal.label}</p>
-                      <p className="text-base font-semibold">{signal.value}</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{signal.meta}</p>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{note.label}</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{note.description}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -177,40 +153,11 @@ export default function CulturePage() {
 
           <section className="space-y-4">
             <div>
-              <h2 className="text-xl font-semibold tracking-tight">Culture Systems</h2>
-              <p className="text-sm text-muted-foreground">Rituais que mantêm cultura viva e acionável.</p>
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              {cultureLoops.map((loop) => (
-                <Card key={loop.title} className="flex h-full flex-col border-border/70">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span className="font-semibold uppercase tracking-wide">{loop.title}</span>
-                      <span className="rounded-full border px-2 py-0.5 text-[10px]">{loop.cadence}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3 text-xs text-muted-foreground">
-                    <p className="leading-relaxed">{loop.description}</p>
-                    <div className="space-y-1.5">
-                      {loop.actions.map((action) => (
-                        <div key={action} className="rounded-lg border bg-muted/40 px-2.5 py-1.5 leading-snug">
-                          {action}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-
-          <section className="space-y-4">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight">Micro Practices</h2>
-              <p className="text-sm text-muted-foreground">Use estes gatilhos para transformar cultura em ação.</p>
+              <h2 className="text-xl font-semibold tracking-tight">Guias de referência</h2>
+              <p className="text-sm text-muted-foreground">Seleções rápidas para mergulhar em cada ritual de cultura.</p>
             </div>
             <div className="grid gap-5 lg:grid-cols-3">
-              {microPractices.map((practice) => (
+              {referenceGuides.map((practice) => (
                 <Card key={practice.title} className="flex h-full flex-col border-border/70">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base">{practice.title}</CardTitle>

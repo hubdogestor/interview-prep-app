@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight, BookMarked, CalendarDays, Compass, Layers, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Layers, Sparkles } from "lucide-react";
 
 import { AmazonHubShell } from "@/components/amazon/hub-shell";
 import DashboardPageLayout from "@/components/dashboard/layout";
@@ -8,32 +8,7 @@ import ProcessorIcon from "@/components/icons/proccesor";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { dayOneData } from "@/data/amazon/day-one";
-
-const readinessPhases = [
-  {
-    id: "immerse",
-    badge: "Semana 0",
-    title: "Imersão & Cultura",
-    description: "Refine histórias dos Leadership Principles, fortaleça vocabulário Amazoniano e pratique Working Backwards.",
-    tasks: ["Completar track The Amazonian Way", "Mapear 3 histórias LP", "Revisar Working Backwards"],
-  },
-  {
-    id: "domain",
-    badge: "Semana 1",
-    title: "Domínio de Pagamentos",
-    description: "Conecte fundamentos de Auth/Capture com Amazon Pay e métricas críticas.",
-    tasks: ["Montar fluxo ponta-a-ponta", "Destacar riscos conhecidos", "Preparar perguntas para Tech"],
-  },
-  {
-    id: "activate",
-    badge: "Semana 2",
-    title: "Ative o Toolkit",
-    description: "Organize artefatos, rota de stakeholders e mecanismos para operar no Day 1.",
-    tasks: ["Atualizar roadmap", "Ensaiar status report", "Planejar 30-60-90"],
-  },
-];
 
 const missionHighlights = [
   "Conectar cultura, domínio de pagamentos e mecanismos de execução",
@@ -41,23 +16,24 @@ const missionHighlights = [
   "Operar como hub perene: acesse qualquer trilha sem depender de checklists",
 ];
 
-const missionCallouts: {
-  label: string;
-  value: string;
-  meta: string;
-  icon: LucideIcon;
-}[] = [
+const referenceGlances = [
   {
-    label: "Próxima cerimônia",
-    value: "WBR · Sexta 09h",
-    meta: "Levar 2 insights de Auth Rate",
-    icon: CalendarDays,
+    title: "Culture OS",
+    description: "Leadership Principles, Working Backwards e escrita narrativa para operar Amazon Payments.",
+    icon: Sparkles,
+    href: "/amz-pay-ops/culture",
   },
   {
-    label: "Foco atual",
-    value: "Conectar Culture + Domain",
-    meta: "Atualize toolkit base antes do Day 1",
-    icon: BookMarked,
+    title: "Domain Playbook",
+    description: "Fluxos de Auth/Capture, métricas chave e mapa do ecossistema Amazon Pay.",
+    icon: Layers,
+    href: "/amz-pay-ops/domain",
+  },
+  {
+    title: "PgM Toolkit",
+    description: "Stakeholders, artefatos e mecanismos para liderar operações em Day 1.",
+    icon: Compass,
+    href: "/amz-pay-ops/role",
   },
 ];
 
@@ -70,7 +46,7 @@ const knowledgeStacks: {
 }[] = [
   {
     title: "Culture OS",
-    description: "LP stories, Writing Rituals e Working Backwards em um só lugar.",
+    description: "Histórias, narrativas e ferramentas de escrita para adaptar LPs a operações reais.",
     icon: Sparkles,
     href: "/amz-pay-ops/culture",
     links: [
@@ -81,7 +57,7 @@ const knowledgeStacks: {
   },
   {
     title: "Payments Intelligence",
-    description: "Mapeie Auth Rate, CoP e Amazon Pay LATAM com profundidade.",
+    description: "Fundamentos de pagamentos, Amazon Pay LATAM e guias de risco/fraude.",
     icon: Layers,
     href: "/amz-pay-ops/domain",
     links: [
@@ -92,7 +68,7 @@ const knowledgeStacks: {
   },
   {
     title: "PgM Toolkit",
-    description: "Stakeholders, mecanismos e artefatos para operar em alta resolução.",
+    description: "Guias sobre clareza de função, stakeholders críticos e artefatos.",
     icon: Compass,
     href: "/amz-pay-ops/role",
     links: [
@@ -103,8 +79,51 @@ const knowledgeStacks: {
   },
 ];
 
+const referenceCapsules = [
+  {
+    title: "Imersão Amazoniana",
+    summary: "Narrativas, vocabulário e rituais de escrita para viver os LPs no contexto de Payments.",
+    highlights: ["Story bank por LP", "Working Backwards aplicado", "Toolkit de escrita"]
+  },
+  {
+    title: "Domínio de Pagamentos",
+    summary: "Mapa ponta-a-ponta de Auth/Capture, métricas e riscos recorrentes em LATAM.",
+    highlights: ["Fluxos operacionais", "Amazon Pay LATAM", "Playbooks de fraude"]
+  },
+  {
+    title: "Toolkit de Operações",
+    summary: "Artefatos permanentes, stakeholders e mecanismos para Day 1 e Day 2.",
+    highlights: ["Role clarity", "Checklist de mecanismos", "Biblioteca de artefatos"]
+  },
+];
+
+const essentialDocs = [
+  {
+    title: "Setup & Acessos",
+    detail: "Checklist de laptop, VPN, AtoZ, Phonetool e credenciais essenciais.",
+  },
+  {
+    title: "Orientation Pack",
+    detail: "Resumo do OP1, mapa de squads e glossário de termos Amazon Pay.",
+  },
+  {
+    title: "Stakeholder Briefs",
+    detail: "Quem são Andreia, Sujash e Tech Pods, e quais agendas cada um lidera.",
+  },
+  {
+    title: "Runbook de incidentes",
+    detail: "Procedimentos e contatos críticos para P1/P2.",
+  },
+];
+
+const sandboxLinks = dayOneData.quickLinks.map((link) => ({
+  label: link.label,
+  description: link.description,
+  href: link.href,
+}));
+
 export default function AmazonHubPage() {
-  const { hero, modules, quickLinks, dayOneChecklist } = dayOneData;
+  const { hero, modules } = dayOneData;
 
   return (
     <DashboardPageLayout
@@ -115,8 +134,8 @@ export default function AmazonHubPage() {
       }}
     >
       <AmazonHubShell>
-        <section id="mission" className="space-y-5">
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_1fr]">
+        <section id="mission" className="space-y-6">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_1fr]">
             <Card className="relative overflow-hidden border-primary/30 bg-gradient-to-br from-primary/10 via-background to-background">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.15),_transparent_55%)]" />
               <CardHeader className="relative z-10 space-y-4">
@@ -127,16 +146,16 @@ export default function AmazonHubPage() {
                   <span className="text-muted-foreground/80 text-sm">{hero.team}</span>
                 </div>
                 <CardTitle className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight">
-                  Day 1 é um estado permanente.
+                  Day 1 como biblioteca viva.
                 </CardTitle>
                 <CardDescription className="text-sm md:text-base leading-relaxed text-muted-foreground">
-                  Este hub consolida cultura, domínio técnico e mecanismos para operar Amazon Payments em qualquer momento. Sem checklists, sem kanban – apenas conhecimento acionável.
+                  Todas as referências de cultura, domínio e toolkit em um único hub, prontas para consulta a qualquer momento.
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative z-10">
                 <div className="grid gap-3 sm:grid-cols-3">
                   {missionHighlights.map((item) => (
-                    <div key={item} className="rounded-xl border border-border/60 bg-background/60 p-3 text-sm leading-relaxed">
+                    <div key={item} className="rounded-2xl border border-border/60 bg-background/70 p-4 text-sm leading-relaxed">
                       {item}
                     </div>
                   ))}
@@ -145,21 +164,24 @@ export default function AmazonHubPage() {
             </Card>
 
             <div className="grid gap-4">
-              {missionCallouts.map((signal) => {
-                const Icon = signal.icon;
+              {referenceGlances.map((glance) => {
+                const Icon = glance.icon;
                 return (
-                  <Card key={signal.label} className="border-border/70">
-                    <CardContent className="flex items-start gap-3 p-4">
-                      <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
-                        <Icon className="size-5" />
+                  <Card key={glance.title} className="flex h-full flex-col border-border/70">
+                    <CardContent className="flex flex-1 flex-col gap-3 p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                          <Icon className="size-5" />
+                        </div>
+                        <p className="text-sm font-semibold">{glance.title}</p>
                       </div>
-                      <div className="space-y-1 min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          {signal.label}
-                        </p>
-                        <p className="text-base font-semibold">{signal.value}</p>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{signal.meta}</p>
-                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed flex-1">{glance.description}</p>
+                      <Button asChild variant="secondary" size="sm" className="w-full justify-center">
+                        <Link href={glance.href}>
+                          Abrir hub
+                          <ArrowRight className="ml-2 size-4" />
+                        </Link>
+                      </Button>
                     </CardContent>
                   </Card>
                 );
@@ -171,11 +193,11 @@ export default function AmazonHubPage() {
         <section id="pillars" className="space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold tracking-tight">Launch Pillars</h2>
-              <p className="text-sm text-muted-foreground">Selecione uma trilha e aprofunde sem depender de progresso.</p>
+              <h2 className="text-xl font-semibold tracking-tight">Trilhas principais</h2>
+              <p className="text-sm text-muted-foreground">Escolha um módulo e use como referência profunda.</p>
             </div>
             <Button asChild variant="outline" className="rounded-full text-sm">
-              <Link href={modules[0]?.href ?? "#"}>Navegar pelas trilhas</Link>
+              <Link href={modules[0]?.href ?? "#"}>Ver mapa completo</Link>
             </Button>
           </div>
 
@@ -223,11 +245,9 @@ export default function AmazonHubPage() {
         </section>
 
         <section id="knowledge" className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight">Knowledge Library</h2>
-              <p className="text-sm text-muted-foreground">Cards com links diretos para subtrilhas e documentos.</p>
-            </div>
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">Biblioteca central</h2>
+            <p className="text-sm text-muted-foreground">Navegue por coleções temáticas prontas para consulta.</p>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
@@ -249,7 +269,11 @@ export default function AmazonHubPage() {
                   <CardContent className="flex-1 pt-0">
                     <div className="space-y-2 text-sm">
                       {stack.links.map((link) => (
-                        <Link key={link.label} href={link.href} className="flex items-center justify-between rounded-lg border px-3 py-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary">
+                        <Link
+                          key={link.label}
+                          href={link.href}
+                          className="flex items-center justify-between rounded-lg border px-3 py-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                        >
                           {link.label}
                           <ArrowRight className="size-4" />
                         </Link>
@@ -258,9 +282,7 @@ export default function AmazonHubPage() {
                   </CardContent>
                   <CardFooter className="pt-4">
                     <Button asChild variant="ghost" className="w-full justify-start px-0 text-sm text-primary">
-                      <Link href={stack.href}>
-                        Ver overview completo
-                      </Link>
+                      <Link href={stack.href}>Ver overview completo</Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -269,90 +291,65 @@ export default function AmazonHubPage() {
           </div>
         </section>
 
-        <section id="readiness" className="space-y-5">
+        <section id="capsules" className="space-y-5">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">Readiness Path</h2>
-            <p className="text-sm text-muted-foreground">Use como bússola atemporal – não como checklist.</p>
+            <h2 className="text-xl font-semibold tracking-tight">Capsulas de referência</h2>
+            <p className="text-sm text-muted-foreground">Use estas descrições para descobrir rapidamente onde cada assunto vive.</p>
           </div>
-          <Card className="border-border/70">
-            <CardContent className="pt-6">
-              <div className="relative">
-                <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
-                <div className="space-y-7">
-                  {readinessPhases.map((phase) => (
-                    <div key={phase.id} className="relative pl-12">
-                      <div className="absolute left-0 top-0 flex size-8 items-center justify-center rounded-full border bg-background flex-shrink-0">
-                        <span className="text-[10px] font-bold">{phase.badge}</span>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {referenceCapsules.map((capsule) => (
+              <Card key={capsule.title} className="flex h-full flex-col border-border/70">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">{capsule.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <p className="leading-relaxed">{capsule.summary}</p>
+                  <div className="space-y-2">
+                    {capsule.highlights.map((highlight) => (
+                      <div key={highlight} className="rounded-lg border bg-muted/30 px-3 py-2 text-xs uppercase tracking-wide">
+                        {highlight}
                       </div>
-                      <h3 className="text-base font-semibold mb-1.5">{phase.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-3">{phase.description}</p>
-                      <Separator className="my-3" />
-                      <ul className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2 lg:grid-cols-3">
-                        {phase.tasks.map((task) => (
-                          <li key={task} className="rounded-lg border bg-muted/40 px-3 py-2 leading-relaxed">
-                            {task}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </section>
 
-        <section id="anchors" className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <section id="anchors" className="grid gap-6 lg:grid-cols-2">
           <Card className="border-border/70">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Day 1 Anchors</CardTitle>
-              <CardDescription className="text-sm">Referências permanentes – revise sempre que necessário.</CardDescription>
+              <CardTitle className="text-lg">Documentos essenciais</CardTitle>
+              <CardDescription className="text-sm">Referências permanentes para acessar sempre que precisar.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {dayOneChecklist.map((item, index) => (
-                <div key={item.id} className="flex items-start gap-4">
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    <span className="size-5 rounded-full border border-border/70 text-[10px] font-bold flex items-center justify-center">
-                      {index + 1}
-                    </span>
-                    {index !== dayOneChecklist.length - 1 && (
-                      <span className="mt-1 h-8 w-px bg-border" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium">{item.label}</p>
-                  </div>
+            <CardContent className="space-y-3 text-sm text-muted-foreground">
+              {essentialDocs.map((doc) => (
+                <div key={doc.title} className="rounded-2xl border bg-muted/30 p-4">
+                  <p className="font-semibold">{doc.title}</p>
+                  <p className="text-sm leading-relaxed">{doc.detail}</p>
                 </div>
               ))}
             </CardContent>
           </Card>
 
-          <Card id="tools" className="border-border/70">
+          <Card className="border-border/70">
             <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Tool Simulators</CardTitle>
-              <CardDescription className="text-sm">Espaços para prototipar mecanismos.</CardDescription>
+              <CardTitle className="text-lg">Spaces & sandboxes</CardTitle>
+              <CardDescription className="text-sm">Links para explorar ferramentas internas simuladas.</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-3">
-              {quickLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <div
-                    key={link.href}
-                    className="flex items-center gap-3 rounded-xl border border-dashed bg-muted/30 p-3"
-                  >
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                      <Icon className="size-4" />
-                    </div>
-                    <div className="space-y-0.5 min-w-0 flex-1">
-                      <p className="text-sm font-medium leading-tight">{link.label}</p>
-                      <p className="text-xs text-muted-foreground">{link.description}</p>
-                    </div>
-                    <Badge variant="outline" className="text-[10px] px-2 py-0.5 flex-shrink-0">
-                      {link.status}
-                    </Badge>
+            <CardContent className="space-y-3">
+              {sandboxLinks.map((link) => (
+                <div key={link.label} className="flex items-center justify-between rounded-2xl border px-4 py-3 text-sm">
+                  <div>
+                    <p className="font-semibold">{link.label}</p>
+                    <p className="text-muted-foreground text-xs leading-relaxed">{link.description}</p>
                   </div>
-                );
-              })}
+                  <Button asChild variant="ghost" size="sm" className="text-primary">
+                    <Link href={link.href}>Abrir</Link>
+                  </Button>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </section>
